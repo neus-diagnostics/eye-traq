@@ -1,3 +1,4 @@
+import QtQml 2.2
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 
@@ -12,10 +13,8 @@ Item {
         height: 30
         width: 30
         radius: width/2
-        color: "red"
-        border.color: "black"
-        border.width: 2
-        y: parent.height/2 - height/2
+        color: "white"
+        visible: false
 
         SequentialAnimation {
             id: anim
@@ -23,47 +22,72 @@ Item {
                 duration: 500
             }
             SequentialAnimation {
-                id: move
+                loops: Animation.Infinite
                 NumberAnimation {
                     id: right
                     target: stimulus
-                    properties: "x"
                     easing.type: Easing.InOutSine
                 }
                 NumberAnimation {
                     id: left
                     target: stimulus
-                    properties: "x"
                     easing.type: Easing.InOutSine
                 }
             }
+            onStopped: stimulus.visible = false
         }
     }
 
-    function run(time, offset, period) {
+    Timer {
+        id: timer
+        repeat: false
+        onTriggered: {
+            anim.stop()
+            done()
+        }
+    }
+
+    function run(coord, offset, time, period) {
+        time = Number(time)
         offset = Number(offset)
-        left.to = screen.width * (0.5-offset) - stimulus.width/2
-        right.to = screen.width * (0.5+offset) - stimulus.width/2
-        stimulus.x = left.to
+        period = Number(period)
+
+        switch (coord) {
+            case 'x':
+                left.properties = right.properties = 'x'
+                left.to = screen.width * (0.5-offset) - stimulus.width/2
+                right.to = screen.width * (0.5+offset) - stimulus.width/2
+                stimulus.x = left.to
+                stimulus.y = screen.height/2 - stimulus.height/2
+                break
+            case 'y':
+                left.properties = right.properties = 'y'
+                left.to = screen.height * (0.5-offset) - stimulus.height/2
+                right.to = screen.height * (0.5+offset) - stimulus.height/2
+                stimulus.x = screen.width/2 - stimulus.width/2
+                stimulus.y = left.to
+                break
+        }
 
         left.duration = period / 2
         right.duration = period / 2
 
-        move.loops = time / period
+        stimulus.visible = true
+        timer.interval = time
 
-        // disconnect slot if connected already
-        anim.stopped.disconnect(done)
-        anim.stopped.connect(done)
         anim.start()
+        timer.start()
     }
 
     function abort() {
-        // do not continue to next step
-        anim.stopped.disconnect(done)
         anim.stop()
+        timer.stop()
     }
 
     function get_data() {
-        return [(stimulus.x + stimulus.width/2) / screen.width]
+        return [
+            (stimulus.x + stimulus.width/2) / screen.width,
+            (stimulus.y + stimulus.height/2) / screen.height,
+        ]
     }
 }

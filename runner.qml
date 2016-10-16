@@ -5,7 +5,7 @@ import QtQuick.Window 2.2
 
 Window {
     id: window
-    color: "#6e6e6e"
+    color: "black"
 
     signal next()
     signal abort()
@@ -54,6 +54,10 @@ Window {
         Keys.onEscapePressed: abort()
     }
 
+    // hide the cursor
+    // TODO cursor stays visible until moved
+    MouseArea { anchors.fill: parent; cursorShape: Qt.BlankCursor }
+
     function run(name, args) {
         switch (name) {
             case "blank":
@@ -66,11 +70,11 @@ Window {
                 break;
             case "pursuit":
                 tasks.currentIndex = 2
-                pursuit.item.run(args[0], args[1], args[2])
+                pursuit.item.run(args[0], args[1], args[2], args[3])
                 break;
             case "saccade":
                 tasks.currentIndex = 3
-                saccade.item.run(args[0], args[1])
+                saccade.item.run(args[0], args[1], args[2], args[3])
                 break;
         }
         window.showFullScreen()
