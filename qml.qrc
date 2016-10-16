@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>calibrator.qml</file>
+        <file>main.qml</file>
+        <file>runner.qml</file>
+        <file>images/a.svg</file>
+        <file>images/b.svg</file>
+        <file>task/blank.qml</file>
+        <file>task/imgpair.qml</file>
+        <file>task/pursuit.qml</file>
+        <file>task/saccade.qml</file>
+    </qresource>
+</RCC>
