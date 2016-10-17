@@ -4,48 +4,8 @@ import QtQuick.Controls 2.0
 
 Item {
     id: screen
-    anchors.fill: parent
 
-    signal done()
-
-    Rectangle {
-        id: stimulus
-        height: 30
-        width: 30
-        radius: width/2
-        color: "white"
-        visible: false
-
-        SequentialAnimation {
-            id: anim
-            PauseAnimation {
-                duration: 500
-            }
-            SequentialAnimation {
-                loops: Animation.Infinite
-                NumberAnimation {
-                    id: right
-                    target: stimulus
-                    easing.type: Easing.InOutSine
-                }
-                NumberAnimation {
-                    id: left
-                    target: stimulus
-                    easing.type: Easing.InOutSine
-                }
-            }
-            onStopped: stimulus.visible = false
-        }
-    }
-
-    Timer {
-        id: timer
-        repeat: false
-        onTriggered: {
-            anim.stop()
-            done()
-        }
-    }
+    signal done
 
     function run(coord, offset, time, period) {
         time = Number(time)
@@ -89,5 +49,45 @@ Item {
             (stimulus.x + stimulus.width/2) / screen.width,
             (stimulus.y + stimulus.height/2) / screen.height,
         ]
+    }
+
+    anchors.fill: parent
+
+    Rectangle {
+        id: stimulus
+        height: 30
+        width: 30
+        radius: width/2
+        color: "white"
+        visible: false
+
+        SequentialAnimation {
+            id: anim
+            onStopped: stimulus.visible = false
+
+            PauseAnimation { duration: 500 }
+
+            SequentialAnimation {
+                loops: Animation.Infinite
+
+                NumberAnimation {
+                    id: right
+                    target: stimulus
+                    easing.type: Easing.InOutSine
+                }
+
+                NumberAnimation {
+                    id: left
+                    target: stimulus
+                    easing.type: Easing.InOutSine
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: timer
+        repeat: false
+        onTriggered: { anim.stop(); done() }
     }
 }

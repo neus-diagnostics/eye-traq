@@ -5,12 +5,27 @@ import QtQuick.Controls 2.0
 Item {
     id: screen
 
-    signal done()
+    signal done
+
+    function run(time, leftfile, rightfile) {
+        left.source = "../images/" + leftfile
+        right.source = "../images/" + rightfile
+        timer.interval = time
+        timer.start()
+    }
+
+    function abort() {
+        timer.stop()
+    }
+
+    function get_data() {
+        return []
+    }
 
     Row {
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
+	anchors.centerIn: parent
         spacing: screen.width / 6
+
         Image {
             id: left
             height: screen.height / 2
@@ -28,20 +43,5 @@ Item {
         id: timer
         repeat: false
         onTriggered: done()
-    }
-
-    function run(time, leftfile, rightfile) {
-        left.source = "../images/" + leftfile
-        right.source = "../images/" + rightfile
-        timer.interval = time
-        timer.start()
-    }
-
-    function abort() {
-        timer.stop()
-    }
-
-    function get_data() {
-        return []
     }
 }

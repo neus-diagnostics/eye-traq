@@ -5,58 +5,9 @@ import QtQuick.Window 2.2
 
 Window {
     id: window
-    color: "black"
 
-    signal next()
-    signal abort()
-
-    StackLayout {
-        id: tasks
-        anchors.fill: parent
-        focus: true
-
-        Loader {
-            id: blank
-            source: "task/blank.qml"
-            Connections {
-                target: blank.item
-                onDone: next()
-            }
-        }
-
-        Loader {
-            id: imgpair
-            source: "task/imgpair.qml"
-            Connections {
-                target: imgpair.item
-                onDone: next()
-            }
-        }
-
-        Loader {
-            id: pursuit
-            source: "task/pursuit.qml"
-            Connections {
-                target: pursuit.item
-                onDone: next()
-            }
-        }
-
-        Loader {
-            id: saccade
-            source: "task/saccade.qml"
-            Connections {
-                target: saccade.item
-                onDone: next()
-            }
-        }
-
-        Keys.onEscapePressed: abort()
-    }
-
-    // hide the cursor
-    // TODO cursor stays visible until moved
-    MouseArea { anchors.fill: parent; cursorShape: Qt.BlankCursor }
+    signal next
+    signal abort
 
     function run(name, args) {
         switch (name) {
@@ -89,8 +40,46 @@ Window {
         return tasks.children[tasks.currentIndex].item.get_data()
     }
 
+    color: "black"
+
     // QT BUG: force repaint after entering fullscreen
     onActiveChanged: update()
-
     onClosing: close.accepted = false
+
+    StackLayout {
+        id: tasks
+
+        anchors.fill: parent
+        focus: true
+
+        Loader {
+            id: blank
+            source: "task/blank.qml"
+            Connections { target: blank.item; onDone: next() }
+        }
+
+        Loader {
+            id: imgpair
+            source: "task/imgpair.qml"
+            Connections { target: imgpair.item; onDone: next() }
+        }
+
+        Loader {
+            id: pursuit
+            source: "task/pursuit.qml"
+            Connections { target: pursuit.item; onDone: next() }
+        }
+
+        Loader {
+            id: saccade
+            source: "task/saccade.qml"
+            Connections { target: saccade.item; onDone: next() }
+        }
+
+        Keys.onEscapePressed: abort()
+    }
+
+    // hide the cursor
+    // TODO cursor stays visible until moved
+    MouseArea { anchors.fill: parent; cursorShape: Qt.BlankCursor }
 }

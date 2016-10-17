@@ -5,10 +5,31 @@ import QtQuick.Layouts 1.0
 
 ApplicationWindow {
     id: mainWindow
+
+    function disable() {
+        calibrate.enabled = record.enabled = false
+    }
+
+    function enable() {
+        calibrate.enabled = record.enabled = true
+    }
+
+    function random_id() {
+        function pad(number) {
+            return (number < 10 ? '0' : '') + number
+        }
+        var t = new Date()
+        return '' + t.getUTCFullYear() + pad(t.getUTCMonth() + 1) + pad(t.getUTCDate()) +
+               '-' + pad(t.getUTCHours()) + pad(t.getUTCMinutes()) + pad(t.getUTCSeconds()) +
+               '-' + pad(Math.floor(Math.random() * 100))
+    }
+
     visible: true
     title: qsTr("Eyetracker")
     height: 300
     width: 600
+
+    onClosing: Qt.quit()
 
     ColumnLayout {
         id: layout
@@ -19,7 +40,6 @@ ApplicationWindow {
             // ID input
             Label {
                 text: qsTr("ID")
-                Layout.row: 0
                 Layout.column: 0
             }
             TextField {
@@ -34,22 +54,7 @@ ApplicationWindow {
                 text: qsTr("Random")
                 Layout.row: 0
                 Layout.column: 2
-                onClicked: {
-                    var pad = function (number) {
-                        return (number < 10 ? '0' : '') + number
-                    }
-                    var now = new Date()
-                    participant.text = '' +
-                        now.getUTCFullYear() +
-                        pad(now.getUTCMonth() + 1) +
-                        pad(now.getUTCDate()) +
-                        '-' +
-                        pad(now.getUTCHours()) +
-                        pad(now.getUTCMinutes()) +
-                        pad(now.getUTCSeconds()) +
-                        '-' +
-                        pad(Math.floor(Math.random() * 100))
-                }
+                onClicked: participant.text = random_id()
             }
 
             // name input
@@ -59,6 +64,7 @@ ApplicationWindow {
                 Layout.column: 0
             }
             TextField {
+                id: name
                 placeholderText: qsTr("John Smith")
                 selectByMouse: true
                 Layout.row: 1
@@ -74,6 +80,7 @@ ApplicationWindow {
                 Layout.column: 0
             }
             SpinBox {
+                id: age
                 value: 0
                 editable: true
                 Layout.row: 2
@@ -142,18 +149,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        disable()
-    }
-
-    onClosing: Qt.quit()
-
-    function disable() {
-        calibrate.enabled = false
-        record.enabled = false
-    }
-
-    function enable() {
-        calibrate.enabled = true
-        record.enabled = true
+        //disable()
     }
 }

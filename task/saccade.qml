@@ -5,51 +5,8 @@ import QtQuick.Window 2.2
 
 Item {
     id: screen
-    anchors.fill: parent
 
-    signal done()
-
-    Rectangle {
-        width: 30
-        height: 30
-	color: "transparent"
-
-        id: fixation
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-
-        Rectangle {
-            width: 30
-            height: 4
-            color: "transparent"
-            border.color: "white"
-            border.width: 2
-            y: (parent.height - height) / 2
-        }
-
-        Rectangle {
-            width: 4
-            height: 30
-            color: "transparent"
-            border.color: "white"
-            border.width: 2
-            x: (parent.width - width) / 2
-        }
-    }
-
-    Rectangle {
-        id: target
-        width: 30
-        height: 30
-        radius: width / 2
-        color: "white"
-    }
-
-    Timer {
-        id: timer
-        repeat: false
-        onTriggered: next()
-    }
+    signal done
 
     property var gap: true
     property var overlap: true
@@ -122,5 +79,45 @@ Item {
         if (task_data.length > 0)
             return task_data.shift()
         return []
+    }
+
+    anchors.fill: parent
+
+    Rectangle {
+        id: fixation
+
+        width: 30
+        height: 30
+	color: "transparent"
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+
+        Rectangle {
+            width: 30
+            height: 4
+            color: "white"
+            y: (parent.height - height) / 2
+        }
+
+        Rectangle {
+            width: 4
+            height: 30
+            color: "white"
+            x: (parent.width - width) / 2
+        }
+    }
+
+    Rectangle {
+        id: target
+        width: 30
+        height: 30
+        radius: width / 2
+        color: "white"
+    }
+
+    Timer {
+        id: timer
+        repeat: false
+        onTriggered: next()
     }
 }
