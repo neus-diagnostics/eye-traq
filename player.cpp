@@ -58,11 +58,16 @@ void Player::stop()
 void Player::step()
 {
 	const auto &item = items[index];
+	const QStringList &data = item.second;
+
 	if (item.second[0] == "test") {
-		const QStringList &data = item.second;
 		const QStringList &args = data.mid(2);
 		QMetaObject::invokeMethod(object, "run",
 				Q_ARG(QVariant, data[1]), Q_ARG(QVariant, args));
+	} else if (item.second[0] == "gaze") {
+		const QStringList &args = data.mid(4, 2);
+		QMetaObject::invokeMethod(object, "run",
+				Q_ARG(QVariant, data[0]), Q_ARG(QVariant, args));
 	}
 	index++;
 

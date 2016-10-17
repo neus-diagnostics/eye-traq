@@ -27,6 +27,9 @@ Window {
                 tasks.currentIndex = 3
                 saccade.item.run(args[0], args[1], args[2], args[3])
                 break;
+            case "gaze":
+                gaze.item.run(args[0], args[1], args[2])
+                break;
         }
         window.showFullScreen()
     }
@@ -77,6 +80,12 @@ Window {
         }
 
         Keys.onEscapePressed: abort()
+    }
+
+    Loader {
+        id: gaze
+        source: "gaze.qml"
+        //z: 1
     }
 
     // hide the cursor
