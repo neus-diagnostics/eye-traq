@@ -10,5 +10,6 @@
         <file>task/imgpair.qml</file>
         <file>task/pursuit.qml</file>
         <file>task/saccade.qml</file>
+        <file>task/showtxt.qml</file>
     </qresource>
 </RCC>

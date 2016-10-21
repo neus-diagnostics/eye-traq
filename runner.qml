@@ -27,6 +27,10 @@ Window {
                 tasks.currentIndex = 3
                 saccade.item.run(args[0], args[1], args[2], args[3])
                 break;
+            case "showtxt":
+                tasks.currentIndex = 4
+                showtxt.item.run(args[0], args[1])
+                break;
             case "gaze":
                 gaze.item.run(args[0], args[1], args[2])
                 break;
@@ -77,6 +81,12 @@ Window {
             id: saccade
             source: "task/saccade.qml"
             Connections { target: saccade.item; onDone: next() }
+        }
+
+        Loader {
+            id: showtxt
+            source: "task/showtxt.qml"
+            Connections { target: showtxt.item; onDone: next() }
         }
 
         Keys.onEscapePressed: abort()
