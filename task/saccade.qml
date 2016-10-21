@@ -58,10 +58,9 @@ Item {
             case 3:
                 fixation.visible = true
                 target.visible = false
-                timer.interval = 10000 - (start_time + 1000 + (gap ? 200 : 0))
+                timer.interval = 8000 - (start_time + 1000 + (gap ? 200 : 0))
                 break
             case 4:
-                console.log()
                 done()
                 return
         }
