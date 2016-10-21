@@ -8,13 +8,10 @@ Item {
     id: screen
 
     function run(x, y) {
-        var w = 30
-        var h = 30
-        x = Number(x) * Screen.width - w/2
-        y = Number(y) * Screen.height - h/2
-
         // create a point and destroy it after 500 ms
-        point.createObject(screen, {"width": w, "height": h, "x": x, "y": y}).destroy(500)
+        x = Number(x) * Screen.width
+        y = Number(y) * Screen.height
+        point.createObject(screen, {"x": x, "y": y}).destroy(500)
     }
 
     function abort() {
@@ -30,6 +27,8 @@ Item {
         id: point
 
         RadialGradient {
+            width: 40
+            height: 40
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "#2bb673" }
                 GradientStop { position: 0.5; color: "transparent" }
@@ -42,6 +41,12 @@ Item {
                 to: 0.0
                 easing.type: Easing.InCubic
                 running: true
+            }
+
+            Component.onCompleted: {
+                // center at coordinates specified when created
+                x -= width/2
+                y -= height/2
             }
         }
     }
