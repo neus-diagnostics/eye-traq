@@ -5,7 +5,65 @@ import QtQuick.Window 2.2
 
 Window {
     id: window
+
+    function init() {
+        plot.lines = []
+        plot.requestPaint()
+        report.visible = false
+        stimulus.x = Screen.width/2 - stimulus.width/2
+        stimulus.y = Screen.height/2 - stimulus.height/2
+        stimulus.scale = 1.0
+        stimulus.visible = true
+        window.showFullScreen()
+        pause.start()
+    }
+
+    function move(point) {
+        var screen_x = Screen.width*point.x
+        var screen_y = Screen.height*point.y
+        var dist_x = screen_x-stimulus.x
+        var dist_y = screen_y-stimulus.y
+        var dist = Math.sqrt(dist_x*dist_x + dist_y*dist_y)
+
+        grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
+        moveX.duration = dist
+        moveY.duration = dist
+        moveX.to = screen_x - stimulus.width/2
+        moveY.to = screen_y - stimulus.height/2
+
+        anim.start()
+    }
+
+    function addLine(from, to, color) {
+        from.x *= Screen.width
+        from.y *= Screen.height
+        to.x *= Screen.width
+        to.y *= Screen.height
+        plot.lines.push({'from': from, 'to': to, 'color': color})
+    }
+
+    function end(msg) {
+        status.text = msg
+        report.visible = true
+        stimulus.visible = false
+        plot.requestPaint()
+    }
+
+    function stop() {
+        window.hide()
+        if (pause.running)
+            pause.stop()
+        if (anim.running)
+            anim.pause()
+        calibrator.stop()
+    }
+
     title: qsTr("Calibration")
+
+    // QT BUG: force repaint after entering fullscreen
+    onActiveChanged: update()
+
+    onClosing: close.accepted = false
 
     Canvas {
         id: plot
@@ -99,61 +157,4 @@ Window {
             onClicked: calibrator.start()
         }
     }
-
-    function init() {
-        plot.lines = []
-        plot.requestPaint()
-        report.visible = false
-        stimulus.x = Screen.width/2 - stimulus.width/2
-        stimulus.y = Screen.height/2 - stimulus.height/2
-        stimulus.scale = 1.0
-        stimulus.visible = true
-        window.showFullScreen()
-        pause.start()
-    }
-
-    function move(point) {
-        var screen_x = Screen.width*point.x
-        var screen_y = Screen.height*point.y
-        var dist_x = screen_x-stimulus.x
-        var dist_y = screen_y-stimulus.y
-        var dist = Math.sqrt(dist_x*dist_x + dist_y*dist_y)
-
-        grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
-        moveX.duration = dist
-        moveY.duration = dist
-        moveX.to = screen_x - stimulus.width/2
-        moveY.to = screen_y - stimulus.height/2
-
-        anim.start()
-    }
-
-    function addLine(from, to, color) {
-        from.x *= Screen.width
-        from.y *= Screen.height
-        to.x *= Screen.width
-        to.y *= Screen.height
-        plot.lines.push({'from': from, 'to': to, 'color': color})
-    }
-
-    function end(msg) {
-        status.text = msg
-        report.visible = true
-        stimulus.visible = false
-        plot.requestPaint()
-    }
-
-    function stop() {
-        window.hide()
-        if (pause.running)
-            pause.stop()
-        if (anim.running)
-            anim.pause()
-        calibrator.stop()
-    }
-
-    // QT BUG: force repaint after entering fullscreen
-    onActiveChanged: update()
-
-    onClosing: close.accepted = false
 }
