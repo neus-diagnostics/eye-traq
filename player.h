@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QPair>
+#include <QElapsedTimer>
 #include <QObject>
 #include <QQmlEngine>
 #include <QString>
@@ -18,16 +19,18 @@ public:
 
 public slots:
 	void start(const QString &logfile);
-	void step();
+	void tick();
 	void stop();
 
 private:
 	QObject *object;
 
-	QTimer timer;
+	QElapsedTimer timer;
+	QTimer ticker;
 
-	QVector<QPair<qint64, QStringList>> items;
+	QVector<QPair<qint64, QStringList>> events;
 	int index;
+	qint64 start_time;
 };
 
 #endif
