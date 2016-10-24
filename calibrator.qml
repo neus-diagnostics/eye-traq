@@ -118,7 +118,7 @@ Window {
                 target: stimulus
                 property: "scale"
                 to: 0.25
-                duration: 500
+                duration: 1000
             }
             onStopped: calibrator.add_point()
         }
