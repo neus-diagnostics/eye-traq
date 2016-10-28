@@ -26,6 +26,36 @@ Browser::~Browser()
 	browser->stop();
 }
 
+bool Browser::command(const QString &what)
+{
+	if (eyetracker) {
+		try {
+			if (what == "start_calibration")
+				eyetracker->startCalibration();
+			else if (what == "stop_calibration")
+				eyetracker->stopCalibration();
+			else if (what == "compute_calibration")
+				eyetracker->computeCalibration();
+			else if (what == "start_tracking")
+				eyetracker->startTracking();
+			else if (what == "stop_tracking")
+				eyetracker->stopTracking();
+			return true;
+		} catch (...) {
+			qDebug() << "got exception when running" << what;
+		}
+	}
+	return false;
+}
+
+bool Browser::calibrate(const QPointF &point)
+{
+	if (!eyetracker)
+		return false;
+	eyetracker->addCalibrationPoint({point.x(), point.y()});
+	return true;
+}
+
 QVector<QList<QLineF>> Browser::get_calibration()
 {
 	QVector<QList<QLineF>> lines{{}, {}};

@@ -33,42 +33,35 @@ Calibrator::~Calibrator()
 
 void Calibrator::start()
 {
-	if (!browser.eyetracker)
-		return;
-	step = 0;
-	browser.eyetracker->startCalibration();
-	QMetaObject::invokeMethod(view, "init");
+	if (browser.command("start_calibration")) {
+		step = 0;
+		QMetaObject::invokeMethod(view, "init");
+	}
 }
 
 void Calibrator::add_point()
 {
 	static const QVector<QString> color{"red", "blue"};
 
-	if (step > 0) {
-		const auto &point = points[step-1];
-		browser.eyetracker->addCalibrationPoint(
-				tetio::Point2d{point.x(), point.y()});
-	}
+	if (step > 0)
+		browser.calibrate(points[step-1]);
+
 	if (step < points.size()) {
 		QMetaObject::invokeMethod(view, "move", Q_ARG(QVariant, points[step]));
 		step++;
 	} else {
 		QString msg{"Calibration successful."};
-		try {
-			browser.eyetracker->computeCalibration();
-
-			const auto calibration = browser.get_calibration();
-			for (int i = 0; i < calibration.size(); i++) {
-				const auto& eye = calibration[i];
-				for (const auto& line : eye) {
-					QMetaObject::invokeMethod(view, "addLine",
-						Q_ARG(QVariant, line.p1()),
-						Q_ARG(QVariant, line.p2()),
-						Q_ARG(QVariant, color[i]));
-				}
-			}
-		} catch (tetio::EyeTrackerException) {
+		if (!browser.command("compute_calibration"))
 			msg = "Calibration failed.";
+		const auto calibration = browser.get_calibration();
+		for (int i = 0; i < calibration.size(); i++) {
+			const auto& eye = calibration[i];
+			for (const auto& line : eye) {
+				QMetaObject::invokeMethod(view, "addLine",
+					Q_ARG(QVariant, line.p1()),
+					Q_ARG(QVariant, line.p2()),
+					Q_ARG(QVariant, color[i]));
+			}
 		}
 		QMetaObject::invokeMethod(view, "end", Q_ARG(QVariant, msg));
 		stop();
@@ -77,8 +70,5 @@ void Calibrator::add_point()
 
 void Calibrator::stop()
 {
-	try {
-		browser.eyetracker->stopCalibration();
-	} catch (...) {
-	}
+	browser.command("stop_calibration");
 }

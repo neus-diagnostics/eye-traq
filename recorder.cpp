@@ -88,14 +88,14 @@ void Recorder::start(const QString &testfile, const QString &participant)
 	connect(object, SIGNAL(next()), this, SLOT(step()));
 	connect(object, SIGNAL(abort()), this, SLOT(stop()));
 
-	browser.eyetracker->startTracking();
+	browser.command("start_tracking");
 
 	step();
 }
 
 void Recorder::stop()
 {
-	browser.eyetracker->stopTracking();
+	browser.command("stop_tracking");
 	QMetaObject::invokeMethod(object, "stop");
 	if (log) {
 		delete log;

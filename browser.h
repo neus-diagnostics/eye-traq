@@ -4,6 +4,7 @@
 #include <QLineF>
 #include <QList>
 #include <QObject>
+#include <QString>
 #include <QTimer>
 #include <QVector>
 
@@ -32,9 +33,9 @@ public:
 	Browser(MainLoop &main_loop);
 	virtual ~Browser();
 
+	bool command(const QString &what);
+	bool calibrate(const QPointF &point);
 	QVector<QList<QLineF>> get_calibration();
-
-	tetio::EyeTracker::pointer_t eyetracker;
 
 signals:
 	void browsed(BrowseEvent *event);
@@ -56,6 +57,7 @@ private:
 
 	tetio::EyeTrackerBrowser::pointer_t browser;
 	tetio::EyeTrackerFactory::pointer_t factory;
+	tetio::EyeTracker::pointer_t eyetracker;
 
 	QTimer connection_timer;
 };
