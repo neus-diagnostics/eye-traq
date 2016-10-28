@@ -5,11 +5,9 @@
 
 #include <tobii/sdk/cpp/EyeTrackerBrowserFactory.hpp>
 
-Browser::Browser(MainLoop &main_loop)
+Browser::Browser()
 	: QObject{},
-	  eyetracker{nullptr},
-	  main_loop{main_loop},
-	  browser{tetio::EyeTrackerBrowserFactory::createBrowser(main_loop.thread)}
+	  eyetracker{nullptr}
 {
 	connection_timer.setInterval(500);
 	connection_timer.setSingleShot(false);
@@ -17,6 +15,8 @@ Browser::Browser(MainLoop &main_loop)
 	connect(this, &Browser::browsed, this, &Browser::on_browsed, Qt::QueuedConnection);
 	connect(&connection_timer, &QTimer::timeout, this, &Browser::try_connect);
 
+	main_loop.start();
+	browser = tetio::EyeTrackerBrowserFactory::createBrowser(main_loop.thread);
 	browser->addEventListener(boost::bind(&Browser::handle_browse, this, _1, _2));
 	browser->start();
 }
@@ -24,6 +24,7 @@ Browser::Browser(MainLoop &main_loop)
 Browser::~Browser()
 {
 	browser->stop();
+	main_loop.quit();
 }
 
 bool Browser::command(const QString &what)

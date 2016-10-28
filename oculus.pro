@@ -12,14 +12,12 @@ SOURCES += \
 	browser.cpp \
 	calibrator.cpp \
 	main.cpp \
-	main_loop.cpp \
 	player.cpp \
 	recorder.cpp
 
 HEADERS += \
 	browser.h \
 	calibrator.h \
-	main_loop.h \
 	player.h \
 	recorder.h
 

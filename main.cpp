@@ -7,7 +7,6 @@ namespace tetio = tobii::sdk::cpp;
 
 #include "browser.h"
 #include "calibrator.h"
-#include "main_loop.h"
 #include "player.h"
 #include "recorder.h"
 
@@ -17,10 +16,7 @@ int main(int argc, char *argv[])
 	QApplication app{argc, argv};
 
 	tetio::Library::init();
-	MainLoop main_loop;
-	main_loop.start();
-
-	Browser browser{main_loop};
+	Browser browser;
 
 	QQmlEngine engine;
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
@@ -42,6 +38,4 @@ int main(int argc, char *argv[])
 	QObject::connect(&browser, &Browser::gazed, &recorder, &Recorder::gaze);
 
 	return app.exec();
-
-	main_loop.quit();
 }

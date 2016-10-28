@@ -5,6 +5,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QThread>
 #include <QTimer>
 #include <QVector>
 
@@ -13,9 +14,8 @@
 #include <tobii/sdk/cpp/EyeTrackerBrowser.hpp>
 #include <tobii/sdk/cpp/EyeTrackerFactory.hpp>
 #include <tobii/sdk/cpp/EyeTrackerInfo.hpp>
+#include <tobii/sdk/cpp/MainLoop.hpp>
 namespace tetio = tobii::sdk::cpp;
-
-#include "main_loop.h"
 
 struct BrowseEvent : QObject {
 	BrowseEvent(tetio::EyeTrackerBrowser::event_type_t type,
@@ -27,10 +27,20 @@ struct BrowseEvent : QObject {
 	tetio::EyeTrackerInfo::pointer_t info;
 };
 
+class MainLoop : public QThread {
+	Q_OBJECT
+public:
+	~MainLoop() { quit(); wait(); }
+	void run() { thread.run(); }
+	void quit() { thread.quit(); }
+
+        tetio::MainLoop thread;
+};
+
 class Browser : public QObject {
 	Q_OBJECT
 public:
-	Browser(MainLoop &main_loop);
+	Browser();
 	virtual ~Browser();
 
 	bool command(const QString &what);
@@ -53,7 +63,7 @@ private:
 	void handle_error(uint32_t error);
 	void handle_gaze(tetio::GazeDataItem::pointer_t gaze);
 
-	MainLoop &main_loop;
+	MainLoop main_loop;
 
 	tetio::EyeTrackerBrowser::pointer_t browser;
 	tetio::EyeTrackerFactory::pointer_t factory;
