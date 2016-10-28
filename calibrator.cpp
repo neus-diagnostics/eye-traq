@@ -42,6 +42,8 @@ void Calibrator::start()
 
 void Calibrator::add_point()
 {
+	static const QVector<QString> color{"red", "blue"};
+
 	if (step > 0) {
 		const auto &point = points[step-1];
 		browser.eyetracker->addCalibrationPoint(
@@ -54,23 +56,15 @@ void Calibrator::add_point()
 		QString msg{"Calibration successful."};
 		try {
 			browser.eyetracker->computeCalibration();
-			auto calib = browser.eyetracker->getCalibration();
-			auto data = calib->getPlotData();
-			for (size_t i = 0; i < data->size(); i++) {
-				tetio::CalibrationPlotItem p = data->at(i);
-				if (p.leftStatus == 1) {
-					QPointF from{p.truePosition.x, p.truePosition.y};
-					QPointF to{p.leftMapPosition.x, p.leftMapPosition.y};
+
+			const auto calibration = browser.get_calibration();
+			for (int i = 0; i < calibration.size(); i++) {
+				const auto& eye = calibration[i];
+				for (const auto& line : eye) {
 					QMetaObject::invokeMethod(view, "addLine",
-						Q_ARG(QVariant, from), Q_ARG(QVariant, to),
-						Q_ARG(QVariant, "red"));
-				}
-				if (p.rightStatus == 1) {
-					QPointF from{p.truePosition.x, p.truePosition.y};
-					QPointF to{p.rightMapPosition.x, p.rightMapPosition.y};
-					QMetaObject::invokeMethod(view, "addLine",
-						Q_ARG(QVariant, from), Q_ARG(QVariant, to),
-						Q_ARG(QVariant, "blue"));
+						Q_ARG(QVariant, line.p1()),
+						Q_ARG(QVariant, line.p2()),
+						Q_ARG(QVariant, color[i]));
 				}
 			}
 		} catch (tetio::EyeTrackerException) {

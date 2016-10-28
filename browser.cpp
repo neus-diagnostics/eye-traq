@@ -26,6 +26,23 @@ Browser::~Browser()
 	browser->stop();
 }
 
+QVector<QList<QLineF>> Browser::get_calibration()
+{
+	QVector<QList<QLineF>> lines{{}, {}};
+	const auto calibration = eyetracker->getCalibration()->getPlotData();
+	for (size_t i = 0; i < calibration->size(); i++) {
+		const auto& p = calibration->at(i);
+		const QPointF real{p.truePosition.x, p.truePosition.y};
+		if (p.leftStatus == 1)
+			lines[0].append({real,
+				{p.leftMapPosition.x, p.leftMapPosition.y}});
+		if (p.rightStatus == 1)
+			lines[1].append({real,
+				{p.rightMapPosition.x, p.rightMapPosition.y}});
+	}
+	return lines;
+}
+
 void Browser::try_connect()
 {
 	try {

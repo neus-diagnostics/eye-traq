@@ -1,8 +1,11 @@
 #ifndef BROWSER_H
 #define BROWSER_H
 
+#include <QLineF>
+#include <QList>
 #include <QObject>
 #include <QTimer>
+#include <QVector>
 
 #include <tobii/sdk/cpp/GazeDataItem.hpp>
 #include <tobii/sdk/cpp/EyeTracker.hpp>
@@ -28,6 +31,8 @@ class Browser : public QObject {
 public:
 	Browser(MainLoop &main_loop);
 	virtual ~Browser();
+
+	QVector<QList<QLineF>> get_calibration();
 
 	tetio::EyeTracker::pointer_t eyetracker;
 
