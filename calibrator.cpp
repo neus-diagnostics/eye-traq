@@ -14,8 +14,8 @@ static QVector<QPointF> points{
 	QPointF{0.1f, 0.9f},
 };
 
-Calibrator::Calibrator(QQmlEngine &engine, Browser &browser)
-	: QObject{}, engine{engine}, browser{browser}
+Calibrator::Calibrator(QQmlEngine &engine, Eyetracker &eyetracker)
+	: QObject{}, engine{engine}, eyetracker{eyetracker}
 {
 	QQmlComponent component(&engine, QUrl("qrc:/calibrator.qml"));
 	if (component.status() == QQmlComponent::Ready) {
@@ -33,7 +33,7 @@ Calibrator::~Calibrator()
 
 void Calibrator::start()
 {
-	if (browser.command("start_calibration")) {
+	if (eyetracker.command("start_calibration")) {
 		step = 0;
 		QMetaObject::invokeMethod(view, "init");
 	}
@@ -44,16 +44,16 @@ void Calibrator::add_point()
 	static const QVector<QString> color{"red", "blue"};
 
 	if (step > 0)
-		browser.calibrate(points[step-1]);
+		eyetracker.calibrate(points[step-1]);
 
 	if (step < points.size()) {
 		QMetaObject::invokeMethod(view, "move", Q_ARG(QVariant, points[step]));
 		step++;
 	} else {
 		QString msg{"Calibration successful."};
-		if (!browser.command("compute_calibration"))
+		if (!eyetracker.command("compute_calibration"))
 			msg = "Calibration failed.";
-		const auto calibration = browser.get_calibration();
+		const auto calibration = eyetracker.get_calibration();
 		for (int i = 0; i < calibration.size(); i++) {
 			const auto& eye = calibration[i];
 			for (const auto& line : eye) {
@@ -70,5 +70,5 @@ void Calibrator::add_point()
 
 void Calibrator::stop()
 {
-	browser.command("stop_calibration");
+	eyetracker.command("stop_calibration");
 }

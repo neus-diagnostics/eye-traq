@@ -1,5 +1,5 @@
-#ifndef BROWSER_H
-#define BROWSER_H
+#ifndef EYETRACKER_H
+#define EYETRACKER_H
 
 #include <QLineF>
 #include <QList>
@@ -37,11 +37,11 @@ public:
         tetio::MainLoop thread;
 };
 
-class Browser : public QObject {
+class Eyetracker : public QObject {
 	Q_OBJECT
 public:
-	Browser();
-	virtual ~Browser();
+	Eyetracker();
+	virtual ~Eyetracker();
 
 	bool command(const QString &what);
 	bool calibrate(const QPointF &point);
@@ -65,7 +65,7 @@ private:
 
 	MainLoop main_loop;
 
-	tetio::EyeTrackerBrowser::pointer_t browser;
+	tetio::EyeTrackerBrowser::pointer_t eyetracker;
 	tetio::EyeTrackerFactory::pointer_t factory;
 	tetio::EyeTracker::pointer_t tracker;
 

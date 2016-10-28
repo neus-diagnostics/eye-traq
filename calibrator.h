@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QQmlEngine>
 
-#include "browser.h"
+#include "eyetracker.h"
 
 class Calibrator : public QObject {
 	Q_OBJECT
 public:
-	Calibrator(QQmlEngine &engine, Browser &browser);
+	Calibrator(QQmlEngine &engine, Eyetracker &eyetracker);
 	~Calibrator();
 
 public slots:
@@ -20,7 +20,7 @@ public slots:
 private:
 	QObject *view;
 	QQmlEngine &engine;
-	Browser &browser;
+	Eyetracker &eyetracker;
 
 	int step;
 };

@@ -10,12 +10,12 @@
 #include <QStringList>
 #include <QQmlComponent>
 
-#include "browser.h"
+#include "eyetracker.h"
 
 class Recorder : public QQmlComponent {
 	Q_OBJECT
 public:
-	Recorder(QQmlEngine &engine, Browser &browser);
+	Recorder(QQmlEngine &engine, Eyetracker &eyetracker);
 	virtual ~Recorder();
 
 public slots:
@@ -25,7 +25,7 @@ public slots:
 	void gaze(const QString &left, const QString& right);
 
 private:
-	Browser &browser;
+	Eyetracker &eyetracker;
 
 	QObject *object;
 	QFile *log;

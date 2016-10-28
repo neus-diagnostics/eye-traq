@@ -9,14 +9,14 @@ LIBS += -ltetio -lboost_system -lboost_thread
 #QMAKE_CXXFLAGS += -g -ggdb
 
 SOURCES += \
-	browser.cpp \
+	eyetracker.cpp \
 	calibrator.cpp \
 	main.cpp \
 	player.cpp \
 	recorder.cpp
 
 HEADERS += \
-	browser.h \
+	eyetracker.h \
 	calibrator.h \
 	player.h \
 	recorder.h

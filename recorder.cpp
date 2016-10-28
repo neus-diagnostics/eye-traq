@@ -6,9 +6,9 @@
 #include <QProcess>
 #include <QQuickItem>
 
-Recorder::Recorder(QQmlEngine &engine, Browser &browser)
+Recorder::Recorder(QQmlEngine &engine, Eyetracker &eyetracker)
 	: QQmlComponent{&engine, QUrl{"qrc:/runner.qml"}},
-	  browser{browser},
+	  eyetracker{eyetracker},
 	  object{nullptr},
 	  log{nullptr}
 {
@@ -88,14 +88,14 @@ void Recorder::start(const QString &testfile, const QString &participant)
 	connect(object, SIGNAL(next()), this, SLOT(step()));
 	connect(object, SIGNAL(abort()), this, SLOT(stop()));
 
-	browser.command("start_tracking");
+	eyetracker.command("start_tracking");
 
 	step();
 }
 
 void Recorder::stop()
 {
-	browser.command("stop_tracking");
+	eyetracker.command("stop_tracking");
 	QMetaObject::invokeMethod(object, "stop");
 	if (log) {
 		delete log;
