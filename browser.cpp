@@ -7,7 +7,7 @@
 
 Browser::Browser()
 	: QObject{},
-	  eyetracker{nullptr}
+	  tracker{nullptr}
 {
 	connection_timer.setInterval(500);
 	connection_timer.setSingleShot(false);
@@ -29,18 +29,18 @@ Browser::~Browser()
 
 bool Browser::command(const QString &what)
 {
-	if (eyetracker) {
+	if (tracker) {
 		try {
 			if (what == "start_calibration")
-				eyetracker->startCalibration();
+				tracker->startCalibration();
 			else if (what == "stop_calibration")
-				eyetracker->stopCalibration();
+				tracker->stopCalibration();
 			else if (what == "compute_calibration")
-				eyetracker->computeCalibration();
+				tracker->computeCalibration();
 			else if (what == "start_tracking")
-				eyetracker->startTracking();
+				tracker->startTracking();
 			else if (what == "stop_tracking")
-				eyetracker->stopTracking();
+				tracker->stopTracking();
 			return true;
 		} catch (...) {
 			qDebug() << "got exception when running" << what;
@@ -51,16 +51,16 @@ bool Browser::command(const QString &what)
 
 bool Browser::calibrate(const QPointF &point)
 {
-	if (!eyetracker)
+	if (!tracker)
 		return false;
-	eyetracker->addCalibrationPoint({point.x(), point.y()});
+	tracker->addCalibrationPoint({point.x(), point.y()});
 	return true;
 }
 
 QVector<QList<QLineF>> Browser::get_calibration()
 {
 	QVector<QList<QLineF>> lines{{}, {}};
-	const auto calibration = eyetracker->getCalibration()->getPlotData();
+	const auto calibration = tracker->getCalibration()->getPlotData();
 	for (size_t i = 0; i < calibration->size(); i++) {
 		const auto& p = calibration->at(i);
 		const QPointF real{p.truePosition.x, p.truePosition.y};
@@ -77,12 +77,12 @@ QVector<QList<QLineF>> Browser::get_calibration()
 void Browser::try_connect()
 {
 	try {
-		eyetracker = factory->createEyeTracker(main_loop.thread);
+		tracker = factory->createEyeTracker(main_loop.thread);
 
-		eyetracker->addConnectionErrorListener(
-				boost::bind(&Browser::handle_error, this, _1));
-		eyetracker->addGazeDataReceivedListener(
-				boost::bind(&Browser::handle_gaze, this, _1));
+		tracker->addConnectionErrorListener(
+			boost::bind(&Browser::handle_error, this, _1));
+		tracker->addGazeDataReceivedListener(
+			boost::bind(&Browser::handle_gaze, this, _1));
 
 		connection_timer.stop();
 		factory = nullptr;
@@ -101,7 +101,7 @@ void Browser::handle_error(uint32_t error)
 {
 	qWarning() << "connection error:" << error;
 	emit disconnected();
-	eyetracker = nullptr;
+	tracker = nullptr;
 }
 
 void Browser::handle_gaze(tetio::GazeDataItem::pointer_t gaze)
@@ -147,7 +147,7 @@ void Browser::on_browsed(BrowseEvent *event)
 		break;
 	case tetio::EyeTrackerBrowser::event_type_t::TRACKER_REMOVED:
 		emit disconnected();
-		eyetracker = nullptr;
+		tracker = nullptr;
 		break;
 	}
 	delete event;

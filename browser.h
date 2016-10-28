@@ -67,7 +67,7 @@ private:
 
 	tetio::EyeTrackerBrowser::pointer_t browser;
 	tetio::EyeTrackerFactory::pointer_t factory;
-	tetio::EyeTracker::pointer_t eyetracker;
+	tetio::EyeTracker::pointer_t tracker;
 
 	QTimer connection_timer;
 };
