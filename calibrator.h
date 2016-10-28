@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QQmlEngine>
 
-#include <tobii/sdk/cpp/Calibration.hpp>
-namespace tetio = tobii::sdk::cpp;
-
 #include "browser.h"
 
 class Calibrator : public QObject {
@@ -21,8 +18,6 @@ public slots:
 	void stop();
 
 private:
-	void draw_lines(const tetio::Calibration::plot_data_vector_t &data);
-
 	QObject *view;
 	QQmlEngine &engine;
 	Browser &browser;

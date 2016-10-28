@@ -40,27 +40,6 @@ void Calibrator::start()
 	QMetaObject::invokeMethod(view, "init");
 }
 
-void Calibrator::draw_lines(const tetio::Calibration::plot_data_vector_t &data)
-{
-	for (size_t i = 0; i < data->size(); i++) {
-		tetio::CalibrationPlotItem p = data->at(i);
-		if (p.leftStatus == 1) {
-			QPointF from{p.truePosition.x, p.truePosition.y};
-			QPointF to{p.leftMapPosition.x, p.leftMapPosition.y};
-			QMetaObject::invokeMethod(view, "addLine",
-				Q_ARG(QVariant, from), Q_ARG(QVariant, to),
-				Q_ARG(QVariant, "red"));
-		}
-		if (p.rightStatus == 1) {
-			QPointF from{p.truePosition.x, p.truePosition.y};
-			QPointF to{p.rightMapPosition.x, p.rightMapPosition.y};
-			QMetaObject::invokeMethod(view, "addLine",
-				Q_ARG(QVariant, from), Q_ARG(QVariant, to),
-				Q_ARG(QVariant, "blue"));
-		}
-	}
-}
-
 void Calibrator::add_point()
 {
 	if (step > 0) {
@@ -77,7 +56,23 @@ void Calibrator::add_point()
 			browser.eyetracker->computeCalibration();
 			auto calib = browser.eyetracker->getCalibration();
 			auto data = calib->getPlotData();
-			draw_lines(data);
+			for (size_t i = 0; i < data->size(); i++) {
+				tetio::CalibrationPlotItem p = data->at(i);
+				if (p.leftStatus == 1) {
+					QPointF from{p.truePosition.x, p.truePosition.y};
+					QPointF to{p.leftMapPosition.x, p.leftMapPosition.y};
+					QMetaObject::invokeMethod(view, "addLine",
+						Q_ARG(QVariant, from), Q_ARG(QVariant, to),
+						Q_ARG(QVariant, "red"));
+				}
+				if (p.rightStatus == 1) {
+					QPointF from{p.truePosition.x, p.truePosition.y};
+					QPointF to{p.rightMapPosition.x, p.rightMapPosition.y};
+					QMetaObject::invokeMethod(view, "addLine",
+						Q_ARG(QVariant, from), Q_ARG(QVariant, to),
+						Q_ARG(QVariant, "blue"));
+				}
+			}
 		} catch (tetio::EyeTrackerException) {
 			msg = "Calibration failed.";
 		}
