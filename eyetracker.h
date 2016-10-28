@@ -5,9 +5,11 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QVector>
+
+#ifdef USE_TOBII
 #include <QThread>
 #include <QTimer>
-#include <QVector>
 
 #include <tobii/sdk/cpp/GazeDataItem.hpp>
 #include <tobii/sdk/cpp/EyeTracker.hpp>
@@ -36,6 +38,7 @@ public:
 
         tetio::MainLoop thread;
 };
+#endif
 
 class Eyetracker : public QObject {
 	Q_OBJECT
@@ -48,10 +51,12 @@ public:
 	QVector<QList<QLineF>> get_calibration();
 
 signals:
-	void browsed(BrowseEvent *event);
 	void connected();
 	void disconnected();
 	void gazed(const QString &left, const QString &right);
+
+#ifdef USE_TOBII
+	void browsed(BrowseEvent *event);
 
 private slots:
 	void on_browsed(BrowseEvent *event);
@@ -65,11 +70,12 @@ private:
 
 	MainLoop main_loop;
 
-	tetio::EyeTrackerBrowser::pointer_t eyetracker;
+	tetio::EyeTrackerBrowser::pointer_t browser;
 	tetio::EyeTrackerFactory::pointer_t factory;
 	tetio::EyeTracker::pointer_t tracker;
 
 	QTimer connection_timer;
+#endif
 };
 
 #endif

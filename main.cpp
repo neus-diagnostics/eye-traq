@@ -2,8 +2,10 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 
+#ifdef USE_TOBII
 #include <tobii/sdk/cpp/Library.hpp>
 namespace tetio = tobii::sdk::cpp;
+#endif
 
 #include "eyetracker.h"
 #include "calibrator.h"
@@ -15,7 +17,9 @@ int main(int argc, char *argv[])
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
 
+#ifdef USE_TOBII
 	tetio::Library::init();
+#endif
 	Eyetracker eyetracker;
 
 	QQmlEngine engine;

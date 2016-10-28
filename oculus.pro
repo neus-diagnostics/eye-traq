@@ -2,11 +2,14 @@ QT += qml quick widgets
 
 CONFIG += c++11
 
-INCLUDEPATH += $$PWD/3rdparty/include
-LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
-LIBS += -ltetio -lboost_system -lboost_thread
-
 #QMAKE_CXXFLAGS += -g -ggdb
+
+exists($$PWD/3rdparty/lib/libtetio.so) {
+	DEFINES += USE_TOBII
+	INCLUDEPATH += $$PWD/3rdparty/include
+	LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
+	LIBS += -ltetio -lboost_system -lboost_thread
+}
 
 SOURCES += \
 	eyetracker.cpp \

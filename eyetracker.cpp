@@ -3,12 +3,15 @@
 #include <QTextStream>
 #include <QtDebug>
 
+#ifdef USE_TOBII
 #include <tobii/sdk/cpp/EyeTrackerBrowserFactory.hpp>
+#endif
 
 Eyetracker::Eyetracker()
-	: QObject{},
-	  tracker{nullptr}
+	: QObject{}
 {
+#ifdef USE_TOBII
+	tracker = nullptr;
 	connection_timer.setInterval(500);
 	connection_timer.setSingleShot(false);
 
@@ -16,50 +19,58 @@ Eyetracker::Eyetracker()
 	connect(&connection_timer, &QTimer::timeout, this, &Eyetracker::try_connect);
 
 	main_loop.start();
-	eyetracker = tetio::EyeTrackerBrowserFactory::createBrowser(main_loop.thread);
-	eyetracker->addEventListener(boost::bind(&Eyetracker::handle_browse, this, _1, _2));
-	eyetracker->start();
+	browser = tetio::EyeTrackerBrowserFactory::createBrowser(main_loop.thread);
+	browser->addEventListener(boost::bind(&Eyetracker::handle_browse, this, _1, _2));
+	browser->start();
+#endif
 }
 
 Eyetracker::~Eyetracker()
 {
-	eyetracker->stop();
+#ifdef USE_TOBII
+	browser->stop();
 	main_loop.quit();
+#endif
 }
 
 bool Eyetracker::command(const QString &what)
 {
-	if (tracker) {
-		try {
-			if (what == "start_calibration")
-				tracker->startCalibration();
-			else if (what == "stop_calibration")
-				tracker->stopCalibration();
-			else if (what == "compute_calibration")
-				tracker->computeCalibration();
-			else if (what == "start_tracking")
-				tracker->startTracking();
-			else if (what == "stop_tracking")
-				tracker->stopTracking();
-			return true;
-		} catch (...) {
-			qDebug() << "got exception when running" << what;
-		}
+#ifdef USE_TOBII
+	if (!tracker)
+		return false;
+	try {
+		if (what == "start_calibration")
+			tracker->startCalibration();
+		else if (what == "stop_calibration")
+			tracker->stopCalibration();
+		else if (what == "compute_calibration")
+			tracker->computeCalibration();
+		else if (what == "start_tracking")
+			tracker->startTracking();
+		else if (what == "stop_tracking")
+			tracker->stopTracking();
+	} catch (...) {
+		qDebug() << "got exception when running" << what;
+		return false;
 	}
-	return false;
+#endif
+	return true;
 }
 
 bool Eyetracker::calibrate(const QPointF &point)
 {
+#ifdef USE_TOBII
 	if (!tracker)
 		return false;
 	tracker->addCalibrationPoint({point.x(), point.y()});
+#endif
 	return true;
 }
 
 QVector<QList<QLineF>> Eyetracker::get_calibration()
 {
 	QVector<QList<QLineF>> lines{{}, {}};
+#ifdef USE_TOBII
 	const auto calibration = tracker->getCalibration()->getPlotData();
 	for (size_t i = 0; i < calibration->size(); i++) {
 		const auto& p = calibration->at(i);
@@ -71,9 +82,11 @@ QVector<QList<QLineF>> Eyetracker::get_calibration()
 			lines[1].append({real,
 				{p.rightMapPosition.x, p.rightMapPosition.y}});
 	}
+#endif
 	return lines;
 }
 
+#ifdef USE_TOBII
 void Eyetracker::try_connect()
 {
 	try {
@@ -152,3 +165,4 @@ void Eyetracker::on_browsed(BrowseEvent *event)
 	}
 	delete event;
 }
+#endif
