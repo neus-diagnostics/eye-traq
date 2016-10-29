@@ -3,6 +3,8 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 
+import "Task"
+
 Window {
     id: window
 
@@ -13,26 +15,26 @@ Window {
         switch (name) {
             case "blank":
                 tasks.currentIndex = 0
-                blank.item.run(args[0])
+                blank.run(args[0])
                 break;
             case "imgpair":
                 tasks.currentIndex = 1
-                imgpair.item.run(args[0], args[1], args[2])
+                imgpair.run(args[0], args[1], args[2])
                 break;
             case "pursuit":
                 tasks.currentIndex = 2
-                pursuit.item.run(args[0], args[1], args[2], args[3])
+                pursuit.run(args[0], args[1], args[2], args[3])
                 break;
             case "saccade":
                 tasks.currentIndex = 3
-                saccade.item.run(args[0], args[1], args[2], args[3])
+                saccade.run(args[0], args[1], args[2], args[3])
                 break;
             case "showtxt":
                 tasks.currentIndex = 4
-                showtxt.item.run(args[0], args[1])
+                showtxt.run(args[0], args[1])
                 break;
             case "gaze":
-                gaze.item.run(args[0], args[1], args[2])
+                gaze.run(args[0], args[1], args[2])
                 break;
         }
         window.showFullScreen()
@@ -40,11 +42,11 @@ Window {
 
     function stop() {
         window.hide()
-        tasks.children[tasks.currentIndex].item.abort()
+        tasks.children[tasks.currentIndex].abort()
     }
 
     function get_data() {
-        return tasks.children[tasks.currentIndex].item.get_data()
+        return tasks.children[tasks.currentIndex].get_data()
     }
 
     color: "black"
@@ -59,42 +61,26 @@ Window {
         anchors.fill: parent
         focus: true
 
-        Loader {
-            id: blank
-            source: "task/blank.qml"
-            Connections { target: blank.item; onDone: next() }
-        }
+	Blank { id: blank; onDone: next() }
 
-        Loader {
-            id: imgpair
-            source: "task/imgpair.qml"
-            Connections { target: imgpair.item; onDone: next() }
-        }
+        ImgPair { id: imgpair; onDone: next() }
 
-        Loader {
-            id: pursuit
-            source: "task/pursuit.qml"
-            Connections { target: pursuit.item; onDone: next() }
-        }
+        Pursuit { id: pursuit; onDone: next() }
 
-        Loader {
-            id: saccade
-            source: "task/saccade.qml"
-            Connections { target: saccade.item; onDone: next() }
-        }
+        Saccade { id: saccade; onDone: next() }
 
-        Loader {
-            id: showtxt
-            source: "task/showtxt.qml"
-            Connections { target: showtxt.item; onDone: next() }
-        }
+        ShowTxt { id: showtxt; onDone: next() }
 
         Keys.onEscapePressed: abort()
+        Keys.onSpacePressed: {
+            children[currentIndex].pause()
+            //children[currentIndex].abort()
+            //next()
+        }
     }
 
-    Loader {
+    Gaze {
         id: gaze
-        source: "gaze.qml"
         //z: 1
     }
 

@@ -1,16 +1,16 @@
 <RCC>
     <qresource prefix="/">
+        <file>main.qml</file>
         <file>Start.qml</file>
         <file>calibrator.qml</file>
-        <file>main.qml</file>
         <file>runner.qml</file>
+        <file>Gaze.qml</file>
+        <file>Task/Blank.qml</file>
+        <file>Task/ImgPair.qml</file>
+        <file>Task/Pursuit.qml</file>
+        <file>Task/Saccade.qml</file>
+        <file>Task/ShowTxt.qml</file>
         <file>images/a.svg</file>
         <file>images/b.svg</file>
-        <file>gaze.qml</file>
-        <file>task/blank.qml</file>
-        <file>task/imgpair.qml</file>
-        <file>task/pursuit.qml</file>
-        <file>task/saccade.qml</file>
-        <file>task/showtxt.qml</file>
     </qresource>
 </RCC>
