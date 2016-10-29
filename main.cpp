@@ -26,9 +26,7 @@ int main(int argc, char *argv[])
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 
 	QQmlComponent main_window{&engine, QUrl{"qrc:/main.qml"}};
-	QObject *main_window_object = main_window.create();
-	QObject::connect(&eyetracker, SIGNAL(connected()), main_window_object, SLOT(enable()));
-	QObject::connect(&eyetracker, SIGNAL(disconnected()), main_window_object, SLOT(disable()));
+	main_window.create();
 
 	Calibrator calibrator{engine, eyetracker};
 	engine.rootContext()->setContextProperty("calibrator", &calibrator);

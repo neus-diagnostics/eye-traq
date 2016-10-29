@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>Start.qml</file>
         <file>calibrator.qml</file>
         <file>main.qml</file>
         <file>runner.qml</file>
