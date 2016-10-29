@@ -13,14 +13,12 @@ exists($$PWD/3rdparty/lib/libtetio.so) {
 
 SOURCES += \
 	eyetracker.cpp \
-	calibrator.cpp \
 	main.cpp \
 	player.cpp \
 	recorder.cpp
 
 HEADERS += \
 	eyetracker.h \
-	calibrator.h \
 	player.h \
 	recorder.h
 

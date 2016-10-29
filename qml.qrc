@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Start.qml</file>
-        <file>calibrator.qml</file>
+        <file>Calibrator.qml</file>
         <file>runner.qml</file>
         <file>Gaze.qml</file>
         <file>Task/Blank.qml</file>

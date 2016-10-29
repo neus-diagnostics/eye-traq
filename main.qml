@@ -22,9 +22,17 @@ ApplicationWindow {
     StackView {
         id: stack
         anchors.fill: parent
-        anchors.margins: 10
-        initialItem: start
+        initialItem: Start {
+            onCalibrate: {
+                stack.push(calibrator);
+                calibrator.init();
+            }
+        }
     }
 
-    Start { id: start }
+    Calibrator {
+        id: calibrator
+        visible: false
+        onDone: stack.pop()
+    }
 }

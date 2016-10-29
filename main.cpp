@@ -8,7 +8,6 @@ namespace tetio = tobii::sdk::cpp;
 #endif
 
 #include "eyetracker.h"
-#include "calibrator.h"
 #include "player.h"
 #include "recorder.h"
 
@@ -23,13 +22,10 @@ int main(int argc, char *argv[])
 	Eyetracker eyetracker;
 
 	QQmlEngine engine;
-	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
+	engine.rootContext()->setContextProperty("eyetracker", &eyetracker);
 
 	QQmlComponent main_window{&engine, QUrl{"qrc:/main.qml"}};
 	main_window.create();
-
-	Calibrator calibrator{engine, eyetracker};
-	engine.rootContext()->setContextProperty("calibrator", &calibrator);
 
 	Recorder recorder{engine, eyetracker};
 	engine.rootContext()->setContextProperty("recorder", &recorder);
@@ -37,6 +33,7 @@ int main(int argc, char *argv[])
 	Player player{engine};
 	engine.rootContext()->setContextProperty("player", &player);
 
+	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
 
 	return app.exec();

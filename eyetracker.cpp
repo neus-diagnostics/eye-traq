@@ -1,6 +1,7 @@
 #include "eyetracker.h"
 
 #include <QTextStream>
+#include <QVector4D>
 #include <QtDebug>
 
 #ifdef USE_TOBII
@@ -67,20 +68,22 @@ bool Eyetracker::calibrate(const QPointF &point)
 	return true;
 }
 
-QVector<QList<QLineF>> Eyetracker::get_calibration()
+QList<QVariant> Eyetracker::get_calibration()
 {
-	QVector<QList<QLineF>> lines{{}, {}};
+	QList<QVariant> lines;
 #ifdef USE_TOBII
 	const auto calibration = tracker->getCalibration()->getPlotData();
 	for (size_t i = 0; i < calibration->size(); i++) {
 		const auto& p = calibration->at(i);
 		const QPointF real{p.truePosition.x, p.truePosition.y};
 		if (p.leftStatus == 1)
-			lines[0].append({real,
-				{p.leftMapPosition.x, p.leftMapPosition.y}});
+			lines.push_back(QVector4D{
+				p.truePosition.x, p.truePosition.y,
+				p.leftMapPosition.x, p.leftMapPosition.y});
 		if (p.rightStatus == 1)
-			lines[1].append({real,
-				{p.rightMapPosition.x, p.rightMapPosition.y}});
+			lines.push_back(QVector4D{
+				p.truePosition.x, p.truePosition.y,
+				p.rightMapPosition.x, p.rightMapPosition.y});
 	}
 #endif
 	return lines;

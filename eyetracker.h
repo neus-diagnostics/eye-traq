@@ -5,7 +5,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
-#include <QVector>
+#include <QVariant>
 
 #ifdef USE_TOBII
 #include <QThread>
@@ -46,9 +46,10 @@ public:
 	Eyetracker();
 	virtual ~Eyetracker();
 
+public slots:
 	bool command(const QString &what);
 	bool calibrate(const QPointF &point);
-	QVector<QList<QLineF>> get_calibration();
+	QList<QVariant> get_calibration();
 
 signals:
 	void connected();

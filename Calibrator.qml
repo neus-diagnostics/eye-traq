@@ -3,8 +3,18 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 
-Window {
-    id: window
+Rectangle {
+    signal done
+
+    property var points: [
+        Qt.point(0.1, 0.1),
+        Qt.point(0.9, 0.1),
+        Qt.point(0.5, 0.5),
+        Qt.point(0.9, 0.9),
+        Qt.point(0.1, 0.9)
+    ]
+    property var colors: ["red", "blue"]
+    property var step: 0
 
     function init() {
         plot.lines = []
@@ -14,7 +24,8 @@ Window {
         stimulus.y = Screen.height/2 - stimulus.height/2
         stimulus.scale = 1.0
         stimulus.visible = true
-        window.showFullScreen()
+
+        step = 0
         pause.start()
     }
 
@@ -34,6 +45,26 @@ Window {
         anim.start()
     }
 
+    function addPoint() {
+        if (step > 0)
+            eyetracker.calibrate(points[step-1]);
+        if (step < points.length) {
+            move(points[step]);
+            step++;
+        } else {
+            var msg = "Calibration successful.";
+            if (!eyetracker.command("compute_calibration"))
+                msg = "Calibration failed.";
+            var calibration = eyetracker.get_calibration();
+            for (var i = 0; i < calibration.length; i++) {
+                var line = calibration[i];
+                addLine(Qt.point(line.x, line.y), Qt.point(line.z, line.w), colors[i]);
+            }
+            eyetracker.command("stop_calibration")
+            end(msg);
+        }
+    }
+
     function addLine(from, to, color) {
         from.x *= Screen.width
         from.y *= Screen.height
@@ -50,20 +81,14 @@ Window {
     }
 
     function stop() {
-        window.hide()
         if (pause.running)
             pause.stop()
         if (anim.running)
             anim.pause()
-        calibrator.stop()
+        eyetracker.command("stop_calibration")
     }
 
-    title: qsTr("Calibration")
-
-    // QT BUG: force repaint after entering fullscreen
-    onActiveChanged: update()
-
-    onClosing: close.accepted = false
+    color: "#6e6e6e"
 
     Canvas {
         id: plot
@@ -72,8 +97,7 @@ Window {
 
         onPaint: {
             var ctx = getContext("2d")
-            ctx.fillStyle = "#6e6e6e"
-            ctx.fillRect(0, 0, width, height)
+            ctx.clearRect(0, 0, width, height)
 
             ctx.lineWidth = 1;
             for (var i = 0; i < lines.length; i++) {
@@ -120,14 +144,14 @@ Window {
                 to: 0.25
                 duration: 1000
             }
-            onStopped: calibrator.add_point()
+            onStopped: addPoint()
         }
     }
 
     Timer {
         id: pause
         interval: 1000
-        onTriggered: calibrator.add_point()
+        onTriggered: addPoint()
     }
 
     GridLayout {
@@ -148,13 +172,13 @@ Window {
             Layout.row: 1
             Layout.column: 0
             text: qsTr("OK")
-            onClicked: window.hide()
+            onClicked: done()
         }
         Button {
             Layout.row: 1
             Layout.column: 1
             text: qsTr("Try again")
-            onClicked: calibrator.start()
+            onClicked: init()
         }
     }
 }

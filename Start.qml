@@ -4,9 +4,9 @@ import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.0
 
 ColumnLayout {
-    anchors.fill: parent
-    anchors.margins: 10
+    signal calibrate
 
+    anchors.margins: 10
     GridLayout {
         // ID input
         Label {
@@ -61,10 +61,9 @@ ColumnLayout {
     // calibrate
     RowLayout {
         Button {
-            id: calibrate
             text: qsTr("Calibrate")
             Layout.fillWidth: true
-            onClicked: calibrator.start()
+            onClicked: calibrate()
         }
     }
 
