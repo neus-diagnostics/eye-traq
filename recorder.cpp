@@ -5,9 +5,10 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QQuickItem>
+#include <QUrl>
 
 Recorder::Recorder(QQmlEngine &engine, Eyetracker &eyetracker)
-	: QQmlComponent{&engine, QUrl{"qrc:/runner.qml"}},
+	: QQmlComponent{&engine, QUrl{"qrc:/Runner.qml"}},
 	  eyetracker{eyetracker},
 	  object{nullptr},
 	  log{nullptr}

@@ -1,10 +1,11 @@
 #include "player.h"
 
 #include <QFile>
+#include <QUrl>
 #include <QtDebug>
 
 Player::Player(QQmlEngine &engine)
-	: QQmlComponent{&engine, QUrl{"qrc:/runner.qml"}},
+	: QQmlComponent{&engine, QUrl{"qrc:/Runner.qml"}},
 	  object{nullptr}
 {
 	if (!isReady())

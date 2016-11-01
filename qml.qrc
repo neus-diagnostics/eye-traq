@@ -3,7 +3,7 @@
         <file>main.qml</file>
         <file>Start.qml</file>
         <file>Calibrator.qml</file>
-        <file>runner.qml</file>
+        <file>Runner.qml</file>
         <file>Gaze.qml</file>
         <file>Task/Blank.qml</file>
         <file>Task/ImgPair.qml</file>
