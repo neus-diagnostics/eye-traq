@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QtDebug>
 
 #ifdef USE_TOBII
 #include <tobii/sdk/cpp/Library.hpp>
@@ -24,14 +25,19 @@ int main(int argc, char *argv[])
 	QQmlEngine engine;
 	engine.rootContext()->setContextProperty("eyetracker", &eyetracker);
 
-	QQmlComponent main_window{&engine, QUrl{"qrc:/main.qml"}};
-	main_window.create();
-
 	Recorder recorder{engine, eyetracker};
 	engine.rootContext()->setContextProperty("recorder", &recorder);
 
 	Player player{engine};
 	engine.rootContext()->setContextProperty("player", &player);
+
+	QQmlComponent main_window{&engine, QUrl{"qrc:/main.qml"}};
+	if (main_window.status() == QQmlComponent::Ready) {
+		main_window.create();
+	} else {
+		for (const auto &e : main_window.errors())
+			qWarning() << e;
+	}
 
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
