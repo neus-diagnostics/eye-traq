@@ -6,8 +6,6 @@ import QtQuick.Window 2.2
 import "Task"
 
 Window {
-    id: window
-
     signal next
     signal abort
 
@@ -37,11 +35,11 @@ Window {
                 gaze.run(args[0], args[1], args[2])
                 break;
         }
-        window.showFullScreen()
+        visibility = Window.FullScreen
     }
 
     function stop() {
-        window.hide()
+        visibility = Window.Hidden
         tasks.children[tasks.currentIndex].abort()
     }
 
@@ -61,27 +59,17 @@ Window {
         anchors.fill: parent
         focus: true
 
-	Blank { id: blank; onDone: next() }
-
+        Blank { id: blank; onDone: next() }
         ImgPair { id: imgpair; onDone: next() }
-
         Pursuit { id: pursuit; onDone: next() }
-
         Saccade { id: saccade; onDone: next() }
-
         ShowTxt { id: showtxt; onDone: next() }
 
         Keys.onEscapePressed: abort()
-        Keys.onSpacePressed: {
-            children[currentIndex].pause()
-            //children[currentIndex].abort()
-            //next()
-        }
     }
 
     Gaze {
         id: gaze
-        //z: 1
     }
 
     // hide the cursor

@@ -32,10 +32,10 @@ Item {
         task_data = []
         step = 0
 
-        next()
+        run_step()
     }
 
-    function next() {
+    function run_step() {
         switch (step) {
             case 0:
                 target.visible = false
@@ -82,12 +82,12 @@ Item {
 
     anchors.fill: parent
 
-    Rectangle {
+    Item {
         id: fixation
 
         width: 30
         height: 30
-	color: "transparent"
+
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
 
@@ -117,6 +117,6 @@ Item {
     Timer {
         id: timer
         repeat: false
-        onTriggered: next()
+        onTriggered: run_step()
     }
 }
