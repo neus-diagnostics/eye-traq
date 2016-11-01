@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 
-Rectangle {
+Window {
     signal done
 
     property var points: [
@@ -25,6 +25,7 @@ Rectangle {
         stimulus.scale = 1.0
         stimulus.visible = true
 
+        visibility = Window.FullScreen
         step = 0
         pause.start()
     }
@@ -81,6 +82,7 @@ Rectangle {
     }
 
     function stop() {
+        visibility = Window.Hidden
         if (pause.running)
             pause.stop()
         if (anim.running)
@@ -90,15 +92,18 @@ Rectangle {
 
     color: "#6e6e6e"
 
+    // QT BUG: force repaint after entering fullscreen
+    onActiveChanged: update()
+
     Canvas {
         id: plot
+        property var lines: []
+
         anchors.fill: parent
         focus: true
-
         onPaint: {
             var ctx = getContext("2d")
             ctx.clearRect(0, 0, width, height)
-
             ctx.lineWidth = 1;
             for (var i = 0; i < lines.length; i++) {
                 ctx.strokeStyle = lines[i]["color"]
@@ -111,7 +116,6 @@ Rectangle {
         }
 
         Keys.onEscapePressed: stop()
-        property var lines: []
     }
 
     Rectangle {
