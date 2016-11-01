@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.0
 
 ColumnLayout {
     signal calibrate
+    signal play(string logFile)
+    signal record(string testFile, string participant)
 
     anchors.margins: 10
     GridLayout {
@@ -84,12 +86,11 @@ ColumnLayout {
             onClicked: testFileDialog.open()
         }
         Button {
-            id: record
             text: qsTr("Record")
             onClicked: {
                 if (participant.text == '')
                     random.clicked()
-                recorder.start(testFile.text, participant.text)
+                record(testFile.text, participant.text)
             }
         }
     }
@@ -113,7 +114,7 @@ ColumnLayout {
         }
         Button {
             text: qsTr("Play")
-            onClicked: player.start(logFile.text)
+            onClicked: play(logFile.text)
         }
     }
 }

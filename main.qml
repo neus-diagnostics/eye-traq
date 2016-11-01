@@ -23,16 +23,13 @@ ApplicationWindow {
         id: stack
         anchors.fill: parent
         initialItem: Start {
-            onCalibrate: {
-                stack.push(calibrator);
-                calibrator.init();
-            }
+            onCalibrate: calibrator.init()
+            onRecord: recorder.start(testFile, participant)
+            onPlay: player.start(logFile)
         }
     }
 
     Calibrator {
         id: calibrator
-        visible: false
-        onDone: stack.pop()
     }
 }
