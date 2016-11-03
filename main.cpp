@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 			qWarning() << e;
 		return 1;
 	}
+	experimenter_view.showFullScreen();
 
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
