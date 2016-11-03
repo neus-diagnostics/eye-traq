@@ -6,9 +6,6 @@ Item {
     width: Screen.width
     height: Screen.height
 
-    FontLoader { source: "fonts/lato-regular.ttf" }
-    FontLoader { source: "fonts/lato-bold.ttf" }
-
     StackView {
         id: stack
 

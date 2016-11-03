@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QFontDatabase>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QQmlEngine>
@@ -17,6 +18,10 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
+
+	if (QFontDatabase::addApplicationFont(":/fonts/lato-regular.ttf") == -1 ||
+	    QFontDatabase::addApplicationFont(":/fonts/lato-bold.ttf") == -1)
+		qWarning() << "Could not load fonts.";
 
 #ifdef USE_TOBII
 	tetio::Library::init();
