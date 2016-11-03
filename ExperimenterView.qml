@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Window 2.2
 
 Window {
-    title: qsTr("Eyetracker")
+    title: qsTr("Neus")
 
     // TODO figure out how to keep window in fullscreen properly
     flags: Qt.FramelessWindowHint

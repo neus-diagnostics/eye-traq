@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>ExperimenterView.qml</file>
         <file>Start.qml</file>
         <file>Options.qml</file>
         <file>Calibrator.qml</file>

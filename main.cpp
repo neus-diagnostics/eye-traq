@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	Player player{engine};
 	engine.rootContext()->setContextProperty("player", &player);
 
-	QQmlComponent main_window{&engine, QUrl{"qrc:/main.qml"}};
+	QQmlComponent main_window{&engine, QUrl{"qrc:/ExperimenterView.qml"}};
 	if (main_window.status() == QQmlComponent::Ready) {
 		main_window.create();
 	} else {
