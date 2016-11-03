@@ -43,7 +43,7 @@ Window {
         moveX.to = screen_x - stimulus.width/2
         moveY.to = screen_y - stimulus.height/2
 
-        anim.start()
+        anim.restart()
     }
 
     function addPoint() {
