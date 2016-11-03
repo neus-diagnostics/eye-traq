@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Start.qml</file>
+        <file>Options.qml</file>
         <file>Calibrator.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
@@ -10,6 +11,9 @@
         <file>Task/Pursuit.qml</file>
         <file>Task/Saccade.qml</file>
         <file>Task/ShowTxt.qml</file>
+        <file>controls/Button.qml</file>
+        <file>fonts/lato-bold.ttf</file>
+        <file>fonts/lato-regular.ttf</file>
         <file>images/a.svg</file>
         <file>images/b.svg</file>
     </qresource>

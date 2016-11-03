@@ -3,118 +3,71 @@ import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.0
 
-ColumnLayout {
+import "controls" as Neus
+
+Row {
+    signal options
     signal calibrate
-    signal play(string logFile)
-    signal record(string testFile, string participant)
+    signal test
 
-    anchors.margins: 10
-    GridLayout {
-        // ID input
-        Label {
-            text: qsTr("ID")
-            Layout.column: 0
-        }
-        TextField {
-            id: participant
-            selectByMouse: true
-            Layout.row: 0
-            Layout.column: 1
-            Layout.fillWidth: true
-        }
-        Button {
-            id: random
-            text: qsTr("Random")
-            Layout.row: 0
-            Layout.column: 2
-            onClicked: participant.text = random_id()
-        }
+    Rectangle {
+        height: parent.height
+        width: parent.width / 2
+        color: "#ece6da"
 
-        // name input
-        Label {
-            text: qsTr("Name")
-            Layout.row: 1
-            Layout.column: 0
-        }
-        TextField {
-            id: name
-            selectByMouse: true
-            Layout.row: 1
-            Layout.column: 1
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        // age input
-        Label {
-            text: qsTr("Age")
-            Layout.row: 2
-            Layout.column: 0
-        }
-        SpinBox {
-            id: age
-            value: 0
-            editable: true
-            Layout.row: 2
-            Layout.column: 1
-        }
-    }
-
-    // calibrate
-    RowLayout {
-        Button {
-            text: qsTr("Calibrate")
-            Layout.fillWidth: true
-            onClicked: calibrate()
-        }
-    }
-
-    // record
-    RowLayout {
-        FileDialog {
-            id: testFileDialog
-            title: "Load test"
-            onAccepted: testFile.text = testFileDialog.fileUrl
-        }
-        TextField {
-            id: testFile
-            selectByMouse: true
-            Layout.fillWidth: true
-        }
-        Button {
-            text: qsTr("…")
-            onClicked: testFileDialog.open()
-        }
-        Button {
-            text: qsTr("Record")
-            onClicked: {
-                if (participant.text == '')
-                    random.clicked()
-                record(testFile.text, participant.text)
+        Image {
+            source: "images/neus.png"
+            anchors {
+                verticalCenter: parent.verticalCenter
+                right: parent.right;
+                rightMargin: parent.width / 6
             }
+            fillMode: Image.PreserveAspectFit
+            width: parent.width / 2
         }
     }
 
-    // play
-    RowLayout {
-        FileDialog {
-            id: logFileDialog
-            title: "Load recording"
-            onAccepted: logFile.text = logFileDialog.fileUrl
-        }
-        TextField {
-            id: logFile
-            text: 'file:///home/timotej/src/oculus/build/data/20161015-181121-73/20161015-181121-test1.log'
-            selectByMouse: true
-            Layout.fillWidth: true
-        }
-        Button {
-            text: qsTr("…")
-            onClicked: logFileDialog.open()
-        }
-        Button {
-            text: qsTr("Play")
-            onClicked: play(logFile.text)
+    Rectangle {
+        height: parent.height
+        width: parent.width / 2
+        color: "#e0d8c1"
+
+        Column {
+            anchors {
+                verticalCenter: parent.verticalCenter;
+                left: parent.left;
+                leftMargin: parent.width / 6
+            }
+            width: parent.width / 2
+            spacing: 50
+
+            Neus.Button {
+                text: qsTr("Options")
+                width: parent.width
+                onClicked: options()
+            }
+
+            Neus.Button {
+                text: qsTr("Calibrate")
+                width: parent.width
+                onClicked: calibrate()
+            }
+
+            Neus.Button {
+                text: qsTr("Practice")
+                width: parent.width
+            }
+
+            Neus.Button {
+                text: qsTr("Test")
+                width: parent.width
+                onClicked: test()
+            }
+
+            Neus.Button {
+                text: qsTr("About")
+                width: parent.width
+            }
         }
     }
 }

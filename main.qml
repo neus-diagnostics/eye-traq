@@ -4,23 +4,21 @@ import QtQuick.Layouts 1.0
 import QtQuick.Window 2.2
 
 Window {
-    function random_id() {
-        function pad(number) {
-            return (number < 10 ? '0' : '') + number
-        }
-        var t = new Date()
-        return '' + t.getUTCFullYear() + pad(t.getUTCMonth() + 1) + pad(t.getUTCDate()) +
-               '-' + pad(t.getUTCHours()) + pad(t.getUTCMinutes()) + pad(t.getUTCSeconds()) +
-               '-' + pad(Math.floor(Math.random() * 100))
-    }
-
     title: qsTr("Eyetracker")
+
+    // TODO figure out how to keep window in fullscreen properly
+    flags: Qt.FramelessWindowHint
     visible: true
     visibility: Window.FullScreen
+    width: Screen.width
+    height: Screen.height
 
     onClosing: Qt.quit()
     // QT BUG: force repaint after entering fullscreen
     onActiveChanged: update()
+
+    FontLoader { source: "fonts/lato-regular.ttf" }
+    FontLoader { source: "fonts/lato-bold.ttf" }
 
     StackView {
         id: stack
@@ -29,15 +27,22 @@ Window {
         focus: true
 
         initialItem: Start {
+            onOptions: stack.push(options)
             onCalibrate: calibrator.init()
-            onRecord: recorder.start(testFile, participant)
-            onPlay: player.start(logFile)
+            onTest: recorder.start(options.testFile, options.participant)
         }
 
-        Keys.onEscapePressed: pop()
+        Keys.onPressed: {
+            switch (event.key) {
+                case Qt.Key_Backspace:
+                case Qt.Key_Escape:
+                    pop();
+                    break;
+            }
+        }
+
+        Options { id: options }
     }
 
-    Calibrator {
-        id: calibrator
-    }
+    Calibrator { id: calibrator }
 }
