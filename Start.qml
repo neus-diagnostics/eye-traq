@@ -9,6 +9,7 @@ Row {
     signal options
     signal calibrate
     signal test
+    signal about
 
     Rectangle {
         height: parent.height
@@ -67,6 +68,7 @@ Row {
             Neus.Button {
                 text: qsTr("About")
                 width: parent.width
+                onClicked: about()
             }
         }
     }

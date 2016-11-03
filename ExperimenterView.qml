@@ -16,6 +16,7 @@ Item {
             onOptions: stack.push(options)
             onCalibrate: calibrator.init()
             onTest: recorder.start(options.testFile, options.participant)
+            onAbout: stack.push(about)
         }
 
         Keys.onPressed: {
@@ -28,6 +29,7 @@ Item {
         }
 
         Options { id: options }
+        About { id: about }
     }
 
     Calibrator { id: calibrator }
