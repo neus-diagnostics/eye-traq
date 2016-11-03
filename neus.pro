@@ -22,4 +22,4 @@ HEADERS += \
 	player.h \
 	recorder.h
 
-RESOURCES += qml.qrc
+RESOURCES += neus.qrc
