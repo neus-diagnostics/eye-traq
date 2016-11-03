@@ -1,21 +1,10 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
 import QtQuick.Window 2.2
 
-Window {
-    title: qsTr("Neus")
-
-    // TODO figure out how to keep window in fullscreen properly
-    flags: Qt.FramelessWindowHint
-    visible: true
-    visibility: Window.FullScreen
+Item {
     width: Screen.width
     height: Screen.height
-
-    onClosing: Qt.quit()
-    // QT BUG: force repaint after entering fullscreen
-    onActiveChanged: update()
 
     FontLoader { source: "fonts/lato-regular.ttf" }
     FontLoader { source: "fonts/lato-bold.ttf" }

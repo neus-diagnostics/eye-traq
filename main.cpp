@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QQmlContext>
+#include <QQuickView>
 #include <QQmlEngine>
 #include <QtDebug>
 
@@ -31,12 +32,14 @@ int main(int argc, char *argv[])
 	Player player{engine};
 	engine.rootContext()->setContextProperty("player", &player);
 
-	QQmlComponent main_window{&engine, QUrl{"qrc:/ExperimenterView.qml"}};
-	if (main_window.status() == QQmlComponent::Ready) {
-		main_window.create();
+	QQuickView experimenter_view{&engine, nullptr};
+	experimenter_view.setSource(QUrl{"qrc:/ExperimenterView.qml"});
+	if (experimenter_view.status() == QQuickView::Ready) {
+		experimenter_view.create();
 	} else {
-		for (const auto &e : main_window.errors())
+		for (const auto &e : experimenter_view.errors())
 			qWarning() << e;
+		return 1;
 	}
 
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
