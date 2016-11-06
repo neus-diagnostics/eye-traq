@@ -12,23 +12,27 @@
 
 #include "eyetracker.h"
 
-class Recorder : public QQmlComponent {
+class Recorder : public QObject {
 	Q_OBJECT
 public:
-	Recorder(QQmlEngine &engine, Eyetracker &eyetracker);
+	Recorder(Eyetracker &eyetracker, QObject *runner);
 	virtual ~Recorder();
 
 public slots:
-	void start(const QString &testfile, const QString &participant);
+	void start(const QUrl &testfile, const QString &participant);
 	void step();
 	void stop();
 	void gaze(const QString &left, const QString& right);
 
+signals:
+	void run(QVariant name, QVariant args);
+	void reset();
+
 private:
 	Eyetracker &eyetracker;
+	QObject *runner;
 
-	QObject *object;
-	QFile *log;
+	QFile *logfile;
 
 	QVector<QPair<QString, QStringList>> test;
 	int next;

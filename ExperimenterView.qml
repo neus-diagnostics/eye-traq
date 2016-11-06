@@ -1,36 +1,34 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
-import QtQuick.Window 2.2
 
-Item {
-    width: Screen.width
-    height: Screen.height
+StackView {
+    id: stack
 
-    StackView {
-        id: stack
+    property var runner: null
 
-        anchors.fill: parent
-        focus: true
+    focus: true
 
-        initialItem: Start {
-            onOptions: stack.push(options)
-            onCalibrate: calibrator.init()
-            onTest: recorder.start(options.testFile, options.participant)
-            onAbout: stack.push(about)
-        }
-
-        Keys.onPressed: {
-            switch (event.key) {
-                case Qt.Key_Backspace:
-                case Qt.Key_Escape:
-                    pop();
-                    break;
-            }
-        }
-
-        Options { id: options }
-        About { id: about }
+    initialItem: Start {
+        onOptions: push(options)
+        onCalibrate: push(calibrate)
+        onPractice: push(practice)
+        onTest: push(test)
+        onAbout: push(about)
     }
 
-    Calibrator { id: calibrator }
+    Keys.onPressed: {
+        switch (event.key) {
+            case Qt.Key_Backspace:
+            case Qt.Key_Escape:
+                recorder.reset()  // TODO move this somewhere else
+                pop()
+                break
+        }
+    }
+
+    Options { id: options; visible: false }
+    Calibrate { id: calibrate; visible: false; options: options; runner: stack.runner }
+    Practice { id: practice; visible: false; options: options; runner: stack.runner }
+    Test { id: test; visible: false; options: options; runner: stack.runner }
+    About { id: about; visible: false }
 }

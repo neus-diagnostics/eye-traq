@@ -6,24 +6,19 @@
 #include <QProcess>
 #include <QQuickItem>
 #include <QUrl>
+#include <QtDebug>
 
-Recorder::Recorder(QQmlEngine &engine, Eyetracker &eyetracker)
-	: QQmlComponent{&engine, QUrl{"qrc:/Runner.qml"}},
-	  eyetracker{eyetracker},
-	  object{nullptr},
-	  log{nullptr}
+Recorder::Recorder(Eyetracker &eyetracker, QObject *runner)
+	: QObject{}, eyetracker{eyetracker}, runner{runner}, logfile{nullptr}
 {
 }
 
 Recorder::~Recorder()
 {
-	if (object)
-		delete object;
-	if (log)
-		delete log;
+	stop();
 }
 
-void Recorder::start(const QString &testfile, const QString &participant)
+void Recorder::start(const QUrl &testfile, const QString &participant)
 {
 	if (participant.isEmpty())
 		return;
@@ -33,7 +28,7 @@ void Recorder::start(const QString &testfile, const QString &participant)
 	next = 0;
 
 	// does the testfile exist?
-	const QString testpath{QUrl{testfile}.toLocalFile()};
+	const QString testpath{testfile.toLocalFile()};
 	QString testdata;
 
 	// load or execute testfile
@@ -74,20 +69,13 @@ void Recorder::start(const QString &testfile, const QString &participant)
 	const auto testname = QFileInfo{testpath}.baseName();
 	QString filename = "data/" + participant + "/" +
 	                   now.toString("yyyyMMdd-HHmmss") + "-" + testname + ".log";
-	log = new QFile{filename};
-	if (!log->open(QIODevice::WriteOnly)) {
+	logfile = new QFile{filename};
+	if (!logfile->open(QIODevice::WriteOnly)) {
 		qWarning() << "Cannot open file" << filename;
-		delete log;
-		log = nullptr;
+		delete logfile;
+		logfile = nullptr;
 		return;
 	}
-
-	// create the window
-	if (object)
-		delete object;
-	object = create();
-	connect(object, SIGNAL(next()), this, SLOT(step()));
-	connect(object, SIGNAL(abort()), this, SLOT(stop()));
 
 	eyetracker.command("start_tracking");
 
@@ -96,11 +84,15 @@ void Recorder::start(const QString &testfile, const QString &participant)
 
 void Recorder::stop()
 {
-	eyetracker.command("stop_tracking");
-	QMetaObject::invokeMethod(object, "stop");
-	if (log) {
-		delete log;
-		log = nullptr;
+	if (logfile) {
+		eyetracker.command("stop_tracking");
+		reset();
+
+		const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+		QTextStream{logfile} << timestamp << '\t'
+		                 << "end" << '\n';
+		delete logfile;
+		logfile = nullptr;
 	}
 }
 
@@ -111,13 +103,13 @@ void Recorder::step()
 		const auto &args = test[next].second;
 
 		const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-		QTextStream{log} << timestamp << '\t'
+		QTextStream{logfile} << timestamp << '\t'
 		                 << "test" << '\t'
 		                 << name << '\t'
 		                 << args.join('\t') << '\n';
 
 		next++;
-		QMetaObject::invokeMethod(object, "run", Q_ARG(QVariant, name), Q_ARG(QVariant, args));
+		run(name, args);
 	} else {
 		stop();
 	}
@@ -125,15 +117,15 @@ void Recorder::step()
 
 void Recorder::gaze(const QString &left, const QString &right)
 {
-	if (!log)
+	if (!logfile)
 		return;
 
 	const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-	QTextStream stream{log};
+	QTextStream stream{logfile};
 
 	// record task-specific data
 	QVariant ret;
-	QMetaObject::invokeMethod(object, "get_data", Q_RETURN_ARG(QVariant, ret));
+	QMetaObject::invokeMethod(runner, "get_data", Q_RETURN_ARG(QVariant, ret));
 	QVariantList data = ret.toList();
 	if (!data.isEmpty()) {
 		stream << timestamp << '\t' << "data";

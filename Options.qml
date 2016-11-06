@@ -5,10 +5,10 @@ import QtQuick.Layouts 1.0
 
 Rectangle {
     signal done
-    color: "#ece6da"
+    color: "#e0d8c1"
 
     property string participant: ""
-    property string testFile: ""
+    property url testFile
 
     function random_id() {
         function pad(number) {

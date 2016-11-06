@@ -1,13 +1,16 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.2
 
 import "Task"
 
-Window {
+Rectangle {
     signal next
-    signal abort
+
+    function stop() {
+        tasks.children[tasks.currentIndex].abort()
+        tasks.currentIndex = 0
+    }
 
     function run(name, args) {
         switch (name) {
@@ -31,16 +34,14 @@ Window {
                 tasks.currentIndex = 4
                 showtxt.run(args[0], args[1])
                 break;
+            case "calibrator":
+                tasks.currentIndex = 5
+                calibrator.run(args[0], args[1], args[2], args[3])
+                break;
             case "gaze":
                 gaze.run(args[0], args[1], args[2])
                 break;
         }
-        visibility = Window.FullScreen
-    }
-
-    function stop() {
-        visibility = Window.Hidden
-        tasks.children[tasks.currentIndex].abort()
     }
 
     function get_data() {
@@ -48,10 +49,6 @@ Window {
     }
 
     color: "black"
-
-    // QT BUG: force repaint after entering fullscreen
-    onActiveChanged: update()
-    onClosing: close.accepted = false
 
     StackLayout {
         id: tasks
@@ -64,15 +61,8 @@ Window {
         Pursuit { id: pursuit; onDone: next() }
         Saccade { id: saccade; onDone: next() }
         ShowTxt { id: showtxt; onDone: next() }
-
-        Keys.onEscapePressed: abort()
+        Calibrator { id: calibrator; onDone: next() }
     }
 
-    Gaze {
-        id: gaze
-    }
-
-    // hide the cursor
-    // TODO cursor stays visible until moved
-    MouseArea { anchors.fill: parent; cursorShape: Qt.BlankCursor }
+    Gaze { id: gaze }
 }

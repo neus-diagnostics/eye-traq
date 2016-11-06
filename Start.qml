@@ -8,6 +8,7 @@ import "controls" as Neus
 Row {
     signal options
     signal calibrate
+    signal practice
     signal test
     signal about
 
@@ -39,8 +40,8 @@ Row {
                 left: parent.left;
                 leftMargin: parent.width / 6
             }
-            width: parent.width / 2
-            spacing: 50
+            width: parent.width / 3
+            spacing: 30
 
             Neus.Button {
                 text: qsTr("Options")
@@ -57,6 +58,7 @@ Row {
             Neus.Button {
                 text: qsTr("Practice")
                 width: parent.width
+                onClicked: practice()
             }
 
             Neus.Button {

@@ -40,21 +40,19 @@ import QtQuick.Templates 2.0 as T
 T.Button {
     id: control
 
-    implicitWidth: Math.max(background ? background.implicitWidth : 0,
-                            contentItem.implicitWidth + leftPadding + rightPadding)
-    implicitHeight: Math.max(background ? background.implicitHeight : 0,
-                             contentItem.implicitHeight + topPadding + bottomPadding)
+    implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding
+    implicitHeight: 60
     baselineOffset: contentItem.y + contentItem.baselineOffset
 
     padding: 6
-    leftPadding: padding + 2
-    rightPadding: padding + 2
+    leftPadding: 30
+    rightPadding: 30
     hoverEnabled: true
 
     font {
         family: "Lato"
         capitalization: Font.AllUppercase
-        pixelSize: 44
+        pixelSize: height * 0.4
         weight: Font.Bold
     }
 
@@ -73,8 +71,6 @@ T.Button {
 
     //! [background]
     background: Rectangle {
-        implicitWidth: 100
-        implicitHeight: 90
         opacity: enabled ? 1 : 0.3
         visible: !control.flat || control.down || control.checked || control.highlighted
         //color: control.checked || control.highlighted ?
@@ -83,7 +79,7 @@ T.Button {
         color: control.hovered ? "#8dc73f" : "#2bb673"
         border.color: "#0066ff"
         border.width: control.visualFocus ? 2 : 0
-        radius: 8
+        radius: parent.width * 0.02
     }
     //! [background]
 }

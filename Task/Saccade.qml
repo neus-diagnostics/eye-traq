@@ -1,7 +1,4 @@
-import QtQml 2.2
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Window 2.2
 
 Item {
     id: screen
@@ -17,12 +14,11 @@ Item {
     function run(dir, offset, gap, overlap) {
         offset = Number(offset)
         if (dir == 'x') {
-            // TODO figure out why Screen is needed here
-            target.x = (0.5 + offset) * Screen.width - target.width / 2
-            target.y = (Screen.height - target.height) / 2
+            target.x = (0.5 + offset) * screen.width - target.width / 2
+            target.y = (screen.height - target.height) / 2
         } else {
-            target.x = (Screen.width - target.width) / 2
-            target.y = (0.5 + offset) * Screen.height - target.height / 2
+            target.x = (screen.width - target.width) / 2
+            target.y = (0.5 + offset) * screen.height - target.height / 2
         }
 
         this.gap = (gap == "true")
@@ -48,7 +44,7 @@ Item {
                     timer.interval = 200
                     break
                 } else {
-                    step++  // and fall through
+                    step++  // fall through if no gap
                 }
             case 2:
                 fixation.visible = overlap

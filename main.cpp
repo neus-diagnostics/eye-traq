@@ -1,8 +1,10 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QQuickItem>
 #include <QQuickView>
 #include <QQmlEngine>
+#include <QScreen>
 #include <QtDebug>
 
 #ifdef USE_TOBII
@@ -23,33 +25,55 @@ int main(int argc, char *argv[])
 	    QFontDatabase::addApplicationFont(":/fonts/lato-bold.ttf") == -1)
 		qWarning() << "Could not load fonts.";
 
+	// get primary and secondary screen
+	QScreen* first_screen = app.primaryScreen();
+	QScreen* second_screen = first_screen;
+	for (auto screen : app.screens()) {
+		if (screen != first_screen) {
+			second_screen = screen;
+			break;
+		}
+	}
+
 #ifdef USE_TOBII
 	tetio::Library::init();
 #endif
-	Eyetracker eyetracker;
-
+	// construct global objects
 	QQmlEngine engine;
-	engine.rootContext()->setContextProperty("eyetracker", &eyetracker);
+	engine.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
+	engine.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
 
-	Recorder recorder{engine, eyetracker};
-	engine.rootContext()->setContextProperty("recorder", &recorder);
-
-	Player player{engine};
-	engine.rootContext()->setContextProperty("player", &player);
-
-	QQuickView experimenter_view{&engine, nullptr};
-	experimenter_view.setSource(QUrl{"qrc:/ExperimenterView.qml"});
-	if (experimenter_view.status() == QQuickView::Ready) {
-		experimenter_view.create();
+	// set up the window
+	QQuickView view{&engine, nullptr};
+	view.setSource(QUrl{"qrc:/Main.qml"});
+	if (view.status() == QQuickView::Ready) {
+		view.create();
 	} else {
-		for (const auto &e : experimenter_view.errors())
+		for (const auto &e : view.errors())
 			qWarning() << e;
 		return 1;
 	}
-	experimenter_view.showFullScreen();
+
+	// QT BUG: ensure window gets painted when mapped
+	QObject::connect(&view, &QQuickView::activeChanged, &view, &QQuickView::update);
+	view.setFlags(Qt::FramelessWindowHint);
+	view.setGeometry(first_screen->virtualGeometry());
+	view.show();
+
+	QObject *runner = view.rootObject()->findChild<QObject*>("runner");
+
+	Eyetracker eyetracker;
+	engine.rootContext()->setContextProperty("eyetracker", &eyetracker);
+
+	Recorder recorder{eyetracker, runner};
+	engine.rootContext()->setContextProperty("recorder", &recorder);
 
 	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
+
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
+	QObject::connect(&recorder, SIGNAL(run(QVariant, QVariant)), runner, SLOT(run(QVariant, QVariant)));
+	QObject::connect(&recorder, SIGNAL(reset()), runner, SLOT(stop()));
+	QObject::connect(runner, SIGNAL(next()), &recorder, SLOT(step()));
 
 	return app.exec();
 }

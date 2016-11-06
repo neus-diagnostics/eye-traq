@@ -1,13 +1,17 @@
 <RCC>
     <qresource prefix="/">
+        <file>Main.qml</file>
         <file>ExperimenterView.qml</file>
         <file>Start.qml</file>
-        <file>About.qml</file>
         <file>Options.qml</file>
-        <file>Calibrator.qml</file>
+        <file>Calibrate.qml</file>
+        <file>Practice.qml</file>
+        <file>Test.qml</file>
+        <file>About.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
         <file>Task/Blank.qml</file>
+        <file>Task/Calibrator.qml</file>
         <file>Task/ImgPair.qml</file>
         <file>Task/Pursuit.qml</file>
         <file>Task/Saccade.qml</file>
