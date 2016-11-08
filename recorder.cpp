@@ -8,8 +8,8 @@
 #include <QUrl>
 #include <QtDebug>
 
-Recorder::Recorder(Eyetracker &eyetracker, QObject *runner)
-	: QObject{}, eyetracker{eyetracker}, runner{runner}, logfile{nullptr}
+Recorder::Recorder(Eyetracker &eyetracker)
+	: QObject{}, eyetracker{eyetracker}, logfile{nullptr}
 {
 }
 
@@ -18,14 +18,9 @@ Recorder::~Recorder()
 	stop();
 }
 
-void Recorder::start(const QUrl &testfile, const QString &participant)
+QStringList Recorder::loadTest(const QUrl &testfile)
 {
-	if (participant.isEmpty())
-		return;
-
-	// clear existing test descriptor
-	test.clear();
-	next = 0;
+	QStringList test;
 
 	// does the testfile exist?
 	const QString testpath{testfile.toLocalFile()};
@@ -37,14 +32,14 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 		testgen.start(testpath);
 		if (!testgen.waitForFinished() || testgen.exitCode() != 0) {
 			qWarning() << "could not start testgen process";
-			return;
+			return test;
 		}
 		testdata = QString::fromUtf8(testgen.readAllStandardOutput());
 	} else {
 		QFile file(testpath);
 		if (!file.open(QIODevice::ReadOnly)) {
 			qWarning() << "could not open testfile";
-			return;
+			return test;
 		}
 		testdata = QTextStream{&file}.readAll();
 	}
@@ -53,12 +48,19 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 	for (const auto &line : testdata.split('\n')) {
 		if (line == "" || line.startsWith("#"))
 			continue;
-		const auto &tokens = line.split('\t');
-		QPair<QString, QStringList> task{tokens[0], {}};
-		for (int i = 1; i < tokens.length(); i++)
-			task.second.append(tokens[i]);
-		test.append(task);
+		test.append(line);
 	}
+
+	return QStringList{test};
+}
+
+void Recorder::start(const QUrl &testfile, const QString &participant)
+{
+	if (participant.isEmpty())
+		return;
+
+	// does the testfile exist?
+	const QString testpath{testfile.toLocalFile()};
 
 	// open logfile
 	QDir path{"data"};
@@ -78,15 +80,12 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 	}
 
 	eyetracker.command("start_tracking");
-
-	step();
 }
 
 void Recorder::stop()
 {
 	if (logfile) {
 		eyetracker.command("stop_tracking");
-		reset();
 
 		const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
 		QTextStream{logfile} << timestamp << '\t'
@@ -96,46 +95,16 @@ void Recorder::stop()
 	}
 }
 
-void Recorder::step()
+void Recorder::write(const QString &text)
 {
-	if (next < test.length()) {
-		const auto &name = test[next].first;
-		const auto &args = test[next].second;
-
+	if (logfile) {
 		const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-		QTextStream{logfile} << timestamp << '\t'
-		                 << "test" << '\t'
-		                 << name << '\t'
-		                 << args.join('\t') << '\n';
-
-		next++;
-		run(name, args);
-	} else {
-		stop();
+		QTextStream{logfile} << timestamp << '\t' << text << '\n';
 	}
 }
 
 void Recorder::gaze(const QString &left, const QString &right)
 {
-	if (!logfile)
-		return;
-
-	const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-	QTextStream stream{logfile};
-
-	// record task-specific data
-	QVariant ret;
-	QMetaObject::invokeMethod(runner, "get_data", Q_RETURN_ARG(QVariant, ret));
-	QVariantList data = ret.toList();
-	if (!data.isEmpty()) {
-		stream << timestamp << '\t' << "data";
-		for (int i = 0; i < data.length(); i++)
-			stream << '\t' << data[i].toString();
-		stream << '\n';
-	}
-
-	// record gaze data
-	stream <<
-		timestamp << '\t' << "gaze" << '\t' << left << '\n' <<
-		timestamp << '\t' << "gaze" << '\t' << right << '\n';
+	write("gaze\t" + left);
+	write("gaze\t" + right);
 }

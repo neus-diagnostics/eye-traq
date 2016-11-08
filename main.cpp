@@ -39,12 +39,17 @@ int main(int argc, char *argv[])
 	tetio::Library::init();
 #endif
 	// construct global objects
-	QQmlEngine engine;
-	engine.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
-	engine.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
+	QQuickView view;
+	view.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
+	view.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
+
+	Eyetracker eyetracker;
+	view.rootContext()->setContextProperty("eyetracker", &eyetracker);
+
+	Recorder recorder{eyetracker};
+	view.rootContext()->setContextProperty("recorder", &recorder);
 
 	// set up the window
-	QQuickView view{&engine, nullptr};
 	view.setSource(QUrl{"qrc:/Main.qml"});
 	if (view.status() == QQuickView::Ready) {
 		view.create();
@@ -62,18 +67,9 @@ int main(int argc, char *argv[])
 
 	QObject *runner = view.rootObject()->findChild<QObject*>("runner");
 
-	Eyetracker eyetracker;
-	engine.rootContext()->setContextProperty("eyetracker", &eyetracker);
-
-	Recorder recorder{eyetracker, runner};
-	engine.rootContext()->setContextProperty("recorder", &recorder);
-
-	QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
-
+	//QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
-	QObject::connect(&recorder, SIGNAL(run(QVariant, QVariant)), runner, SLOT(run(QVariant, QVariant)));
-	QObject::connect(&recorder, SIGNAL(reset()), runner, SLOT(stop()));
-	QObject::connect(runner, SIGNAL(next()), &recorder, SLOT(step()));
+	QObject::connect(&eyetracker, SIGNAL(gazed(QString, QString)), runner, SLOT(write_data()));
 
 	return app.exec();
 }

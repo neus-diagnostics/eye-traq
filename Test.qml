@@ -5,24 +5,24 @@ import QtQuick.Layouts 1.0
 import "controls" as Neus
 
 Rectangle {
-    color: "#e0d8c1"
-
     property var options
     property var runner
 
     function start() {
-        state = "running"
-        recorder.start(options.testFile, options.participant);
+        recorder.start(options.testFile, options.participant)
+        runner.start(options.testFile)
     }
 
     function stop() {
+        runner.stop()
         recorder.stop()
-        state = ""
     }
 
-    onVisibleChanged: {
-        if (state == "running")
-            stop()
+    color: "#e0d8c1"
+
+    Component.onCompleted: {
+        runner.onDone.connect(stop)
+        onVisibleChanged.connect(stop)
     }
 
     Column {
@@ -40,20 +40,9 @@ Rectangle {
 
         Neus.Button {
             id: control
-            text: qsTr("Start")
             anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: start()
+            text: runner.state != "running" ? qsTr("Start") : qsTr("Stop")
+            onClicked: runner.state != "running" ? start() : stop()
         }
     }
-
-    states: [
-        State {
-            name: "running"
-            PropertyChanges {
-                target: control
-                text: qsTr("Stop")
-                onClicked: stop()
-            }
-        }
-    ]
 }

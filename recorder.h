@@ -15,27 +15,19 @@
 class Recorder : public QObject {
 	Q_OBJECT
 public:
-	Recorder(Eyetracker &eyetracker, QObject *runner);
+	Recorder(Eyetracker &eyetracker);
 	virtual ~Recorder();
 
 public slots:
+	QStringList loadTest(const QUrl &testfile);
 	void start(const QUrl &testfile, const QString &participant);
-	void step();
 	void stop();
+	void write(const QString &text);
 	void gaze(const QString &left, const QString& right);
-
-signals:
-	void run(QVariant name, QVariant args);
-	void reset();
 
 private:
 	Eyetracker &eyetracker;
-	QObject *runner;
-
 	QFile *logfile;
-
-	QVector<QPair<QString, QStringList>> test;
-	int next;
 };
 
 #endif

@@ -8,65 +8,39 @@ Rectangle {
     property var options
     property var runner
 
-    property var points: [
-        Qt.point(0.1, 0.1),
-        Qt.point(0.9, 0.1),
-        Qt.point(0.5, 0.5),
-        Qt.point(0.9, 0.9),
-        Qt.point(0.1, 0.9)
-    ]
     property var colors: ["#2bb673"]
-    property int step: 0
 
     function start() {
         plot.lines = []
         plot.requestPaint()
-        step = 0
-        state = "running"
         eyetracker.command("start_calibration")
-        runner.run("calibrator", [0.5, 0.5, 2000, false])
+        runner.done.connect(end)
+        runner.start("file:tests/calibrate")
     }
 
     function stop() {
+        runner.done.disconnect(end)
         runner.stop()
         eyetracker.command("stop_calibration")
-        state = ""
-    }
-
-    function addPoint() {
-        if (state != "running")
-            return
-
-        if (step > 0)
-            eyetracker.calibrate(points[step-1]);
-        if (step < points.length) {
-            runner.run("calibrator", [points[step].x, points[step].y, 500, true]);
-            step++;
-        } else {
-            var msg = "Calibration successful.";
-            if (!eyetracker.command("compute_calibration"))
-                msg = "Calibration failed.";
-            var calibration = eyetracker.get_calibration();
-            for (var i = 0; i < calibration.length; i++) {
-                var line = calibration[i];
-                plot.addLine(Qt.point(line.x, line.y), Qt.point(line.z, line.w), colors[i]);
-            }
-            end(msg);
-        }
     }
 
     function end(msg) {
+        var msg = "Calibration successful.";
+        if (!eyetracker.command("compute_calibration"))
+            msg = "Calibration failed.";
         stop()
+
+        var calibration = eyetracker.get_calibration();
+        for (var i = 0; i < calibration.length; i++) {
+            var line = calibration[i];
+            plot.addLine(Qt.point(line.x, line.y), Qt.point(line.z, line.w), colors[i]);
+        }
         plot.requestPaint()
     }
 
-    onVisibleChanged: {
-        if (state == "running")
-            stop()
-    }
-
     Component.onCompleted: {
-        runner.next.connect(addPoint)
+        runner.onDone.connect(stop)
+        onVisibleChanged: stop()
     }
 
     Column {
@@ -114,9 +88,9 @@ Rectangle {
 
         Neus.Button {
             id: control
-            text: qsTr("Start")
             anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: start()
+            text: runner.state != "running" ? qsTr("Start") : qsTr("Stop")
+            onClicked: runner.state != "running" ? start() : stop()
         }
     }
 

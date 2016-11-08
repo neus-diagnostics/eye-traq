@@ -11,19 +11,17 @@ Rectangle {
     property var runner
 
     function start(testfile) {
-        state = "running"
-        recorder.start(testfile, options.participant)
+        runner.start(testfile)
     }
 
     function stop() {
-        recorder.stop()
-        state = ""
+        runner.stop()
     }
 
     color: "#e0d8c1"
-    onVisibleChanged: {
-        if (state == "running")
-            stop()
+
+    Component.onCompleted: {
+        onVisibleChanged.connect(stop)
     }
 
     Grid {
@@ -43,7 +41,7 @@ Rectangle {
             id: pursuit
             text: qsTr("Start")
             height: 40
-            enabled: main.state != "running"
+            enabled: runner.state != "running"
             onClicked: start("file:tests/practice-pursuit")
         }
 
@@ -52,7 +50,7 @@ Rectangle {
             id: pstX
             text: qsTr("Start")
             height: 40
-            enabled: main.state != "running"
+            enabled: runner.state != "running"
             onClicked: start("file:tests/practice-prosaccade-horizontal")
         }
 
@@ -61,7 +59,7 @@ Rectangle {
             id: pstY
             text: qsTr("Start")
             height: 40
-            enabled: main.state != "running"
+            enabled: runner.state != "running"
             onClicked: start("file:tests/practice-prosaccade-vertical")
         }
 
@@ -70,7 +68,7 @@ Rectangle {
             id: astX
             text: qsTr("Start")
             height: 40
-            enabled: main.state != "running"
+            enabled: runner.state != "running"
             onClicked: start("file:tests/practice-antisaccade-horizontal")
         }
 
@@ -79,7 +77,7 @@ Rectangle {
             id: vpc
             text: qsTr("Start")
             height: 40
-            enabled: main.state != "running"
+            enabled: runner.state != "running"
             onClicked: start("file:tests/practice-imgpair")
         }
     }
@@ -95,8 +93,4 @@ Rectangle {
         width: parent.width * 0.6
         height: parent.height * 0.6
     }
-
-    states: [
-        State { name: "running" }
-    ]
 }

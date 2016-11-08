@@ -3,13 +3,15 @@ import QtQuick 2.7
 Item {
     id: screen
 
+    property var point: null
+
     signal done
 
     function run(x, y, time, animate) {
         x = Number(x)
         y = Number(y)
         time = Number(time)
-        animate = Boolean(animate)
+        animate = animate == "true"
 
         var screen_x = width*x
         var screen_y = height*y
@@ -17,24 +19,28 @@ Item {
         var dist_y = screen_y-stimulus.y
         var dist = Math.sqrt(dist_x*dist_x + dist_y*dist_y)
 
-        moveX.to = screen_x - stimulus.width/2
-        moveY.to = screen_y - stimulus.height/2
+        var target_x = screen_x - stimulus.width/2
+        var target_y = screen_y - stimulus.height/2
+        timer.interval = time
+
         if (animate) {
             grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
+            moveX.to = target_x
+            moveY.to = target_y
             moveX.duration = dist
             moveY.duration = dist
             shrink.to = 0.25
             shrink.duration = 1000
+            point = Qt.point(x, y)
+            timer.interval += grow.duration + dist + shrink.duration
+            anim.start()
         } else {
-            grow.duration = 0
-            moveX.duration = 0
-            moveY.duration = 0
-            shrink.to = 1.0
-            shrink.duration = 0
+            stimulus.x = target_x
+            stimulus.y = target_y
+            stimulus.scale = 1.0
+            point = null
         }
 
-        timer.interval = grow.duration + dist + shrink.duration + time
-        anim.start()
         timer.start()
     }
 
@@ -63,6 +69,7 @@ Item {
 
         SequentialAnimation {
             id: anim
+            running: false
             NumberAnimation {
                 id: grow
                 target: stimulus
@@ -87,6 +94,11 @@ Item {
     Timer {
         id: timer
         repeat: false
-        onTriggered: { anim.stop(); done() }
+        onTriggered: {
+            anim.stop()
+            if (point)
+                eyetracker.calibrate(point)
+            done()
+        }
     }
 }

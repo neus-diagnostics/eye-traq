@@ -5,11 +5,36 @@ import QtQuick.Layouts 1.3
 import "Task"
 
 Rectangle {
-    signal next
+    property var test: []
+    property var next: 0
+
+    signal done
+
+    function start(testfile) {
+        if (state == "running")
+            stop()
+        test = recorder.loadTest(testfile)
+        next = 0
+        state = "running"
+        step()
+    }
+
+    function step() {
+        if (next < test.length) {
+            recorder.write('test' + '\t' + test[next])
+            var tokens = test[next].split('\t')
+            next++
+            run(tokens[0], tokens.slice(1))
+        } else {
+            stop()
+            done()
+        }
+    }
 
     function stop() {
         tasks.children[tasks.currentIndex].abort()
         tasks.currentIndex = 0
+        state = ""
     }
 
     function run(name, args) {
@@ -44,8 +69,10 @@ Rectangle {
         }
     }
 
-    function get_data() {
-        return tasks.children[tasks.currentIndex].get_data()
+    function write_data() {
+        var data = tasks.children[tasks.currentIndex].get_data()
+        if (data.length > 0)
+            recorder.write('data' + '\t' + data.join('\t'))
     }
 
     color: "black"
@@ -56,13 +83,17 @@ Rectangle {
         anchors.fill: parent
         focus: true
 
-        Blank { id: blank; onDone: next() }
-        ImgPair { id: imgpair; onDone: next() }
-        Pursuit { id: pursuit; onDone: next() }
-        Saccade { id: saccade; onDone: next() }
-        ShowTxt { id: showtxt; onDone: next() }
-        Calibrator { id: calibrator; onDone: next() }
+        Blank { id: blank; onDone: step() }
+        ImgPair { id: imgpair; onDone: step() }
+        Pursuit { id: pursuit; onDone: step() }
+        Saccade { id: saccade; onDone: step() }
+        ShowTxt { id: showtxt; onDone: step() }
+        Calibrator { id: calibrator; onDone: step() }
     }
 
     Gaze { id: gaze }
+
+    states: [
+        State { name: "running" }
+    ]
 }
