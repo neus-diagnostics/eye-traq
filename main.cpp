@@ -1,9 +1,9 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QObject>
 #include <QQuickItem>
 #include <QQuickView>
-#include <QQmlEngine>
 #include <QScreen>
 #include <QtDebug>
 
@@ -67,7 +67,6 @@ int main(int argc, char *argv[])
 
 	QObject *runner = view.rootObject()->findChild<QObject*>("runner");
 
-	//QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
 	QObject::connect(&eyetracker, SIGNAL(gazed(QString, QString)), runner, SLOT(write_data()));
 
