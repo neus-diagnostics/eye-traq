@@ -37,7 +37,7 @@ Item {
     }
 
     Component.onCompleted: {
-        runner.onDone.connect(stop)
+        runner.onDone.connect(end)
         onVisibleChanged: stop()
     }
 
