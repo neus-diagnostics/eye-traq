@@ -17,6 +17,7 @@
         <file>Task/Saccade.qml</file>
         <file>Task/ShowTxt.qml</file>
         <file>controls/Button.qml</file>
+        <file>controls/TabButton.qml</file>
         <file>fonts/lato-bold.ttf</file>
         <file>fonts/lato-regular.ttf</file>
         <file>images/a.svg</file>

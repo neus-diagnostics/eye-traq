@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.0
 
 import "controls" as Neus
 
-Rectangle {
+Item {
     id: main
 
     property var options
@@ -17,8 +17,6 @@ Rectangle {
     function stop() {
         runner.stop()
     }
-
-    color: "#e0d8c1"
 
     Component.onCompleted: {
         onVisibleChanged.connect(stop)

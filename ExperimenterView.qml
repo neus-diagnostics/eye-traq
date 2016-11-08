@@ -1,57 +1,65 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.3
 
-StackView {
-    id: stack
+import "controls" as Neus
 
+Rectangle {
+    id: main
     property var runner
 
-    focus: true
+    color: "#e0d8c1"
 
-    initialItem: Start {
-        onOptions: push(options)
-        onCalibrate: push(calibrate)
-        onPractice: push(practice)
-        onTest: push(test)
-        onAbout: push(about)
-    }
+    TabBar {
+        id: bar
+        width: parent.width
+        height: 90
 
-    Keys.onPressed: {
-        if (busy)
-            return
-        switch (event.key) {
-            case Qt.Key_Backspace:
-            case Qt.Key_Escape:
-                //recorder.reset()  // TODO move this somewhere else
-                pop()
-                break
+        background: Rectangle { color: "#ece6da" }
+
+        Neus.TabButton {
+            text: qsTr("Options")
+        }
+        Neus.TabButton {
+            text: qsTr("Calibrate")
+        }
+        Neus.TabButton {
+            text: qsTr("Practice")
+        }
+        Neus.TabButton {
+            text: qsTr("Test")
+        }
+        Neus.TabButton {
+            text: qsTr("About")
         }
     }
 
-    Options {
-        id: options
-        visible: false
-    }
-    Calibrate {
-        id: calibrate
-        visible: false
-        options: options
-        runner: stack.runner
-    }
-    Practice {
-        id: practice
-        visible: false
-        options: options
-        runner: stack.runner
-    }
-    Test {
-        id: test
-        visible: false
-        options: options
-        runner: stack.runner
-    }
-    About {
-        id: about
-        visible: false
+    StackLayout {
+        width: parent.width
+        anchors.top: bar.bottom
+        anchors.bottom: parent.bottom
+        currentIndex: bar.currentIndex
+
+        Options {
+            id: options
+        }
+        Calibrate {
+            id: calibrate
+            options: options
+            runner: main.runner
+        }
+        Practice {
+            id: practice
+            options: options
+            runner: main.runner
+        }
+        Test {
+            id: test
+            options: options
+            runner: main.runner
+        }
+        About {
+            id: about
+        }
     }
 }

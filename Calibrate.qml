@@ -2,9 +2,7 @@ import QtQuick 2.7
 
 import "controls" as Neus
 
-Rectangle {
-    color: "#e0d8c1"
-
+Item {
     property var options
     property var runner
 
