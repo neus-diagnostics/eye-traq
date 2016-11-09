@@ -8,7 +8,7 @@ Item {
     property var gap: true
     property var overlap: true
     property var start_time: 0
-    property var step: 0
+    property var next: 0
     property var task_data: []
 
     function run(dir, offset, gap, overlap) {
@@ -26,13 +26,13 @@ Item {
         this.start_time = 2500 + Math.random() * 1000
 
         task_data = []
-        step = 0
+        next = 0
 
         run_step()
     }
 
     function run_step() {
-        switch (step) {
+        switch (next) {
             case 0:
                 target.visible = false
                 fixation.visible = true
@@ -44,7 +44,7 @@ Item {
                     timer.interval = 200
                     break
                 } else {
-                    step++  // fall through if no gap
+                    next++  // fall through if no gap
                 }
             case 2:
                 fixation.visible = overlap
@@ -63,7 +63,7 @@ Item {
         timer.start()
 
         task_data.push([fixation.visible, target.visible])
-        step++
+        next++
     }
 
     function abort() {
