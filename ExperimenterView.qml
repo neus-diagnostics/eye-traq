@@ -40,6 +40,14 @@ Rectangle {
         anchors.bottom: parent.bottom
         currentIndex: bar.currentIndex
 
+        onCurrentIndexChanged: {
+            var item = children[currentIndex]
+            if (item == practice || item == test)
+                eyetracker.command("start_tracking")
+            else
+                eyetracker.command("stop_tracking")
+        }
+
         Options {
             id: options
         }

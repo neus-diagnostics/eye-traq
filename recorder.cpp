@@ -8,8 +8,8 @@
 #include <QUrl>
 #include <QtDebug>
 
-Recorder::Recorder(Eyetracker &eyetracker)
-	: QObject{}, eyetracker{eyetracker}, logfile{nullptr}
+Recorder::Recorder()
+	: QObject{}, logfile{nullptr}
 {
 }
 
@@ -78,15 +78,11 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 		logfile = nullptr;
 		return;
 	}
-
-	eyetracker.command("start_tracking");
 }
 
 void Recorder::stop()
 {
 	if (logfile) {
-		eyetracker.command("stop_tracking");
-
 		const auto &timestamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
 		QTextStream{logfile} << timestamp << '\t'
 		                 << "end" << '\n';

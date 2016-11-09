@@ -38,31 +38,30 @@ int main(int argc, char *argv[])
 #ifdef USE_TOBII
 	tetio::Library::init();
 #endif
+
 	// construct global objects
+	Eyetracker eyetracker;
+	Recorder recorder;
+
+	// set up the window
 	QQuickView view;
 	view.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
 	view.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
-
-	Eyetracker eyetracker;
 	view.rootContext()->setContextProperty("eyetracker", &eyetracker);
-
-	Recorder recorder{eyetracker};
 	view.rootContext()->setContextProperty("recorder", &recorder);
 
-	// set up the window
 	view.setSource(QUrl{"qrc:/Main.qml"});
-	if (view.status() == QQuickView::Ready) {
-		view.create();
-	} else {
+	if (view.status() != QQuickView::Ready) {
 		for (const auto &e : view.errors())
 			qWarning() << e;
 		return 1;
 	}
+	view.create();
+	view.setFlags(Qt::FramelessWindowHint);
+	view.setGeometry(first_screen->virtualGeometry());
 
 	// QT BUG: ensure window gets painted when mapped
 	QObject::connect(&view, &QQuickView::activeChanged, &view, &QQuickView::update);
-	view.setFlags(Qt::FramelessWindowHint);
-	view.setGeometry(first_screen->virtualGeometry());
 	view.show();
 
 	QObject *runner = view.rootObject()->findChild<QObject*>("runner");
