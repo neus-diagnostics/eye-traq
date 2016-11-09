@@ -22,6 +22,7 @@ Item {
     }
 
     anchors.fill: parent
+    clip: true
 
     Component {
         id: point
