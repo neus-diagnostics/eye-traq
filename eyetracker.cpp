@@ -50,8 +50,12 @@ bool Eyetracker::command(const QString &what)
 			tracker->startTracking();
 		else if (what == "stop_tracking")
 			tracker->stopTracking();
+	} catch (tobii::sdk::cpp::EyeTrackerException &e) {
+		qWarning() << "eyetracker error while running" << what
+			   << "; error code" << e.getErrorCode();
+		return false;
 	} catch (...) {
-		qDebug() << "got exception when running" << what;
+		qWarning() << "eyetracker error while running" << what;
 		return false;
 	}
 #endif
