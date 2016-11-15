@@ -10,43 +10,54 @@ Rectangle {
 
     color: "#e0d8c1"
 
-    TabBar {
-        id: bar
-        width: parent.width
-        height: 90
+    Rectangle {
+        id: menu
+        anchors { top: parent.top; bottom: parent.bottom; left: parent.left }
+        width: parent.width/5
+        color: "#ece6da"
 
-        background: Rectangle { color: "#ece6da" }
+        ColumnLayout {
+            anchors.centerIn: parent
+            width: parent.width * 0.6
+            spacing: 20
 
-        Neus.TabButton {
-            text: qsTr("Options")
-        }
-        Neus.TabButton {
-            text: qsTr("Calibrate")
-        }
-        Neus.TabButton {
-            text: qsTr("Practice")
-        }
-        Neus.TabButton {
-            text: qsTr("Test")
-        }
-        Neus.TabButton {
-            text: qsTr("About")
+            Neus.Button {
+                text: qsTr("Options")
+                Layout.fillWidth: true
+                onClicked: view.currentIndex = 0
+            }
+            Neus.Button {
+                text: qsTr("Calibrate")
+                Layout.fillWidth: true
+                onClicked: view.currentIndex = 1
+            }
+            Neus.Button {
+                text: qsTr("Practice")
+                Layout.fillWidth: true
+                onClicked: view.currentIndex = 2
+            }
+            Neus.Button {
+                text: qsTr("Test")
+                Layout.fillWidth: true
+                onClicked: view.currentIndex = 3
+            }
+            Neus.Button {
+                text: qsTr("About")
+                Layout.fillWidth: true
+                onClicked: view.currentIndex = 4
+            }
         }
     }
 
     StackLayout {
-        width: parent.width
-        anchors.top: bar.bottom
-        anchors.bottom: parent.bottom
-        currentIndex: bar.currentIndex
-
-        onCurrentIndexChanged: {
-            var item = children[currentIndex]
-            if (item == practice || item == test)
-                eyetracker.command("start_tracking")
-            else
-                eyetracker.command("stop_tracking")
+        id: view
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: menu.right
+            right: parent.right
         }
+
 
         Options {
             id: options
@@ -60,11 +71,13 @@ Rectangle {
             id: practice
             options: options
             runner: main.runner
+            onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
         }
         Test {
             id: test
             options: options
             runner: main.runner
+            onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
         }
         About {
             id: about
