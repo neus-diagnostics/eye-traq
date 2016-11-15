@@ -10,16 +10,8 @@ Item {
     property var options
     property var runner
 
-    function start(testfile) {
-        runner.start(testfile)
-    }
-
-    function stop() {
-        runner.stop()
-    }
-
     Component.onCompleted: {
-        onVisibleChanged.connect(stop)
+        onVisibleChanged.connect(runner.stop)
     }
 
     Grid {
@@ -40,7 +32,7 @@ Item {
             text: qsTr("Start")
             height: 40
             enabled: runner.state != "running"
-            onClicked: start("file:tests/practice-pursuit")
+            onClicked: runner.start("file:tests/practice-pursuit")
         }
 
         Label { text: qsTr("Pro-saccade task (horizontal)") }
@@ -49,7 +41,7 @@ Item {
             text: qsTr("Start")
             height: 40
             enabled: runner.state != "running"
-            onClicked: start("file:tests/practice-prosaccade-horizontal")
+            onClicked: runner.start("file:tests/practice-prosaccade-horizontal")
         }
 
         Label { text: qsTr("Pro-saccade task (vertical)") }
@@ -58,7 +50,7 @@ Item {
             text: qsTr("Start")
             height: 40
             enabled: runner.state != "running"
-            onClicked: start("file:tests/practice-prosaccade-vertical")
+            onClicked: runner.start("file:tests/practice-prosaccade-vertical")
         }
 
         Label { text: qsTr("Anti-saccade task (horizontal)") }
@@ -67,7 +59,7 @@ Item {
             text: qsTr("Start")
             height: 40
             enabled: runner.state != "running"
-            onClicked: start("file:tests/practice-antisaccade-horizontal")
+            onClicked: runner.start("file:tests/practice-antisaccade-horizontal")
         }
 
         Label { text: qsTr("Visual paired comparison") }
@@ -76,7 +68,7 @@ Item {
             text: qsTr("Start")
             height: 40
             enabled: runner.state != "running"
-            onClicked: start("file:tests/practice-imgpair")
+            onClicked: runner.start("file:tests/practice-imgpair")
         }
     }
 
