@@ -9,6 +9,7 @@ Item {
 
     property var options
     property var runner
+    property alias gaze: gaze
 
     Component.onCompleted: {
         onVisibleChanged.connect(runner.stop)
@@ -82,5 +83,7 @@ Item {
         sourceItem: main.runner
         width: parent.width * 0.6
         height: parent.height * 0.6
+
+        Gaze { id: gaze }
     }
 }

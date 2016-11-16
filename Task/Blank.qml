@@ -12,10 +12,6 @@ Item {
         timer.stop()
     }
 
-    function get_data() {
-        return []
-    }
-
     Timer {
         id: timer
         repeat: false

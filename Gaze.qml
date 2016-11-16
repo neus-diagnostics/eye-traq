@@ -7,18 +7,11 @@ import QtQuick.Window 2.2
 Item {
     id: screen
 
-    function run(x, y) {
+    function run(p) {
         // create a point and destroy it after 500 ms
-        x = Number(x) * Screen.width
-        y = Number(y) * Screen.height
+        var x = Number(p.x) * width
+        var y = Number(p.y) * height
         point.createObject(screen, {"x": x, "y": y}).destroy(500)
-    }
-
-    function abort() {
-    }
-
-    function get_data() {
-        return []
     }
 
     anchors.fill: parent

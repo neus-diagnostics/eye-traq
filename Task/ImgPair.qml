@@ -16,10 +16,6 @@ Item {
         timer.stop()
     }
 
-    function get_data() {
-        return []
-    }
-
     Row {
         anchors.centerIn: parent
         spacing: screen.width / 6

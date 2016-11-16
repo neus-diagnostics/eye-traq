@@ -10,6 +10,11 @@ Rectangle {
 
     color: "#e0d8c1"
 
+    Connections {
+        target: eyetracker
+        onGazePoint: view.gaze(point)
+    }
+
     Rectangle {
         id: menu
         anchors { top: parent.top; bottom: parent.bottom; left: parent.left }
@@ -51,13 +56,19 @@ Rectangle {
 
     StackLayout {
         id: view
+
+        function gaze(point) {
+            var item = children[currentIndex]
+            if (item == practice || item == test)
+                    item.gaze.run(point)
+        }
+
         anchors {
             top: parent.top
             bottom: parent.bottom
             left: menu.right
             right: parent.right
         }
-
 
         Options {
             id: options

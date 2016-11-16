@@ -14,10 +14,6 @@ Item {
         timer.stop()
     }
 
-    function get_data() {
-        return []
-    }
-
     Label {
         id: message
         anchors.centerIn: parent

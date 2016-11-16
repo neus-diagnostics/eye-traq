@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QMetaType>
 #include <QObject>
 #include <QQuickItem>
 #include <QQuickView>
@@ -13,6 +14,7 @@ namespace tetio = tobii::sdk::cpp;
 #endif
 
 #include "eyetracker.h"
+#include "gaze.h"
 #include "player.h"
 #include "recorder.h"
 
@@ -20,6 +22,8 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
+
+	qRegisterMetaType<Gaze>("Gaze");
 
 	if (QFontDatabase::addApplicationFont(":/fonts/lato-regular.ttf") == -1 ||
 	    QFontDatabase::addApplicationFont(":/fonts/lato-bold.ttf") == -1)
@@ -42,6 +46,8 @@ int main(int argc, char *argv[])
 	// construct global objects
 	Eyetracker eyetracker;
 	Recorder recorder;
+	QObject::connect(&eyetracker, &Eyetracker::gaze,
+	                 &recorder, &Recorder::write_gaze);
 
 	// set up the window
 	QQuickView view;
@@ -63,11 +69,6 @@ int main(int argc, char *argv[])
 	// QT BUG: ensure window gets painted when mapped
 	QObject::connect(&view, &QQuickView::activeChanged, &view, &QQuickView::update);
 	view.show();
-
-	QObject *runner = view.rootObject()->findChild<QObject*>("runner");
-
-	QObject::connect(&eyetracker, &Eyetracker::gazed, &recorder, &Recorder::gaze);
-	QObject::connect(&eyetracker, SIGNAL(gazed(QString, QString)), runner, SLOT(write_data()));
 
 	return app.exec();
 }

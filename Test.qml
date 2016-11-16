@@ -7,6 +7,7 @@ import "controls" as Neus
 Item {
     property var options
     property var runner
+    property alias gaze: gaze
 
     function start() {
         recorder.start(options.testFile, options.participant)
@@ -34,6 +35,8 @@ Item {
             sourceItem: runner
             width: parent.width * 0.8
             height: parent.height * 0.8
+
+            Gaze { id: gaze }
         }
 
         Neus.Button {

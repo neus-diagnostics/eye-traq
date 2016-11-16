@@ -4,12 +4,12 @@ Item {
     id: screen
 
     signal done
+    signal info(string text)
 
     property var gap: true
     property var overlap: true
     property var start_time: 0
     property var next: 0
-    property var task_data: []
 
     function run(dir, offset, gap, overlap) {
         offset = Number(offset)
@@ -25,9 +25,7 @@ Item {
         this.overlap = (overlap == "true")
         this.start_time = 2500 + Math.random() * 1000
 
-        task_data = []
         next = 0
-
         run_step()
     }
 
@@ -62,18 +60,12 @@ Item {
         }
         timer.start()
 
-        task_data.push([fixation.visible, target.visible])
+        info(Date.now() + '\tdata\t' + fixation.visible + '\t' + target.visible)
         next++
     }
 
     function abort() {
         timer.stop()
-    }
-
-    function get_data() {
-        if (task_data.length > 0)
-            return task_data.shift()
-        return []
     }
 
     anchors.fill: parent

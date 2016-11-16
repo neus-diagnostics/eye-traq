@@ -49,13 +49,6 @@ Item {
         timer.stop()
     }
 
-    function get_data() {
-        return [
-            (stimulus.x + stimulus.width/2) / screen.width,
-            (stimulus.y + stimulus.height/2) / screen.height,
-        ]
-    }
-
     anchors.fill: parent
 
     Rectangle {

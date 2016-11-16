@@ -21,7 +21,7 @@ Rectangle {
 
     function step() {
         if (next < test.length) {
-            recorder.write('test' + '\t' + test[next])
+            recorder.write(Date.now() + '\ttest\t' + test[next])
             var tokens = test[next].split('\t')
             next++
             run(tokens[0], tokens.slice(1))
@@ -63,16 +63,7 @@ Rectangle {
                 tasks.currentIndex = 5
                 calibrator.run(args[0], args[1], args[2], args[3])
                 break;
-            case "gaze":
-                gaze.run(args[0], args[1], args[2])
-                break;
         }
-    }
-
-    function write_data() {
-        var data = tasks.children[tasks.currentIndex].get_data()
-        if (data.length > 0)
-            recorder.write('data' + '\t' + data.join('\t'))
     }
 
     color: "black"
@@ -83,15 +74,33 @@ Rectangle {
         anchors.fill: parent
         focus: true
 
-        Blank { id: blank; onDone: step() }
-        ImgPair { id: imgpair; onDone: step() }
-        Pursuit { id: pursuit; onDone: step() }
-        Saccade { id: saccade; onDone: step() }
-        ShowTxt { id: showtxt; onDone: step() }
-        Calibrator { id: calibrator; onDone: step() }
+        Blank {
+            id: blank
+            onDone: step()
+        }
+        ImgPair {
+            id: imgpair
+            onDone: step()
+        }
+        Pursuit {
+            id: pursuit
+            onDone: step()
+            onInfo: recorder.write(text)
+        }
+        Saccade {
+            id: saccade
+            onDone: step()
+            onInfo: recorder.write(text)
+        }
+        ShowTxt {
+            id: showtxt
+            onDone: step()
+        }
+        Calibrator {
+            id: calibrator
+            onDone: step()
+        }
     }
-
-    Gaze { id: gaze }
 
     states: [
         State { name: "running" }

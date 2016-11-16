@@ -4,6 +4,7 @@ Item {
     id: screen
 
     signal done
+    signal info(string text)
 
     function run(coord, offset, time, period) {
         time = Number(time)
@@ -31,22 +32,16 @@ Item {
         right.duration = period / 2
 
         stimulus.visible = true
-        timer.interval = time
+        controlTimer.interval = time
 
         anim.start()
-        timer.start()
+        controlTimer.start()
+        infoTimer.start()
     }
 
     function abort() {
         anim.stop()
-        timer.stop()
-    }
-
-    function get_data() {
-        return [
-            (stimulus.x + stimulus.width/2) / screen.width,
-            (stimulus.y + stimulus.height/2) / screen.height,
-        ]
+        controlTimer.stop()
     }
 
     anchors.fill: parent
@@ -84,8 +79,21 @@ Item {
     }
 
     Timer {
-        id: timer
+        id: controlTimer
         repeat: false
-        onTriggered: { anim.stop(); done() }
+        onTriggered: { infoTimer.stop(); anim.stop(); done() }
+    }
+
+    Timer {
+        id: infoTimer
+        interval: 1000/60
+        repeat: true
+        triggeredOnStart: true
+
+        onTriggered: {
+            info(Date.now() + '\tdata\t'
+                 + ((stimulus.x + stimulus.width/2) / screen.width) + '\t'
+                 + ((stimulus.y + stimulus.height/2) / screen.height) + '\t')
+        }
     }
 }

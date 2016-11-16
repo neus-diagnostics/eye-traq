@@ -6,7 +6,11 @@
 
 #ifdef USE_TOBII
 #include <tobii/sdk/cpp/EyeTrackerBrowserFactory.hpp>
+#include <tobii/sdk/cpp/GazeDataItem.hpp>
+namespace tetio = tobii::sdk::cpp;
 #endif
+
+#include "gaze.h"
 
 Eyetracker::Eyetracker()
 	: QObject{}
@@ -124,37 +128,12 @@ void Eyetracker::handle_error(uint32_t error)
 	tracker = nullptr;
 }
 
-void Eyetracker::handle_gaze(tetio::GazeDataItem::pointer_t gaze)
+void Eyetracker::handle_gaze(tetio::GazeDataItem::pointer_t tobii_gaze)
 {
-	const auto &gaze_screen_l = gaze->leftGazePoint2d;
-	const auto &eye_ucs_l = gaze->leftEyePosition3d;
-	const auto &eye_track_l = gaze->leftEyePosition3dRelative;
-	const auto &gaze_ucs_l = gaze->leftEyePosition3dRelative;
-
-	const auto &gaze_screen_r = gaze->rightGazePoint2d;
-	const auto &eye_ucs_r = gaze->rightEyePosition3d;
-	const auto &eye_track_r = gaze->rightEyePosition3dRelative;
-	const auto &gaze_ucs_r = gaze->rightEyePosition3dRelative;
-
-	QString left;
-	QTextStream{&left} << 
-                gaze->timestamp << '\t' << "left" << '\t' << gaze->leftValidity << '\t' <<
-                gaze_screen_l.x << '\t' << gaze_screen_l.y << '\t' <<
-                gaze->leftPupilDiameter << '\t' <<
-                eye_ucs_l.x << '\t' << eye_ucs_l.y << '\t' << eye_ucs_l.z << '\t' <<
-                eye_track_l.x << '\t' << eye_track_l.y << '\t' << eye_track_l.z << '\t' <<
-                gaze_ucs_l.x << '\t' << gaze_ucs_l.y << '\t' << gaze_ucs_l.z;
-
-	QString right;
-	QTextStream{&right} << 
-                gaze->timestamp << '\t' << "right" << '\t' << gaze->rightValidity << '\t' <<
-                gaze_screen_r.x << '\t' << gaze_screen_r.y << '\t' <<
-                gaze->leftPupilDiameter << '\t' <<
-                eye_ucs_r.x << '\t' << eye_ucs_r.y << '\t' << eye_ucs_r.z << '\t' <<
-                eye_track_r.x << '\t' << eye_track_r.y << '\t' << eye_track_r.z << '\t' <<
-                gaze_ucs_r.x << '\t' << gaze_ucs_r.y << '\t' << gaze_ucs_r.z;
-
-	emit gazed(left, right);
+	const Gaze g{tobii_gaze};
+	emit gaze(g);
+	emit gazePoint(g.screen_l);
+	emit gazePoint(g.screen_r);
 }
 
 void Eyetracker::on_browsed(BrowseEvent *event)

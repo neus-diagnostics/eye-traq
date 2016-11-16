@@ -5,11 +5,12 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QPointF>
+#include <QTimer>
 #include <QVariant>
 
 #ifdef USE_TOBII
 #include <QThread>
-#include <QTimer>
 
 #include <tobii/sdk/cpp/GazeDataItem.hpp>
 #include <tobii/sdk/cpp/EyeTracker.hpp>
@@ -18,6 +19,8 @@
 #include <tobii/sdk/cpp/EyeTrackerInfo.hpp>
 #include <tobii/sdk/cpp/MainLoop.hpp>
 namespace tetio = tobii::sdk::cpp;
+
+#include "gaze.h"
 
 struct BrowseEvent : QObject {
 	BrowseEvent(tetio::EyeTrackerBrowser::event_type_t type,
@@ -54,7 +57,8 @@ public slots:
 signals:
 	void connected();
 	void disconnected();
-	void gazed(const QString &left, const QString &right);
+	void gaze(const Gaze &g);
+	void gazePoint(const QPointF &point);
 
 #ifdef USE_TOBII
 	void browsed(BrowseEvent *event);
@@ -67,7 +71,7 @@ private:
 	void handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
 	                   tetio::EyeTrackerInfo::pointer_t info);
 	void handle_error(uint32_t error);
-	void handle_gaze(tetio::GazeDataItem::pointer_t gaze);
+	void handle_gaze(tetio::GazeDataItem::pointer_t tobii_gaze);
 
 	MainLoop main_loop;
 
