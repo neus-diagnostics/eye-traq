@@ -6,6 +6,7 @@ import "controls" as Neus
 
 Rectangle {
     id: main
+
     property var runner
 
     color: "#e0d8c1"
@@ -54,15 +55,7 @@ Rectangle {
         }
     }
 
-    StackLayout {
-        id: view
-
-        function gaze(point) {
-            var item = children[currentIndex]
-            if (item == practice || item == test)
-                    item.gaze.run(point)
-        }
-
+    Page {
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -70,28 +63,59 @@ Rectangle {
             right: parent.right
         }
 
-        Options {
-            id: options
+        header: Row {
+            layoutDirection: Qt.RightToLeft
+            rightPadding: 10
+            spacing: 5
+
+            Button {
+                text: "❌"  // U+274c "close"
+                font.pixelSize: 32
+                background: Rectangle { color: "transparent" }
+                onClicked: Qt.quit()
+            }
+            Button {
+                text: "⚊"  // U+268a "minimize"
+                font.pixelSize: 32
+                background: Rectangle { color: "transparent" }
+                // TODO make the button do something
+            }
         }
-        Calibrate {
-            id: calibrate
-            options: options
-            runner: main.runner
-        }
-        Practice {
-            id: practice
-            options: options
-            runner: main.runner
-            onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
-        }
-        Test {
-            id: test
-            options: options
-            runner: main.runner
-            onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
-        }
-        About {
-            id: about
+
+        StackLayout {
+            id: view
+
+            function gaze(point) {
+                var item = children[currentIndex]
+                if (item == practice || item == test)
+                        item.gaze.run(point)
+            }
+
+            anchors.fill: parent
+
+            Options {
+                id: options
+            }
+            Calibrate {
+                id: calibrate
+                options: options
+                runner: main.runner
+            }
+            Practice {
+                id: practice
+                options: options
+                runner: main.runner
+                onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
+            }
+            Test {
+                id: test
+                options: options
+                runner: main.runner
+                onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
+            }
+            About {
+                id: about
+            }
         }
     }
 }

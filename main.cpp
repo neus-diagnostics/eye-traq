@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	    QFontDatabase::addApplicationFont(":/fonts/lato-bold.ttf") == -1)
 		qWarning() << "Could not load fonts.";
 
-	// get primary and secondary screen
+	// find primary and secondary screen
 	QScreen* first_screen = app.primaryScreen();
 	QScreen* second_screen = first_screen;
 	for (auto screen : app.screens()) {
@@ -67,7 +67,10 @@ int main(int argc, char *argv[])
 	view.setGeometry(first_screen->virtualGeometry());
 
 	// QT BUG: ensure window gets painted when mapped
-	QObject::connect(&view, &QQuickView::activeChanged, &view, &QQuickView::update);
+	QObject::connect(&view, &QQuickView::activeChanged,
+	                 &view, &QQuickView::update);
+	QObject::connect(view.engine(), &QQmlEngine::quit,
+	                 &app, &QCoreApplication::quit);
 	view.show();
 
 	return app.exec();
