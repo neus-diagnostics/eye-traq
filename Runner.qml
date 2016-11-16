@@ -21,12 +21,14 @@ Rectangle {
     }
 
     function step() {
+        var timestamp = Date.now()
         if (next < test.length) {
-            recorder.write(Date.now() + '\ttest\t' + test[next])
+            recorder.write(timestamp + '\ttest\t' + test[next])
             var tokens = test[next].split('\t')
             next++
             run(tokens[0], tokens.slice(1))
         } else {
+            recorder.write(timestamp + '\ttest\tend')
             stop()
             done()
         }
