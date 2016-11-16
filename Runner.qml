@@ -21,14 +21,13 @@ Rectangle {
     }
 
     function step() {
-        var timestamp = Date.now()
         if (next < test.length) {
-            recorder.write(timestamp + '\ttest\t' + test[next])
+            recorder.write(eyetracker.time() + '\ttest\t' + test[next])
             var tokens = test[next].split('\t')
             next++
             run(tokens[0], tokens.slice(1))
         } else {
-            recorder.write(timestamp + '\ttest\tend')
+            recorder.write(eyetracker.time() + '\ttest\tend')
             stop()
             done()
         }

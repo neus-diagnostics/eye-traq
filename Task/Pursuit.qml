@@ -42,6 +42,7 @@ Item {
     function abort() {
         anim.stop()
         controlTimer.stop()
+        infoTimer.stop()
     }
 
     anchors.fill: parent
@@ -91,7 +92,7 @@ Item {
         triggeredOnStart: true
 
         onTriggered: {
-            info(Date.now() + '\tdata\t'
+            info(eyetracker.time() + '\tdata\t'
                  + ((stimulus.x + stimulus.width/2) / screen.width) + '\t'
                  + ((stimulus.y + stimulus.height/2) / screen.height) + '\t')
         }

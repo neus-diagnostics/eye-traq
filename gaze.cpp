@@ -16,14 +16,14 @@ static inline QVector3D point3_to_qvec(const tetio::Point3d &p)
 	};
 }
 
+// make qRegisterMetaType happy
 Gaze::Gaze()
-	: local_timestamp{QDateTime::currentDateTimeUtc().toMSecsSinceEpoch()}
 {
 }
 
-Gaze::Gaze(tetio::GazeDataItem::pointer_t gaze)
-	: timestamp{gaze->timestamp},
-	  local_timestamp{QDateTime::currentDateTimeUtc().toMSecsSinceEpoch()},
+Gaze::Gaze(tetio::GazeDataItem::pointer_t gaze, qint64 time)
+	: time{time},
+	  eyetracker_time{gaze->timestamp},
 
 	  valid_l{gaze->leftValidity},
 	  pupil_l{gaze->leftPupilDiameter},

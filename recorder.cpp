@@ -100,8 +100,8 @@ void Recorder::write_gaze(const Gaze &gaze)
 	if (!logfile)
 		return;
 	QTextStream{logfile}
-	       << gaze.local_timestamp << "\tgaze\tleft\t"
-	       << gaze.timestamp << '\t'
+	       << gaze.time << "\tgaze\tleft\t"
+	       << gaze.eyetracker_time << '\t'
 	       << gaze.valid_l << '\t'
 	       << gaze.screen_l.x() << '\t' << gaze.screen_l.y() << '\t'
 	       << gaze.pupil_l << '\t'
@@ -109,8 +109,8 @@ void Recorder::write_gaze(const Gaze &gaze)
 	       << gaze.eye_track_l.x() << '\t' << gaze.eye_track_l.y() << '\t' << gaze.eye_track_l.z() << '\t'
 	       << gaze.ucs_l.x() << '\t' << gaze.ucs_l.y() << '\t' << gaze.ucs_l.z() << '\n'
 
-	       << gaze.local_timestamp << "\tgaze\tright\t"
-	       << gaze.timestamp << '\t'
+	       << gaze.time << "\tgaze\tright\t"
+	       << gaze.eyetracker_time << '\t'
 	       << gaze.valid_r << '\t'
 	       << gaze.screen_r.x() << '\t' << gaze.screen_r.y() << '\t'
 	       << gaze.pupil_r << '\t'

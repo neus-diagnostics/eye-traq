@@ -60,7 +60,7 @@ Item {
         }
         timer.start()
 
-        info(Date.now() + '\tdata\t' + fixation.visible + '\t' + target.visible)
+        info(eyetracker.time() + '\tdata\t' + fixation.visible + '\t' + target.visible)
         next++
     }
 

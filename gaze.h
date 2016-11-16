@@ -9,10 +9,10 @@ namespace tetio = tobii::sdk::cpp;
 
 struct Gaze {
 	Gaze();
-	Gaze(tetio::GazeDataItem::pointer_t gaze);
+	Gaze(tetio::GazeDataItem::pointer_t gaze, qint64 time);
 
-	quint64 timestamp;
-	qint64 local_timestamp;
+	qint64 time;
+	quint64 eyetracker_time;
 
 	unsigned int valid_l;
 	float pupil_l;

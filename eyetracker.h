@@ -53,6 +53,7 @@ public slots:
 	bool command(const QString &what);
 	bool calibrate(const QPointF &point);
 	QList<QVariant> get_calibration();
+	qint64 time();
 
 signals:
 	void connected();
@@ -71,13 +72,17 @@ private:
 	void handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
 	                   tetio::EyeTrackerInfo::pointer_t info);
 	void handle_error(uint32_t error);
-	void handle_gaze(tetio::GazeDataItem::pointer_t tobii_gaze);
+	void handle_sync(tetio::SyncState::pointer_t sync_state);
+	void handle_gaze(tetio::GazeDataItem::pointer_t gaze_data);
 
 	MainLoop main_loop;
 
 	tetio::EyeTrackerBrowser::pointer_t browser;
 	tetio::EyeTrackerFactory::pointer_t factory;
 	tetio::EyeTracker::pointer_t tracker;
+
+	tetio::Clock clock;
+	tetio::SyncManager::pointer_t sync_manager;
 
 	QTimer connection_timer;
 #endif

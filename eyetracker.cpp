@@ -108,6 +108,10 @@ void Eyetracker::try_connect()
 		tracker->addGazeDataReceivedListener(
 			boost::bind(&Eyetracker::handle_gaze, this, _1));
 
+		sync_manager = factory->createSyncManager(clock, main_loop.thread);
+		sync_manager->addSyncStateChangedListener(
+			boost::bind(&Eyetracker::handle_sync, this, _1));
+
 		connection_timer.stop();
 		factory = nullptr;
 		emit connected();
@@ -128,9 +132,19 @@ void Eyetracker::handle_error(uint32_t error)
 	tracker = nullptr;
 }
 
-void Eyetracker::handle_gaze(tetio::GazeDataItem::pointer_t tobii_gaze)
+void Eyetracker::handle_sync(tetio::SyncState::pointer_t sync_state)
 {
-	const Gaze g{tobii_gaze};
+	// TODO disable tests until clock is synced
+}
+
+qint64 Eyetracker::time()
+{
+	return clock.getTime();
+}
+
+void Eyetracker::handle_gaze(tetio::GazeDataItem::pointer_t gaze_data)
+{
+	const Gaze g{gaze_data, sync_manager->remoteToLocal(gaze_data->timestamp)};
 	emit gaze(g);
 	emit gazePoint(g.screen_l);
 	emit gazePoint(g.screen_r);
