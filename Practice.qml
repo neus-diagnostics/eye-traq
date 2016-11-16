@@ -29,46 +29,41 @@ Item {
 
         Label { text: qsTr("Smooth pursuit") }
         Neus.Button {
-            id: pursuit
             text: qsTr("Start")
             height: 40
-            enabled: runner.state != "running"
+            enabled: !runner.running
             onClicked: runner.start("file:tests/practice-pursuit")
         }
 
         Label { text: qsTr("Pro-saccade task (horizontal)") }
         Neus.Button {
-            id: pstX
             text: qsTr("Start")
             height: 40
-            enabled: runner.state != "running"
+            enabled: !runner.running
             onClicked: runner.start("file:tests/practice-prosaccade-horizontal")
         }
 
         Label { text: qsTr("Pro-saccade task (vertical)") }
         Neus.Button {
-            id: pstY
             text: qsTr("Start")
             height: 40
-            enabled: runner.state != "running"
+            enabled: !runner.running
             onClicked: runner.start("file:tests/practice-prosaccade-vertical")
         }
 
         Label { text: qsTr("Anti-saccade task (horizontal)") }
         Neus.Button {
-            id: astX
             text: qsTr("Start")
             height: 40
-            enabled: runner.state != "running"
+            enabled: !runner.running
             onClicked: runner.start("file:tests/practice-antisaccade-horizontal")
         }
 
         Label { text: qsTr("Visual paired comparison") }
         Neus.Button {
-            id: vpc
             text: qsTr("Start")
             height: 40
-            enabled: runner.state != "running"
+            enabled: !runner.running
             onClicked: runner.start("file:tests/practice-imgpair")
         }
     }

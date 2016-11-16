@@ -5,17 +5,18 @@ import QtQuick.Layouts 1.3
 import "Task"
 
 Rectangle {
+    property bool running: false
     property var test: []
     property var next: 0
 
     signal done
 
     function start(testfile) {
-        if (state == "running")
+        if (running)
             stop()
         test = recorder.loadTest(testfile)
         next = 0
-        state = "running"
+        running = true
         step()
     }
 
@@ -34,7 +35,7 @@ Rectangle {
     function stop() {
         tasks.children[tasks.currentIndex].abort()
         tasks.currentIndex = 0
-        state = ""
+        running = false
     }
 
     function run(name, args) {
@@ -101,8 +102,4 @@ Rectangle {
             onDone: step()
         }
     }
-
-    states: [
-        State { name: "running" }
-    ]
 }

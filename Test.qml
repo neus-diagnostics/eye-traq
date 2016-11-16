@@ -42,8 +42,8 @@ Item {
         Neus.Button {
             id: control
             anchors.horizontalCenter: parent.horizontalCenter
-            text: runner.state != "running" ? qsTr("Start") : qsTr("Stop")
-            onClicked: runner.state != "running" ? start() : stop()
+            text: runner.running ? qsTr("Stop") : qsTr("Start")
+            onClicked: runner.running ? stop() : start()
         }
     }
 }
