@@ -39,11 +39,20 @@ Item {
             Gaze { id: gaze }
         }
 
-        Neus.Button {
-            id: control
+        Row {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: runner.running ? qsTr("Stop") : qsTr("Start")
-            onClicked: runner.running ? stop() : start()
+            spacing: 20
+            Neus.Button {
+                text: runner.running ? qsTr("Stop") : qsTr("Start")
+                onClicked: runner.running ? stop() : start()
+            }
+
+            Neus.Button {
+                id: pause
+                text: runner.paused ? qsTr("Resume") : qsTr("Pause")
+                visible: runner.running
+                onClicked: runner.paused = !runner.paused
+            }
         }
     }
 }

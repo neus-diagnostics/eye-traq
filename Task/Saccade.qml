@@ -29,6 +29,18 @@ Item {
         run_step()
     }
 
+    function pause() {
+        timer.stop()
+    }
+
+    function unpause() {
+        timer.start()
+    }
+
+    function abort() {
+        timer.stop()
+    }
+
     function run_step() {
         switch (next) {
             case 0:
@@ -62,10 +74,6 @@ Item {
 
         info(eyetracker.time() + '\tdata\t' + fixation.visible + '\t' + target.visible)
         next++
-    }
-
-    function abort() {
-        timer.stop()
     }
 
     anchors.fill: parent
@@ -104,7 +112,14 @@ Item {
 
     Timer {
         id: timer
-        repeat: false
+        property date startedAt
+
+        onRunningChanged: {
+            if (running)
+                startedAt = new Date()
+            else
+                interval -= (new Date() - startedAt)
+        }
         onTriggered: run_step()
     }
 }

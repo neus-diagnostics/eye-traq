@@ -32,16 +32,30 @@ Item {
         right.duration = period / 2
 
         stimulus.visible = true
-        controlTimer.interval = time
+        timer.interval = time
 
         anim.start()
-        controlTimer.start()
+        timer.start()
         infoTimer.start()
+    }
+
+    function pause() {
+        if (timer.running) {
+            anim.pause()
+            timer.stop()
+        }
+    }
+
+    function unpause() {
+        if (!timer.running) {
+            timer.start()
+            anim.resume()
+        }
     }
 
     function abort() {
         anim.stop()
-        controlTimer.stop()
+        timer.stop()
         infoTimer.stop()
     }
 
@@ -80,8 +94,15 @@ Item {
     }
 
     Timer {
-        id: controlTimer
-        repeat: false
+        id: timer
+        property date startedAt
+
+        onRunningChanged: {
+            if (running)
+                startedAt = new Date()
+            else
+                interval -= (new Date() - startedAt)
+        }
         onTriggered: { infoTimer.stop(); anim.stop(); done() }
     }
 

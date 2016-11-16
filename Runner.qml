@@ -6,6 +6,7 @@ import "Task"
 
 Rectangle {
     property bool running: false
+    property bool paused: false
     property var test: []
     property var next: 0
 
@@ -16,7 +17,9 @@ Rectangle {
             stop()
         test = recorder.loadTest(testfile)
         next = 0
+        paused = false
         running = true
+        recorder.write(eyetracker.time() + '\ttest\tstarted')
         step()
     }
 
@@ -27,7 +30,7 @@ Rectangle {
             next++
             run(tokens[0], tokens.slice(1))
         } else {
-            recorder.write(eyetracker.time() + '\ttest\tend')
+            recorder.write(eyetracker.time() + '\ttest\tdone')
             stop()
             done()
         }
@@ -69,6 +72,18 @@ Rectangle {
     }
 
     color: "black"
+
+    onPausedChanged: {
+        if (!running)
+            return;
+        if (paused) {
+            recorder.write(eyetracker.time() + '\ttest\tpaused')
+            tasks.children[tasks.currentIndex].pause()
+        } else {
+            recorder.write(eyetracker.time() + '\ttest\tresumed')
+            tasks.children[tasks.currentIndex].unpause()
+        }
+    }
 
     StackLayout {
         id: tasks
