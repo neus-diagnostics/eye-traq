@@ -9,13 +9,13 @@
         <file>About.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
-        <file>Task/Task.qml</file>
-        <file>Task/Blank.qml</file>
-        <file>Task/Calibrator.qml</file>
-        <file>Task/ImgPair.qml</file>
-        <file>Task/Pursuit.qml</file>
-        <file>Task/Saccade.qml</file>
-        <file>Task/ShowTxt.qml</file>
+        <file>Tasks/Task.qml</file>
+        <file>Tasks/Blank.qml</file>
+        <file>Tasks/Calibrator.qml</file>
+        <file>Tasks/ImgPair.qml</file>
+        <file>Tasks/Pursuit.qml</file>
+        <file>Tasks/Saccade.qml</file>
+        <file>Tasks/ShowTxt.qml</file>
         <file>controls/Button.qml</file>
         <file>controls/TabButton.qml</file>
         <file>fonts/lato-bold.ttf</file>
