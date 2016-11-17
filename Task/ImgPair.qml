@@ -1,28 +1,15 @@
 import QtQuick 2.7
 
-Item {
+Task {
     id: screen
-
-    signal done
 
     function run(time, leftfile, rightfile) {
         left.source = "../images/" + leftfile
         right.source = "../images/" + rightfile
-        timer.interval = time
-        timer.start()
+        _run(time)
     }
 
-    function pause() {
-        timer.stop()
-    }
-
-    function unpause() {
-        timer.start()
-    }
-
-    function abort() {
-        timer.stop()
-    }
+    timer.onTriggered: done()
 
     Row {
         anchors.centerIn: parent
@@ -39,18 +26,5 @@ Item {
             height: screen.height / 2
             width: screen.width / 4
         }
-    }
-
-    Timer {
-        id: timer
-        property date startedAt
-
-        onRunningChanged: {
-            if (running)
-                startedAt = new Date()
-            else
-                interval -= (new Date() - startedAt)
-        }
-        onTriggered: done()
     }
 }

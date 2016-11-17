@@ -9,6 +9,7 @@
         <file>About.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
+        <file>Task/Task.qml</file>
         <file>Task/Blank.qml</file>
         <file>Task/Calibrator.qml</file>
         <file>Task/ImgPair.qml</file>

@@ -1,10 +1,7 @@
 import QtQuick 2.7
 
-Item {
+Task {
     id: screen
-
-    signal done
-    signal info(string text)
 
     property var gap: true
     property var overlap: true
@@ -29,29 +26,18 @@ Item {
         run_step()
     }
 
-    function pause() {
-        timer.stop()
-    }
-
-    function unpause() {
-        timer.start()
-    }
-
-    function abort() {
-        timer.stop()
-    }
-
     function run_step() {
+        var time = 0;
         switch (next) {
             case 0:
                 target.visible = false
                 fixation.visible = true
-                timer.interval = start_time
+                time = start_time
                 break
             case 1:
                 if (gap) {
                     fixation.visible = false
-                    timer.interval = 200
+                    time = 200
                     break
                 } else {
                     next++  // fall through if no gap
@@ -59,24 +45,24 @@ Item {
             case 2:
                 fixation.visible = overlap
                 target.visible = true
-                timer.interval = 1000
+                time = 1000
                 break
             case 3:
                 fixation.visible = true
                 target.visible = false
-                timer.interval = 8000 - (start_time + 1000 + (gap ? 200 : 0))
+                time = 8000 - (start_time + 1000 + (gap ? 200 : 0))
                 break
             case 4:
                 done()
                 return
         }
-        timer.start()
+        _run(time)
 
         info(eyetracker.time() + '\tdata\t' + fixation.visible + '\t' + target.visible)
         next++
     }
 
-    anchors.fill: parent
+    timer.onTriggered: run_step()
 
     Item {
         id: fixation
@@ -108,18 +94,5 @@ Item {
         height: 30
         radius: width / 2
         color: "white"
-    }
-
-    Timer {
-        id: timer
-        property date startedAt
-
-        onRunningChanged: {
-            if (running)
-                startedAt = new Date()
-            else
-                interval -= (new Date() - startedAt)
-        }
-        onTriggered: run_step()
     }
 }

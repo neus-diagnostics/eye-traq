@@ -1,13 +1,9 @@
 import QtQuick 2.7
 
-Item {
+Task {
     id: screen
 
-    signal done
-    signal info(string text)
-
     function run(coord, offset, time, period) {
-        time = Number(time)
         offset = Number(offset)
         period = Number(period)
 
@@ -27,39 +23,26 @@ Item {
                 stimulus.y = left.to
                 break
         }
-
         left.duration = period / 2
         right.duration = period / 2
-
         stimulus.visible = true
-        timer.interval = time
 
         anim.start()
-        timer.start()
         infoTimer.start()
-    }
-
-    function pause() {
-        if (timer.running) {
-            anim.pause()
-            timer.stop()
-        }
-    }
-
-    function unpause() {
-        if (!timer.running) {
-            timer.start()
-            anim.resume()
-        }
+        _run(time)
     }
 
     function abort() {
         anim.stop()
-        timer.stop()
         infoTimer.stop()
+        _abort()
     }
 
-    anchors.fill: parent
+    timer.onTriggered: {
+        infoTimer.stop()
+        anim.stop()
+        done()
+    }
 
     Rectangle {
         id: stimulus
@@ -71,6 +54,8 @@ Item {
 
         SequentialAnimation {
             id: anim
+
+            paused: running && !timer.running
             onStopped: stimulus.visible = false
 
             PauseAnimation { duration: 500 }
@@ -91,19 +76,6 @@ Item {
                 }
             }
         }
-    }
-
-    Timer {
-        id: timer
-        property date startedAt
-
-        onRunningChanged: {
-            if (running)
-                startedAt = new Date()
-            else
-                interval -= (new Date() - startedAt)
-        }
-        onTriggered: { infoTimer.stop(); anim.stop(); done() }
     }
 
     Timer {
