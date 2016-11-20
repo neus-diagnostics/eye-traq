@@ -1,3 +1,5 @@
+#include <exception>
+
 #include <QApplication>
 #include <QFontDatabase>
 #include <QQmlContext>
@@ -19,7 +21,7 @@ namespace tetio = tobii::sdk::cpp;
 #include "recorder.h"
 
 int main(int argc, char *argv[])
-{
+try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
 
@@ -72,6 +74,12 @@ int main(int argc, char *argv[])
 	QObject::connect(view.engine(), &QQmlEngine::quit,
 	                 &app, &QCoreApplication::quit);
 	view.show();
-
 	return app.exec();
+
+} catch (std::exception &e) {
+	qCritical() << "Critical error:" << e.what();
+	return 1;
+} catch (...) {
+	qCritical() << "Critical error";
+	return 1;
 }

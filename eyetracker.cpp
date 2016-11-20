@@ -1,6 +1,7 @@
 #include "eyetracker.h"
 
 #include <QTextStream>
+#include <QUdpSocket>
 #include <QVector4D>
 #include <QtDebug>
 
@@ -10,18 +11,24 @@
 namespace tetio = tobii::sdk::cpp;
 #endif
 
+#include <string>
 #include "gaze.h"
 
 Eyetracker::Eyetracker()
 	: QObject{}
 {
 #ifdef USE_TOBII
-	tracker = nullptr;
 	connection_timer.setInterval(500);
 	connection_timer.setSingleShot(false);
 
 	connect(this, &Eyetracker::browsed, this, &Eyetracker::on_browsed, Qt::QueuedConnection);
 	connect(&connection_timer, &QTimer::timeout, this, &Eyetracker::try_connect);
+
+	// if avahi is not running, bail out before creating the browser -
+	// browser does throw on start in this case, but segfaults for some
+	// (apparently boost-related) reason
+	if (QUdpSocket{}.bind(QHostAddress::LocalHost, 5353))
+		throw std::runtime_error{"avahi is not running"};
 
 	main_loop.start();
 	browser = tetio::EyeTrackerBrowserFactory::createBrowser(main_loop.thread);
@@ -54,16 +61,15 @@ bool Eyetracker::command(const QString &what)
 			tracker->startTracking();
 		else if (what == "stop_tracking")
 			tracker->stopTracking();
+		return true;
 	} catch (tobii::sdk::cpp::EyeTrackerException &e) {
 		qWarning() << "eyetracker error while running" << what
 			   << "; error code" << e.getErrorCode();
-		return false;
 	} catch (...) {
 		qWarning() << "eyetracker error while running" << what;
-		return false;
 	}
 #endif
-	return true;
+	return false;
 }
 
 bool Eyetracker::calibrate(const QPointF &point)
