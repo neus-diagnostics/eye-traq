@@ -55,7 +55,7 @@ public:
 public slots:
 	bool command(const QString &what);
 	bool calibrate(const QPointF &point);
-	QList<QVariant> get_calibration();
+	QVariantList get_calibration();
 	qint64 time();
 
 signals:

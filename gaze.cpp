@@ -1,20 +1,6 @@
 #include "gaze.h"
 
-#include <QDateTime>
-
-static inline QPointF point2_to_qpoint(const tetio::Point2d &p)
-{
-	return QPointF{static_cast<float>(p.x), static_cast<float>(p.y)};
-}
-
-static inline QVector3D point3_to_qvec(const tetio::Point3d &p)
-{
-	return QVector3D{
-		static_cast<float>(p.x),
-		static_cast<float>(p.y),
-		static_cast<float>(p.z)
-	};
-}
+#include "tobii.h"
 
 // make qRegisterMetaType happy
 Gaze::Gaze()

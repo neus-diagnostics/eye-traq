@@ -22,6 +22,7 @@ HEADERS += \
 	eyetracker.h \
 	gaze.h \
 	player.h \
-	recorder.h
+	recorder.h \
+	tobii.h
 
 RESOURCES += neus.qrc

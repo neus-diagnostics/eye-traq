@@ -6,7 +6,7 @@ Item {
     property var options
     property var runner
 
-    property var colors: ["#2bb673"]
+    property var colors: {"left": "#bd4b4b", "right": "#4b86bd"}
 
     function start() {
         plot.lines = []
@@ -23,15 +23,15 @@ Item {
     }
 
     function end(msg) {
-        var msg = "Calibration successful.";
+        var msg = "Calibration successful."
         if (!eyetracker.command("compute_calibration"))
-            msg = "Calibration failed.";
+            msg = "Calibration failed."
         stop()
 
         var calibration = eyetracker.get_calibration();
         for (var i = 0; i < calibration.length; i++) {
-            var line = calibration[i];
-            plot.addLine(Qt.point(line.x, line.y), Qt.point(line.z, line.w), colors[i]);
+            var line = calibration[i]
+            plot.addLine(line["start"], line["end"], colors[line["eye"]])
         }
         plot.requestPaint()
     }

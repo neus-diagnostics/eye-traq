@@ -2,7 +2,6 @@
 
 #include <QTextStream>
 #include <QUdpSocket>
-#include <QVector4D>
 #include <QtDebug>
 
 #ifdef USE_TOBII
@@ -12,6 +11,7 @@ namespace tetio = tobii::sdk::cpp;
 #endif
 
 #include "gaze.h"
+#include "tobii.h"
 
 Eyetracker::Eyetracker()
 	: QObject{}
@@ -81,22 +81,25 @@ bool Eyetracker::calibrate(const QPointF &point)
 	return true;
 }
 
-QList<QVariant> Eyetracker::get_calibration()
+QVariantList Eyetracker::get_calibration()
 {
-	QList<QVariant> lines;
+	QVariantList lines;
 #ifdef USE_TOBII
 	const auto calibration = tracker->getCalibration()->getPlotData();
-	for (size_t i = 0; i < calibration->size(); i++) {
-		const auto& p = calibration->at(i);
-		const QPointF real{p.truePosition.x, p.truePosition.y};
-		if (p.leftStatus == 1)
-			lines.push_back(QVector4D{
-				p.truePosition.x, p.truePosition.y,
-				p.leftMapPosition.x, p.leftMapPosition.y});
-		if (p.rightStatus == 1)
-			lines.push_back(QVector4D{
-				p.truePosition.x, p.truePosition.y,
-				p.rightMapPosition.x, p.rightMapPosition.y});
+	for (const auto &point : *calibration) {
+		const QPointF start{point2_to_qpoint(point.truePosition)};
+		if (point.leftStatus == 1)
+			lines.push_back(QVariantMap{
+				{"eye", "left"},
+				{"start", start},
+				{"end", point2_to_qpoint(point.leftMapPosition)}
+			});
+		if (point.rightStatus == 1)
+			lines.push_back(QVariantMap{
+				{"eye", "right"},
+				{"start", start},
+				{"end", point2_to_qpoint(point.rightMapPosition)}
+			});
 	}
 #endif
 	return lines;
