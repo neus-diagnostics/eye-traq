@@ -11,7 +11,6 @@
 namespace tetio = tobii::sdk::cpp;
 #endif
 
-#include <string>
 #include "gaze.h"
 
 Eyetracker::Eyetracker()
@@ -103,6 +102,11 @@ QList<QVariant> Eyetracker::get_calibration()
 	return lines;
 }
 
+qint64 Eyetracker::time()
+{
+	return clock.getTime();
+}
+
 #ifdef USE_TOBII
 void Eyetracker::try_connect()
 {
@@ -120,9 +124,25 @@ void Eyetracker::try_connect()
 
 		connection_timer.stop();
 		factory = nullptr;
-		emit connected();
 	} catch (...) {
 	}
+}
+
+bool Eyetracker::connected() const
+{
+	return tracker && sync_manager &&
+	       sync_manager->getSyncState()->getSyncStateFlag() == tetio::SyncState::SYNCHRONIZED;
+}
+
+QString Eyetracker::status() const
+{
+	if (connected()) {
+		const auto &info = tracker->getUnitInfo();
+		return QString::fromStdString("Connected to " + info->model + ".");
+	}
+	if (factory || tracker)
+		return "Connecting…";
+	return "Not connected.";
 }
 
 void Eyetracker::handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
@@ -134,18 +154,15 @@ void Eyetracker::handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
 void Eyetracker::handle_error(uint32_t error)
 {
 	qWarning() << "connection error:" << error;
-	emit disconnected();
+	factory = nullptr;
 	tracker = nullptr;
+	sync_manager = nullptr;
+	emit statusChanged();
 }
 
 void Eyetracker::handle_sync(tetio::SyncState::pointer_t sync_state)
 {
-	// TODO disable tests until clock is synced
-}
-
-qint64 Eyetracker::time()
-{
-	return clock.getTime();
+	emit statusChanged();
 }
 
 void Eyetracker::handle_gaze(tetio::GazeDataItem::pointer_t gaze_data)
@@ -165,10 +182,12 @@ void Eyetracker::on_browsed(BrowseEvent *event)
 		connection_timer.start();
 		break;
 	case tetio::EyeTrackerBrowser::event_type_t::TRACKER_REMOVED:
-		emit disconnected();
+		factory = nullptr;
 		tracker = nullptr;
+		sync_manager = nullptr;
 		break;
 	}
 	delete event;
+	emit statusChanged();
 }
 #endif

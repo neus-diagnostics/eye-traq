@@ -45,6 +45,9 @@ public:
 
 class Eyetracker : public QObject {
 	Q_OBJECT
+	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
+	Q_PROPERTY(QString status READ status NOTIFY statusChanged STORED false)
+
 public:
 	Eyetracker();
 	virtual ~Eyetracker();
@@ -56,8 +59,7 @@ public slots:
 	qint64 time();
 
 signals:
-	void connected();
-	void disconnected();
+	void statusChanged();
 	void gaze(const Gaze &g);
 	void gazePoint(const QPointF &point);
 
@@ -69,6 +71,9 @@ private slots:
 	void try_connect();
 
 private:
+	bool connected() const;
+	QString status() const;
+
 	void handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
 	                   tetio::EyeTrackerInfo::pointer_t info);
 	void handle_error(uint32_t error);

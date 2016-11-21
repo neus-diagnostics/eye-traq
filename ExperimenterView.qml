@@ -13,7 +13,18 @@ Rectangle {
 
     Connections {
         target: eyetracker
-        onGazePoint: view.gaze(point)
+        onGazePoint: {
+            var item = view.children[view.currentIndex]
+            if (item == practice || item == test)
+                item.gaze.run(point)
+        }
+        onStatusChanged: {
+            if (!eyetracker.connected) {
+                var item = view.children[view.currentIndex]
+                if (item == calibrate || item == practice || item == test)
+                    view.currentIndex = 0
+            }
+        }
     }
 
     Rectangle {
@@ -34,16 +45,19 @@ Rectangle {
             }
             Neus.Button {
                 text: qsTr("Calibrate")
+                enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: view.currentIndex = 1
             }
             Neus.Button {
                 text: qsTr("Practice")
+                enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: view.currentIndex = 2
             }
             Neus.Button {
                 text: qsTr("Test")
+                enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: view.currentIndex = 3
             }
@@ -52,6 +66,16 @@ Rectangle {
                 Layout.fillWidth: true
                 onClicked: view.currentIndex = 4
             }
+        }
+
+        Neus.Label {
+            anchors {
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+                margins: 20
+            }
+            text: eyetracker.status
         }
     }
 
@@ -84,12 +108,6 @@ Rectangle {
 
         StackLayout {
             id: view
-
-            function gaze(point) {
-                var item = children[currentIndex]
-                if (item == practice || item == test)
-                        item.gaze.run(point)
-            }
 
             anchors.fill: parent
 
