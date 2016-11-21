@@ -73,6 +73,8 @@ try {
 	                 &view, &QQuickView::update);
 	QObject::connect(view.engine(), &QQmlEngine::quit,
 	                 &app, &QCoreApplication::quit);
+	QObject::connect(view.rootObject(), SIGNAL(minimize()),
+	                 &view, SLOT(showMinimized()));
 	view.show();
 	return app.exec();
 

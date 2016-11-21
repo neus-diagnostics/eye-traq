@@ -9,6 +9,8 @@ Rectangle {
 
     property var runner
 
+    signal minimize
+
     color: "#e0d8c1"
 
     Connections {
@@ -102,7 +104,7 @@ Rectangle {
                 text: "⚊"  // U+268a "minimize"
                 font.pixelSize: 32
                 background: Rectangle { color: "transparent" }
-                // TODO make the button do something
+                onClicked: minimize()
             }
         }
 
