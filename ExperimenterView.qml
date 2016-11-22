@@ -119,13 +119,11 @@ Rectangle {
                 id: practice
                 options: options
                 runner: main.runner
-                onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
             }
             Test {
                 id: test
                 options: options
                 runner: main.runner
-                onVisibleChanged: eyetracker.command(visible ? "start_tracking" : "stop_tracking")
             }
             About {
                 id: about
@@ -147,6 +145,7 @@ Rectangle {
             PropertyChanges { target: view; currentIndex: 2 }
             PropertyChanges {
                 target: eyetracker;
+                tracking: true
                 onGazePoint: practice.gaze.run(point)
             }
         },
@@ -155,6 +154,7 @@ Rectangle {
             PropertyChanges { target: view; currentIndex: 3 }
             PropertyChanges {
                 target: eyetracker;
+                tracking: true
                 onGazePoint: test.gaze.run(point)
             }
         },

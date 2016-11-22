@@ -14,7 +14,9 @@ namespace tetio = tobii::sdk::cpp;
 #include "tobii.h"
 
 Eyetracker::Eyetracker()
-	: QObject{}
+	: QObject{},
+	  factory{nullptr}, tracker{nullptr}, sync_manager{nullptr},
+	  tracking{false}
 {
 #ifdef USE_TOBII
 	connection_timer.setInterval(500);
@@ -56,10 +58,6 @@ bool Eyetracker::command(const QString &what)
 			tracker->stopCalibration();
 		else if (what == "compute_calibration")
 			tracker->computeCalibration();
-		else if (what == "start_tracking")
-			tracker->startTracking();
-		else if (what == "stop_tracking")
-			tracker->stopTracking();
 		return true;
 	} catch (tobii::sdk::cpp::EyeTrackerException &e) {
 		qWarning() << "eyetracker error while running" << what
@@ -69,6 +67,22 @@ bool Eyetracker::command(const QString &what)
 	}
 #endif
 	return false;
+}
+
+void Eyetracker::track(bool enable)
+try {
+	if (tracker && enable != tracking) {
+		if (enable)
+			tracker->startTracking();
+		else
+			tracker->stopTracking();
+		tracking = enable;
+	}
+} catch (tobii::sdk::cpp::EyeTrackerException &e) {
+	qWarning() << "error in Eyetracker::track(" << enable << ")"
+		   << "; error code" << e.getErrorCode();
+} catch (...) {
+	qWarning() << "error in Eyetracker::track(" << enable << ")";
 }
 
 bool Eyetracker::calibrate(const QPointF &point)
@@ -127,6 +141,7 @@ void Eyetracker::try_connect()
 
 		connection_timer.stop();
 		factory = nullptr;
+		tracking = false;
 	} catch (...) {
 	}
 }

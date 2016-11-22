@@ -47,6 +47,7 @@ class Eyetracker : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
 	Q_PROPERTY(QString status READ status NOTIFY statusChanged STORED false)
+	Q_PROPERTY(bool tracking MEMBER tracking WRITE track STORED false)
 
 public:
 	Eyetracker();
@@ -73,6 +74,7 @@ private slots:
 private:
 	bool connected() const;
 	QString status() const;
+	void track(bool enable);
 
 	void handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
 	                   tetio::EyeTrackerInfo::pointer_t info);
@@ -90,6 +92,7 @@ private:
 	tetio::SyncManager::pointer_t sync_manager;
 
 	QTimer connection_timer;
+	bool tracking;
 #endif
 };
 
