@@ -11,7 +11,7 @@ Item {
     function start() {
         plot.lines = []
         plot.requestPaint()
-        eyetracker.command("start_calibration")
+        eyetracker.calibrate("start")
         runner.done.connect(end)
         runner.start("file:tests/calibrate")
     }
@@ -19,12 +19,12 @@ Item {
     function stop() {
         runner.done.disconnect(end)
         runner.stop()
-        eyetracker.command("stop_calibration")
+        eyetracker.calibrate("stop")
     }
 
     function end(msg) {
         var msg = "Calibration successful."
-        if (!eyetracker.command("compute_calibration"))
+        if (!eyetracker.calibrate("compute"))
             msg = "Calibration failed."
         stop()
 

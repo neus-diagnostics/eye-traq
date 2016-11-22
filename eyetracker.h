@@ -54,7 +54,7 @@ public:
 	virtual ~Eyetracker();
 
 public slots:
-	bool command(const QString &what);
+	bool calibrate(const QString &what);
 	bool calibrate(const QPointF &point);
 	QVariantList get_calibration();
 	qint64 time();
