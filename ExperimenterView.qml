@@ -15,16 +15,10 @@ Rectangle {
 
     Connections {
         target: eyetracker
-        onGazePoint: {
-            var item = view.children[view.currentIndex]
-            if (item == practice || item == test)
-                item.gaze.run(point)
-        }
         onStatusChanged: {
             if (!eyetracker.connected) {
-                var item = view.children[view.currentIndex]
-                if (item == calibrate || item == practice || item == test)
-                    view.currentIndex = 0
+                if (state == "calibrate" || state == "practice" || state == "test")
+                    state = "options"
             }
         }
     }
@@ -43,30 +37,30 @@ Rectangle {
             Neus.Button {
                 text: qsTr("Options")
                 Layout.fillWidth: true
-                onClicked: view.currentIndex = 0
+                onClicked: main.state = "options"
             }
             Neus.Button {
                 text: qsTr("Calibrate")
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
-                onClicked: view.currentIndex = 1
+                onClicked: main.state = "calibrate"
             }
             Neus.Button {
                 text: qsTr("Practice")
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
-                onClicked: view.currentIndex = 2
+                onClicked: main.state = "practice"
             }
             Neus.Button {
                 text: qsTr("Test")
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
-                onClicked: view.currentIndex = 3
+                onClicked: main.state = "test"
             }
             Neus.Button {
                 text: qsTr("About")
                 Layout.fillWidth: true
-                onClicked: view.currentIndex = 4
+                onClicked: main.state = "about"
             }
         }
 
@@ -138,4 +132,35 @@ Rectangle {
             }
         }
     }
+
+    states: [
+        State {
+            name: "options"
+            PropertyChanges { target: view; currentIndex: 0 }
+        },
+        State {
+            name: "calibrate"
+            PropertyChanges { target: view; currentIndex: 1 }
+        },
+        State {
+            name: "practice"
+            PropertyChanges { target: view; currentIndex: 2 }
+            PropertyChanges {
+                target: eyetracker;
+                onGazePoint: practice.gaze.run(point)
+            }
+        },
+        State {
+            name: "test"
+            PropertyChanges { target: view; currentIndex: 3 }
+            PropertyChanges {
+                target: eyetracker;
+                onGazePoint: test.gaze.run(point)
+            }
+        },
+        State {
+            name: "about"
+            PropertyChanges { target: view; currentIndex: 4 }
+        }
+    ]
 }
