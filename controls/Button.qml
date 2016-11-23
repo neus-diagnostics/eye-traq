@@ -72,7 +72,7 @@ T.Button {
         //color: control.checked || control.highlighted ?
         //    (control.visualFocus ? (control.down ? "#599bff" : "#0066ff") : (control.down ? "#585a5c" : "#353637")) :
         //    (control.visualFocus ? (control.down ? "#cce0ff" : "#f0f6ff") : (control.down ? "#d0d0d0" : "#e0e0e0"))
-        color: control.hovered ? "#8dc73f" : "#2bb673"
+        color: (control.checked || control.hovered) ? "#8dc73f" : "#2bb673"
         border.color: "#0066ff"
         border.width: control.visualFocus ? 2 : 0
         radius: parent.width * 0.02

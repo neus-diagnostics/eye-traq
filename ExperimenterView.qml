@@ -26,12 +26,15 @@ Rectangle {
     }
 
     Rectangle {
-        id: menu
+        id: sidebar
         anchors { top: parent.top; bottom: parent.bottom; left: parent.left }
         width: parent.width/5
         color: "#eae9e5"
 
+        ButtonGroup { buttons: menu.children }
+
         ColumnLayout {
+            id: menu
             anchors.centerIn: parent
             width: parent.width * 0.6
             spacing: main.height * 0.025
@@ -40,33 +43,38 @@ Rectangle {
                 text: qsTr("Options")
                 height: main.height * 0.04
                 Layout.fillWidth: true
+                checkable: true
                 onClicked: main.state = "options"
             }
             Neus.Button {
                 text: qsTr("Calibrate")
                 height: main.height * 0.04
-                enabled: eyetracker.connected
                 Layout.fillWidth: true
+                checkable: true
+                enabled: eyetracker.connected
                 onClicked: main.state = "calibrate"
             }
             Neus.Button {
                 text: qsTr("Practice")
                 height: main.height * 0.04
-                enabled: eyetracker.connected
                 Layout.fillWidth: true
+                checkable: true
+                enabled: eyetracker.connected
                 onClicked: main.state = "practice"
             }
             Neus.Button {
                 text: qsTr("Test")
                 height: main.height * 0.04
-                enabled: eyetracker.connected
                 Layout.fillWidth: true
+                checkable: true
+                enabled: eyetracker.connected
                 onClicked: main.state = "test"
             }
             Neus.Button {
                 text: qsTr("About")
                 height: main.height * 0.04
                 Layout.fillWidth: true
+                checkable: true
                 onClicked: main.state = "about"
             }
         }
@@ -89,8 +97,7 @@ Rectangle {
         }
 
         layoutDirection: Qt.RightToLeft
-        rightPadding: 20
-        topPadding: 20
+        padding: 20
         spacing: 10
 
         Button {
@@ -115,7 +122,7 @@ Rectangle {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            left: menu.right
+            left: sidebar.right
             right: parent.right
         }
 
