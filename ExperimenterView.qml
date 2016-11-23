@@ -45,7 +45,7 @@ Rectangle {
             spacing: main.height * 0.025
 
             Neus.Button {
-                text: qsTr("Options")
+                text: qsTr("Set up")
                 height: main.height * 0.04
                 Layout.fillWidth: true
                 checkable: true
