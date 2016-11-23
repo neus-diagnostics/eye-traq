@@ -7,24 +7,22 @@ Task {
         offset = Number(offset)
         period = Number(period)
 
+        stimulus.x = screen.width/2
+        stimulus.y = screen.height/2
         switch (coord) {
             case 'x':
-                left.properties = right.properties = 'x'
+                init.properties = left.properties = right.properties = 'x'
                 left.to = screen.width * (0.5-offset) - stimulus.width/2
-                right.to = screen.width * (0.5+offset) - stimulus.width/2
-                stimulus.x = left.to
-                stimulus.y = screen.height/2 - stimulus.height/2
+                init.to = right.to = screen.width * (0.5+offset) - stimulus.width/2
                 break
             case 'y':
-                left.properties = right.properties = 'y'
+                init.properties = left.properties = right.properties = 'y'
                 left.to = screen.height * (0.5-offset) - stimulus.height/2
-                right.to = screen.height * (0.5+offset) - stimulus.height/2
-                stimulus.x = screen.width/2 - stimulus.width/2
-                stimulus.y = left.to
+                init.to = right.to = screen.height * (0.5+offset) - stimulus.height/2
                 break
         }
-        left.duration = period / 2
-        right.duration = period / 2
+        init.duration = period / 4
+        left.duration = right.duration = period / 2
         stimulus.visible = true
 
         anim.start()
@@ -60,17 +58,23 @@ Task {
 
             PauseAnimation { duration: 500 }
 
+            NumberAnimation {
+                id: init
+                target: stimulus
+                easing.type: Easing.InOutSine
+            }
+
             SequentialAnimation {
                 loops: Animation.Infinite
 
                 NumberAnimation {
-                    id: right
+                    id: left
                     target: stimulus
                     easing.type: Easing.InOutSine
                 }
 
                 NumberAnimation {
-                    id: left
+                    id: right
                     target: stimulus
                     easing.type: Easing.InOutSine
                 }
