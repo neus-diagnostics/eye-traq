@@ -39,12 +39,26 @@ Item {
             spacing: main.height * 0.025
 
             Neus.Button {
+                text: qsTr("Image pair")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-imgpair")
+            }
+
+            Neus.Button {
                 text: qsTr("Smooth pursuit")
                 width: content.width * 0.25
                 height: parent.height
                 enabled: !runner.running
                 onClicked: runner.start("file:tests/practice-pursuit")
             }
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: main.height * 0.04
+            spacing: main.height * 0.025
 
             Neus.Button {
                 text: qsTr("Pro-saccade (H)")
@@ -61,12 +75,6 @@ Item {
                 enabled: !runner.running
                 onClicked: runner.start("file:tests/practice-prosaccade-vertical")
             }
-        }
-
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: main.height * 0.04
-            spacing: main.height * 0.025
 
             Neus.Button {
                 text: qsTr("Anti-saccade")
@@ -74,14 +82,6 @@ Item {
                 height: parent.height
                 enabled: !runner.running
                 onClicked: runner.start("file:tests/practice-antisaccade-horizontal")
-            }
-
-            Neus.Button {
-                text: qsTr("Image pair")
-                width: content.width * 0.25
-                height: parent.height
-                enabled: !runner.running
-                onClicked: runner.start("file:tests/practice-imgpair")
             }
         }
     }
