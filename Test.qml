@@ -46,26 +46,46 @@ Item {
             Gaze { id: gaze }
         }
 
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
+        Item {
+            width: parent.width
             height: main.height * 0.04
-            spacing: main.height * 0.025
+
+            Row {
+                anchors.left: parent.left
+                height: parent.height
+                spacing: main.height * 0.01
+                visible: runner.running
+
+                Neus.Button {
+                    text: "⏪"
+                    width: content.width * 0.05
+                    height: parent.height
+                    // TODO onClicked
+                }
+
+                Neus.Button {
+                    text: "⏯"
+                    width: content.width * 0.05
+                    height: parent.height
+                    onClicked: runner.paused = !runner.paused
+                }
+
+                Neus.Button {
+                    text: "⏩"
+                    width: content.width * 0.05
+                    height: parent.height
+                    // TODO onClicked
+                }
+            }
 
             Neus.Button {
+                anchors.right: parent.right
                 text: runner.running ? qsTr("Stop") : qsTr("Start")
                 width: content.width * 0.1
                 height: parent.height
                 onClicked: runner.running ? stop() : start()
             }
 
-            Neus.Button {
-                id: pause
-                text: runner.paused ? qsTr("Resume") : qsTr("Pause")
-                width: content.width * 0.1
-                height: parent.height
-                visible: runner.running
-                onClicked: runner.paused = !runner.paused
-            }
         }
     }
 }
