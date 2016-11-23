@@ -13,10 +13,6 @@ Item {
 
     anchors.fill: parent
 
-    Component.onCompleted: {
-        onVisibleChanged.connect(runner.stop)
-    }
-
     Column {
         id: content
 

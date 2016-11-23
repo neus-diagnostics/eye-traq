@@ -21,10 +21,6 @@ Item {
 
     anchors.fill: parent
 
-    Component.onCompleted: {
-        onVisibleChanged.connect(stop)
-    }
-
     Connections {
         target: runner
         onDone: stop()

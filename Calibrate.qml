@@ -13,7 +13,6 @@ Item {
     function start() {
         plot.lines = []
         plot.requestPaint()
-        eyetracker.calibrate("start")
         runner.start("file:tests/calibrate")
     }
 
@@ -38,7 +37,7 @@ Item {
 
     anchors.fill: parent
 
-    onVisibleChanged: stop()
+    onVisibleChanged: eyetracker.calibrate("stop")
 
     Column {
         id: content

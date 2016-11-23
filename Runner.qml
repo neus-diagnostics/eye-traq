@@ -13,8 +13,7 @@ Rectangle {
     signal done
 
     function start(testfile) {
-        if (running)
-            stop()
+        stop()
         test = recorder.loadTest(testfile)
         next = 0
         paused = false
@@ -37,9 +36,11 @@ Rectangle {
     }
 
     function stop() {
-        tasks.children[tasks.currentIndex].abort()
-        tasks.currentIndex = 0
-        running = false
+        if (running) {
+            tasks.children[tasks.currentIndex].abort()
+            tasks.currentIndex = 0
+            running = false
+        }
     }
 
     function run(name, args) {

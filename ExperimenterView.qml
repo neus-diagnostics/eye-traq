@@ -13,6 +13,8 @@ Rectangle {
 
     color: "#d6d3cc"
 
+    onStateChanged: runner.stop()
+
     Connections {
         target: eyetracker
         onStatusChanged: {

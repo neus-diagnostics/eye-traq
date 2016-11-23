@@ -7,11 +7,10 @@ Item {
 
     signal done
 
-    function run(x, y, time, animate) {
+    function run(step, x, y, time) {
         x = Number(x)
         y = Number(y)
         time = Number(time)
-        animate = animate == "true"
 
         var screen_x = width*x
         var screen_y = height*y
@@ -23,7 +22,13 @@ Item {
         var target_y = screen_y - stimulus.height/2
         timer.interval = time
 
-        if (animate) {
+        if (step == "start") {
+            stimulus.x = target_x
+            stimulus.y = target_y
+            stimulus.scale = 1.0
+            point = null
+            eyetracker.calibrate("start")
+        } else {
             grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
             moveX.to = target_x
             moveY.to = target_y
@@ -34,11 +39,6 @@ Item {
             point = Qt.point(x, y)
             timer.interval += grow.duration + move_time + shrink.duration
             anim.start()
-        } else {
-            stimulus.x = target_x
-            stimulus.y = target_y
-            stimulus.scale = 1.0
-            point = null
         }
 
         timer.start()
