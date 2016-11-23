@@ -64,8 +64,12 @@ Rectangle {
                 tasks.currentIndex = 4
                 showtxt.run(args[0], args[1])
                 break;
-            case "calibrator":
+            case "sound":
                 tasks.currentIndex = 5
+                sound.run(args[0], args[1])
+                break;
+            case "calibrator":
+                tasks.currentIndex = 6
                 calibrator.run(args[0], args[1], args[2], args[3])
                 break;
         }
@@ -111,6 +115,10 @@ Rectangle {
         }
         ShowTxt {
             id: showtxt
+            onDone: step()
+        }
+        Sound {
+            id: sound
             onDone: step()
         }
         Calibrator {
