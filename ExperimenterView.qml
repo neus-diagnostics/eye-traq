@@ -11,7 +11,7 @@ Rectangle {
 
     signal minimize
 
-    color: "#e0d8c1"
+    color: "#d6d3cc"
 
     Connections {
         target: eyetracker
@@ -27,38 +27,43 @@ Rectangle {
         id: menu
         anchors { top: parent.top; bottom: parent.bottom; left: parent.left }
         width: parent.width/5
-        color: "#ece6da"
+        color: "#eae9e5"
 
         ColumnLayout {
             anchors.centerIn: parent
             width: parent.width * 0.6
-            spacing: 20
+            spacing: main.height * 0.025
 
             Neus.Button {
                 text: qsTr("Options")
+                height: main.height * 0.04
                 Layout.fillWidth: true
                 onClicked: main.state = "options"
             }
             Neus.Button {
                 text: qsTr("Calibrate")
+                height: main.height * 0.04
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: main.state = "calibrate"
             }
             Neus.Button {
                 text: qsTr("Practice")
+                height: main.height * 0.04
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: main.state = "practice"
             }
             Neus.Button {
                 text: qsTr("Test")
+                height: main.height * 0.04
                 enabled: eyetracker.connected
                 Layout.fillWidth: true
                 onClicked: main.state = "test"
             }
             Neus.Button {
                 text: qsTr("About")
+                height: main.height * 0.04
                 Layout.fillWidth: true
                 onClicked: main.state = "about"
             }
@@ -75,7 +80,36 @@ Rectangle {
         }
     }
 
-    Page {
+    Row {
+        anchors {
+            top: parent.top
+            right: parent.right
+        }
+
+        layoutDirection: Qt.RightToLeft
+        rightPadding: 20
+        topPadding: 20
+        spacing: 10
+
+        Button {
+            text: "❌"  // U+274c "close"
+            width: height
+            font.pixelSize: 16
+            background: Rectangle { color: "#eae9e5" }
+            onClicked: Qt.quit()
+        }
+        Button {
+            text: "⚊"  // U+268a "minimize"
+            width: height
+            font.pixelSize: 16
+            background: Rectangle { color: "#eae9e5" }
+            onClicked: minimize()
+        }
+    }
+
+    StackLayout {
+        id: view
+
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -83,51 +117,26 @@ Rectangle {
             right: parent.right
         }
 
-        header: Row {
-            layoutDirection: Qt.RightToLeft
-            rightPadding: 10
-            spacing: 5
-
-            Button {
-                text: "❌"  // U+274c "close"
-                font.pixelSize: 32
-                background: Rectangle { color: "transparent" }
-                onClicked: Qt.quit()
-            }
-            Button {
-                text: "⚊"  // U+268a "minimize"
-                font.pixelSize: 32
-                background: Rectangle { color: "transparent" }
-                onClicked: minimize()
-            }
+        Options {
+            id: options
         }
-
-        StackLayout {
-            id: view
-
-            anchors.fill: parent
-
-            Options {
-                id: options
-            }
-            Calibrate {
-                id: calibrate
-                options: options
-                runner: main.runner
-            }
-            Practice {
-                id: practice
-                options: options
-                runner: main.runner
-            }
-            Test {
-                id: test
-                options: options
-                runner: main.runner
-            }
-            About {
-                id: about
-            }
+        Calibrate {
+            id: calibrate
+            options: options
+            runner: main.runner
+        }
+        Practice {
+            id: practice
+            options: options
+            runner: main.runner
+        }
+        Test {
+            id: test
+            options: options
+            runner: main.runner
+        }
+        About {
+            id: about
         }
     }
 
@@ -139,12 +148,16 @@ Rectangle {
         State {
             name: "calibrate"
             PropertyChanges { target: view; currentIndex: 1 }
+            PropertyChanges {
+                target: runner
+                onDone: calibrate.end()
+            }
         },
         State {
             name: "practice"
             PropertyChanges { target: view; currentIndex: 2 }
             PropertyChanges {
-                target: eyetracker;
+                target: eyetracker
                 tracking: true
                 onGazePoint: practice.gaze.run(point)
             }
@@ -153,7 +166,7 @@ Rectangle {
             name: "test"
             PropertyChanges { target: view; currentIndex: 3 }
             PropertyChanges {
-                target: eyetracker;
+                target: eyetracker
                 tracking: true
                 onGazePoint: test.gaze.run(point)
             }

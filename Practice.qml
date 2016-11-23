@@ -11,74 +11,82 @@ Item {
     property var runner
     property alias gaze: gaze
 
+    anchors.fill: parent
+
     Component.onCompleted: {
         onVisibleChanged.connect(runner.stop)
     }
 
-    Grid {
+    Column {
+        id: content
+
         anchors {
-            left: parent.left
-            leftMargin: parent.width * 0.05
-            verticalCenter: parent.verticalCenter
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            topMargin: parent.height * 0.1
         }
-        width: parent.width * 0.25
+        width: parent.width * 0.9
+        spacing: main.height * 0.025
 
-        verticalItemAlignment: Grid.AlignVCenter
-        spacing: parent.width * 0.01
-        columns: 2
+        // duplicate the participant’s view
+        ShaderEffectSource {
+            sourceItem: runner
+            width: parent.width
+            height: width * (secondScreen.height / secondScreen.width)
 
-        Label { text: qsTr("Smooth pursuit") }
-        Neus.Button {
-            text: qsTr("Start")
-            height: 40
-            enabled: !runner.running
-            onClicked: runner.start("file:tests/practice-pursuit")
+            Gaze { id: gaze }
         }
 
-        Label { text: qsTr("Pro-saccade task (horizontal)") }
-        Neus.Button {
-            text: qsTr("Start")
-            height: 40
-            enabled: !runner.running
-            onClicked: runner.start("file:tests/practice-prosaccade-horizontal")
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: main.height * 0.04
+            spacing: main.height * 0.025
+
+            Neus.Button {
+                text: qsTr("Smooth pursuit")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-pursuit")
+            }
+
+            Neus.Button {
+                text: qsTr("Pro-saccade (H)")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-prosaccade-horizontal")
+            }
+
+            Neus.Button {
+                text: qsTr("Pro-saccade (V)")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-prosaccade-vertical")
+            }
         }
 
-        Label { text: qsTr("Pro-saccade task (vertical)") }
-        Neus.Button {
-            text: qsTr("Start")
-            height: 40
-            enabled: !runner.running
-            onClicked: runner.start("file:tests/practice-prosaccade-vertical")
-        }
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: main.height * 0.04
+            spacing: main.height * 0.025
 
-        Label { text: qsTr("Anti-saccade task (horizontal)") }
-        Neus.Button {
-            text: qsTr("Start")
-            height: 40
-            enabled: !runner.running
-            onClicked: runner.start("file:tests/practice-antisaccade-horizontal")
-        }
+            Neus.Button {
+                text: qsTr("Anti-saccade")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-antisaccade-horizontal")
+            }
 
-        Label { text: qsTr("Visual paired comparison") }
-        Neus.Button {
-            text: qsTr("Start")
-            height: 40
-            enabled: !runner.running
-            onClicked: runner.start("file:tests/practice-imgpair")
+            Neus.Button {
+                text: qsTr("Image pair")
+                width: content.width * 0.25
+                height: parent.height
+                enabled: !runner.running
+                onClicked: runner.start("file:tests/practice-imgpair")
+            }
         }
-    }
-
-    // duplicate the participant’s view
-    ShaderEffectSource {
-        anchors {
-            right: parent.right
-            rightMargin: parent.width * 0.05
-            verticalCenter: parent.verticalCenter
-        }
-        sourceItem: main.runner
-        width: parent.width * 0.6
-        height: parent.height * 0.6
-
-        Gaze { id: gaze }
     }
 }

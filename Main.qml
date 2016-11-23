@@ -3,7 +3,7 @@ import QtQuick 2.7
 Rectangle {
     signal minimize
 
-    color: "#e0d8c1"
+    color: "#d6d3cc"
 
     ExperimenterView {
         runner: runner

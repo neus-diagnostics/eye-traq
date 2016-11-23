@@ -138,10 +138,8 @@ bool Eyetracker::connected() const
 
 QString Eyetracker::status() const
 {
-	if (connected()) {
-		const auto &info = tracker->getUnitInfo();
-		return QString::fromStdString("Connected to " + info->model + ".");
-	}
+	if (connected())
+		return "Connected to eyetracker.";
 	if (factory || tracker)
 		return "Connecting…";
 	return "Eyetracker not found.";

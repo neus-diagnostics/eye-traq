@@ -3,6 +3,8 @@ import QtQuick 2.7
 import "controls" as Neus
 
 Item {
+    id: main
+
     property var options
     property var runner
 
@@ -12,12 +14,10 @@ Item {
         plot.lines = []
         plot.requestPaint()
         eyetracker.calibrate("start")
-        runner.done.connect(end)
         runner.start("file:tests/calibrate")
     }
 
     function stop() {
-        runner.done.disconnect(end)
         runner.stop()
         eyetracker.calibrate("stop")
     }
@@ -36,22 +36,26 @@ Item {
         plot.requestPaint()
     }
 
-    Component.onCompleted: {
-        runner.onDone.connect(end)
-        onVisibleChanged: stop()
-    }
+    anchors.fill: parent
+
+    onVisibleChanged: stop()
 
     Column {
-        anchors.fill: parent
-        spacing: parent.height * 0.03
-        topPadding: parent.height * 0.05
+        id: content
+
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            topMargin: parent.height * 0.1
+        }
+        width: parent.width * 0.9
+        spacing: parent.height * 0.025
 
         // duplicate the participant’s view
         ShaderEffectSource {
-            anchors.horizontalCenter: parent.horizontalCenter
             sourceItem: runner
-            width: parent.width * 0.8
-            height: parent.height * 0.8
+            width: parent.width
+            height: width * (secondScreen.height / secondScreen.width)
 
             // canvas for drawing calibration plot lines
             Canvas {
@@ -85,8 +89,10 @@ Item {
         }
 
         Neus.Button {
-            anchors.horizontalCenter: parent.horizontalCenter
             text: runner.running ? qsTr("Stop") : qsTr("Start")
+            anchors.right: content.right
+            width: content.width * 0.1
+            height: main.height * 0.04
             onClicked: runner.running ? stop() : start()
         }
     }

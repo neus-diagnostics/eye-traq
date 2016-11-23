@@ -40,10 +40,6 @@ import QtQuick.Templates 2.0 as T
 T.Button {
     id: control
 
-    implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding
-    implicitHeight: 60
-    baselineOffset: contentItem.y + contentItem.baselineOffset
-
     padding: 6
     leftPadding: 30
     rightPadding: 30

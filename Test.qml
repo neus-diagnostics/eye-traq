@@ -19,37 +19,54 @@ Item {
         recorder.stop()
     }
 
+    anchors.fill: parent
+
     Component.onCompleted: {
-        runner.onDone.connect(stop)
         onVisibleChanged.connect(stop)
     }
 
+    Connections {
+        target: runner
+        onDone: stop()
+    }
+
     Column {
-        anchors.fill: parent
-        spacing: parent.height * 0.03
-        topPadding: parent.height * 0.05
+        id: content
+
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            topMargin: parent.height * 0.1
+        }
+        width: parent.width * 0.9
+        spacing: parent.height * 0.025
 
         // duplicate the participant’s view
         ShaderEffectSource {
-            anchors.horizontalCenter: parent.horizontalCenter
             sourceItem: runner
-            width: parent.width * 0.8
-            height: parent.height * 0.8
+            width: parent.width
+            height: width * (secondScreen.height / secondScreen.width)
 
             Gaze { id: gaze }
         }
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 20
+            height: main.height * 0.04
+            spacing: main.height * 0.025
+
             Neus.Button {
                 text: runner.running ? qsTr("Stop") : qsTr("Start")
+                width: content.width * 0.1
+                height: parent.height
                 onClicked: runner.running ? stop() : start()
             }
 
             Neus.Button {
                 id: pause
                 text: runner.paused ? qsTr("Resume") : qsTr("Pause")
+                width: content.width * 0.1
+                height: parent.height
                 visible: runner.running
                 onClicked: runner.paused = !runner.paused
             }
