@@ -25,13 +25,18 @@ Rectangle {
         }
     }
 
+    Keys.onPressed: {
+        if (event.key == Qt.Key_Home)
+            state = ""
+    }
+
     Rectangle {
         id: sidebar
         anchors { top: parent.top; bottom: parent.bottom; left: parent.left }
         width: parent.width/5
         color: "#eae9e5"
 
-        ButtonGroup { buttons: menu.children }
+        ButtonGroup { id: menuButtons; buttons: menu.children }
 
         ColumnLayout {
             id: menu
@@ -126,6 +131,7 @@ Rectangle {
             right: parent.right
         }
 
+        Start { }
         Options {
             id: options
         }
@@ -151,12 +157,17 @@ Rectangle {
 
     states: [
         State {
-            name: "options"
+            name: ""
             PropertyChanges { target: view; currentIndex: 0 }
+            PropertyChanges { target: menuButtons; checkedButton: null }
+        },
+        State {
+            name: "options"
+            PropertyChanges { target: view; currentIndex: 1 }
         },
         State {
             name: "calibrate"
-            PropertyChanges { target: view; currentIndex: 1 }
+            PropertyChanges { target: view; currentIndex: 2 }
             PropertyChanges {
                 target: runner
                 onDone: calibrate.end()
@@ -164,7 +175,7 @@ Rectangle {
         },
         State {
             name: "practice"
-            PropertyChanges { target: view; currentIndex: 2 }
+            PropertyChanges { target: view; currentIndex: 3 }
             PropertyChanges {
                 target: eyetracker
                 tracking: true
@@ -173,7 +184,7 @@ Rectangle {
         },
         State {
             name: "test"
-            PropertyChanges { target: view; currentIndex: 3 }
+            PropertyChanges { target: view; currentIndex: 4 }
             PropertyChanges {
                 target: eyetracker
                 tracking: true
@@ -182,7 +193,7 @@ Rectangle {
         },
         State {
             name: "about"
-            PropertyChanges { target: view; currentIndex: 4 }
+            PropertyChanges { target: view; currentIndex: 5 }
         }
     ]
 }

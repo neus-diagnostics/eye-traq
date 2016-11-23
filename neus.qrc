@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>Main.qml</file>
         <file>ExperimenterView.qml</file>
+        <file>Start.qml</file>
         <file>Options.qml</file>
         <file>Calibrate.qml</file>
         <file>Practice.qml</file>
