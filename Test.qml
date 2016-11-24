@@ -60,8 +60,7 @@ Item {
                 }
 
                 Neus.Button {
-                    text: runner.paused ? "▶" : "▮▮"
-                    font.pixelSize: height * 0.3
+                    text: "⏯"
                     width: content.width * 0.05
                     height: parent.height
                     onClicked: runner.paused = !runner.paused
