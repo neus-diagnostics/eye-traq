@@ -63,6 +63,7 @@ Item {
                     text: "⏯"
                     width: content.width * 0.05
                     height: parent.height
+                    checked: runner.paused
                     onClicked: runner.paused = !runner.paused
                 }
 
