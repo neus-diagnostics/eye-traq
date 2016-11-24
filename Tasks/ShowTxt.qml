@@ -1,4 +1,7 @@
+import QtQuick 2.7
 import QtQuick.Controls 2.0
+
+import "../controls" as Neus
 
 Task {
     function run(time, text) {
@@ -8,10 +11,13 @@ Task {
 
     timer.onTriggered: done()
 
-    Label {
+    Neus.Label {
         id: message
         anchors.centerIn: parent
+        width: parent.width * 0.6
+        wrapMode: Text.WordWrap
         color: 'white'
         font.pixelSize: 32
+        lineHeight: 1.2
     }
 }
