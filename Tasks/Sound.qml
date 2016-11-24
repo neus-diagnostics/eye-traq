@@ -14,7 +14,7 @@ Task {
 
     timer.onTriggered: done()
 
-    SoundEffect {
+    Audio {
         id: sound
     }
 }

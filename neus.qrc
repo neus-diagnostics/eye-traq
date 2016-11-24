@@ -25,6 +25,6 @@
         <file>fonts/lato-regular.ttf</file>
         <file>images/a.svg</file>
         <file>images/b.svg</file>
-        <file>sounds/chime.wav</file>
+        <file>sounds/alert.oga</file>
     </qresource>
 </RCC>
