@@ -18,10 +18,8 @@ Rectangle {
     Connections {
         target: eyetracker
         onStatusChanged: {
-            if (!eyetracker.connected) {
-                if (state == "calibrate" || state == "practice" || state == "test")
-                    state = "options"
-            }
+            if (!eyetracker.connected && !(state == "" || state == "about"))
+                state = ""
         }
     }
 
@@ -38,92 +36,43 @@ Rectangle {
 
         ButtonGroup { id: menuButtons; buttons: menu.children }
 
-        ColumnLayout {
+        Column {
             id: menu
             anchors.centerIn: parent
             width: parent.width * 0.6
             spacing: main.height * 0.025
 
-            Neus.Button {
-                text: qsTr("Set up")
-                height: main.height * 0.04
-                Layout.fillWidth: true
-                checkable: true
-                onClicked: main.state = "options"
-            }
-            Neus.Button {
-                text: qsTr("Calibrate")
-                height: main.height * 0.04
-                Layout.fillWidth: true
-                checkable: true
-                enabled: eyetracker.connected
-                onClicked: main.state = "calibrate"
-            }
-            Neus.Button {
-                text: qsTr("Practice")
-                height: main.height * 0.04
-                Layout.fillWidth: true
-                checkable: true
-                enabled: eyetracker.connected
-                onClicked: main.state = "practice"
-            }
-            Neus.Button {
-                text: qsTr("Test")
-                height: main.height * 0.04
-                Layout.fillWidth: true
-                checkable: true
-                enabled: eyetracker.connected
-                onClicked: main.state = "test"
-            }
-            Neus.Button {
-                text: qsTr("About")
-                height: main.height * 0.04
-                Layout.fillWidth: true
-                checkable: true
-                onClicked: main.state = "about"
+            Repeater {
+                model: [
+                    { "text": qsTr("Set up"), "state": "options" },
+                    { "text": qsTr("Calibrate"), "state": "calibrate" },
+                    { "text": qsTr("Practice"), "state": "practice" },
+                    { "text": qsTr("Test"), "state": "test" },
+                    { "text": qsTr("About"), "state": "about" },
+                ]
+                Neus.Button {
+                    text: modelData.text
+                    width: parent.width
+                    height: main.height * 0.04
+                    checkable: true
+                    enabled: eyetracker.connected || modelData.state == "about"
+                    onClicked: main.state = modelData.state
+                }
             }
         }
 
         Neus.Label {
+            text: eyetracker.status
             anchors {
                 bottom: parent.bottom
                 left: parent.left
-                right: parent.right
                 margins: 20
             }
-            text: eyetracker.status
+            font.pixelSize: main.height * 0.02
         }
     }
 
-    Row {
-        anchors {
-            top: parent.top
-            right: parent.right
-        }
-
-        layoutDirection: Qt.RightToLeft
-        padding: 20
-        spacing: 10
-
-        Button {
-            text: "❌"  // U+274c "close"
-            width: height
-            font.pixelSize: 16
-            background: Rectangle { color: "#eae9e5" }
-            onClicked: Qt.quit()
-        }
-        Button {
-            text: "⚊"  // U+268a "minimize"
-            width: height
-            font.pixelSize: 16
-            background: Rectangle { color: "#eae9e5" }
-            onClicked: minimize()
-        }
-    }
-
-    StackLayout {
-        id: view
-
+    Page {
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -131,27 +80,66 @@ Rectangle {
             right: parent.right
         }
 
-        Start { }
-        Options {
-            id: options
+        header: Item {
+            height: parent.height * 0.15
+
+            Row {
+                anchors.right: parent.right
+
+                layoutDirection: Qt.RightToLeft
+                padding: 20
+                spacing: 10
+
+                Button {
+                    text: "❌"  // U+274c "close"
+                    width: height
+                    font.pixelSize: main.height * 0.02
+                    hoverEnabled: true
+                    background: Rectangle {
+                        color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
+                    }
+                    onClicked: Qt.quit()
+                }
+                Button {
+                    text: "⚊"  // U+268a "minimize"
+                    width: height
+                    font.pixelSize: main.height * 0.02
+                    hoverEnabled: true
+                    background: Rectangle {
+                        color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
+                    }
+                    onClicked: minimize()
+                }
+            }
         }
-        Calibrate {
-            id: calibrate
-            options: options
-            runner: main.runner
+
+        footer: Item {
+            height: parent.height * 0.15
         }
-        Practice {
-            id: practice
-            options: options
-            runner: main.runner
-        }
-        Test {
-            id: test
-            options: options
-            runner: main.runner
-        }
-        About {
-            id: about
+
+        StackLayout {
+            id: view
+
+            anchors.fill: parent
+
+            Start { }
+            Options { id: options }
+            Calibrate {
+                id: calibrate
+                options: options
+                runner: main.runner
+            }
+            Practice {
+                id: practice
+                options: options
+                runner: main.runner
+            }
+            Test {
+                id: test
+                options: options
+                runner: main.runner
+            }
+            About { id: about }
         }
     }
 

@@ -7,7 +7,6 @@ Item {
 
     property var options
     property var runner
-
     property var colors: {"left": "#bd4b4b", "right": "#4b86bd"}
 
     function start() {
@@ -42,19 +41,14 @@ Item {
     Column {
         id: content
 
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            top: parent.top
-            topMargin: parent.height * 0.1
-        }
-        width: parent.width * 0.9
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: parent.height * 0.025
 
         // duplicate the participant’s view
         ShaderEffectSource {
             sourceItem: runner
-            width: parent.width
-            height: width * (secondScreen.height / secondScreen.width)
+            width: height * (secondScreen.width / secondScreen.height)
+            height: main.height * 0.9
 
             // canvas for drawing calibration plot lines
             Canvas {
@@ -91,7 +85,7 @@ Item {
             text: runner.running ? qsTr("Stop") : qsTr("Start")
             anchors.right: content.right
             width: content.width * 0.1
-            height: main.height * 0.04
+            height: firstScreen.height * 0.04
             onClicked: runner.running ? stop() : start()
         }
     }

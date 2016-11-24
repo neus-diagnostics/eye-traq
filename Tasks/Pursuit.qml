@@ -7,22 +7,22 @@ Task {
         offset = Number(offset)
         period = Number(period)
 
-        stimulus.x = screen.width/2
-        stimulus.y = screen.height/2
+        init.duration = period / 3
+        left.duration = right.duration = period / 2
+        init.properties = left.properties = right.properties = coord
         switch (coord) {
             case 'x':
-                init.properties = left.properties = right.properties = 'x'
                 left.to = screen.width * (0.5-offset) - stimulus.width/2
                 init.to = right.to = screen.width * (0.5+offset) - stimulus.width/2
                 break
             case 'y':
-                init.properties = left.properties = right.properties = 'y'
                 left.to = screen.height * (0.5-offset) - stimulus.height/2
                 init.to = right.to = screen.height * (0.5+offset) - stimulus.height/2
                 break
         }
-        init.duration = period / 4
-        left.duration = right.duration = period / 2
+
+        stimulus.x = screen.width/2
+        stimulus.y = screen.height/2
         stimulus.visible = true
 
         anim.start()
