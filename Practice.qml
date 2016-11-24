@@ -49,7 +49,14 @@ Item {
                         text: modelData.text
                         width: content.width * 0.25
                         height: firstScreen.height * 0.04
-                        onClicked: runner.start(modelData.test)
+                        onClicked: {
+                            runner.start(modelData.test)
+                            checked = true
+                        }
+                        Connections {
+                            target: options
+                            onParticipantChanged: checked = false
+                        }
                     }
                 }
             }

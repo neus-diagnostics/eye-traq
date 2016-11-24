@@ -4,10 +4,8 @@ import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.0
 
 Item {
-    signal done
-
-    property string participant: ""
-    property url testFile
+    property alias participant: txtParticipant.text
+    property alias testFile: dlgTestFile.fileUrl
 
     function random_id() {
         function pad(number) {
@@ -26,7 +24,7 @@ Item {
         // ID input
         Label { text: qsTr("ID") }
         TextField {
-            text: participant
+            id: txtParticipant
             selectByMouse: true
             Layout.fillWidth: true
         }
@@ -37,9 +35,8 @@ Item {
     
         // testfile selection
         FileDialog {
-            id: testFileDialog
+            id: dlgTestFile
             title: "Load test"
-            onAccepted: testFile = testFileDialog.fileUrl
         }
         Label { text: qsTr("Test") }
         TextField {
@@ -49,7 +46,7 @@ Item {
         }
         Button {
             text: qsTr("…")
-            onClicked: testFileDialog.open()
+            onClicked: dlgTestFile.open()
         }
     }
 }
