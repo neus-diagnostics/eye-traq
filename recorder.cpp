@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QQuickItem>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QtDebug>
 
@@ -20,38 +21,30 @@ Recorder::~Recorder()
 
 QStringList Recorder::loadTest(const QUrl &testfile)
 {
-	QStringList test;
-
-	// does the testfile exist?
-	const QString testpath{testfile.toLocalFile()};
 	QString testdata;
 
-	// load or execute testfile
+	const QString testpath{testfile.toLocalFile()};
 	if (QFileInfo{testpath}.isExecutable()) {
+		// run testfile and load the test from stdout
 		QProcess testgen;
 		testgen.start(testpath);
 		if (!testgen.waitForFinished() || testgen.exitCode() != 0) {
-			qWarning() << "could not start testgen process";
-			return test;
+			qWarning() << "could not start test program";
+			return {};
 		}
 		testdata = QString::fromUtf8(testgen.readAllStandardOutput());
 	} else {
+		// load the testfile directly
 		QFile file(testpath);
 		if (!file.open(QIODevice::ReadOnly)) {
 			qWarning() << "could not open testfile";
-			return test;
+			return {};
 		}
 		testdata = QTextStream{&file}.readAll();
 	}
 
-	// parse test data
-	for (const auto &line : testdata.split('\n')) {
-		if (line == "" || line.startsWith("#"))
-			continue;
-		test.append(line);
-	}
-
-	return QStringList{test};
+	// remove empty lines and comments
+	return testdata.split('\n').filter(QRegularExpression("^[^#]"));
 }
 
 void Recorder::start(const QUrl &testfile, const QString &participant)
