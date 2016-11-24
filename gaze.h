@@ -4,12 +4,16 @@
 #include <QPointF>
 #include <QVector3D>
 
+#ifdef USE_TOBII
 #include <tobii/sdk/cpp/GazeDataItem.hpp>
 namespace tetio = tobii::sdk::cpp;
+#endif
 
 struct Gaze {
 	Gaze();
+#ifdef USE_TOBII
 	Gaze(tetio::GazeDataItem::pointer_t gaze, qint64 time);
+#endif
 
 	qint64 time;
 	quint64 eyetracker_time;

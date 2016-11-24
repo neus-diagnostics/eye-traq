@@ -1,11 +1,12 @@
 #include "gaze.h"
 
-#include "tobii.h"
-
 // make qRegisterMetaType happy
 Gaze::Gaze()
 {
 }
+
+#ifdef USE_TOBII
+#include "tobii.h"
 
 Gaze::Gaze(tetio::GazeDataItem::pointer_t gaze, qint64 time)
 	: time{time},
@@ -26,3 +27,4 @@ Gaze::Gaze(tetio::GazeDataItem::pointer_t gaze, qint64 time)
 	  eye_track_r{point3_to_qvec(gaze->rightEyePosition3dRelative)}
 {
 }
+#endif

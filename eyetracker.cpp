@@ -7,15 +7,19 @@
 #ifdef USE_TOBII
 #include <tobii/sdk/cpp/EyeTrackerBrowserFactory.hpp>
 #include <tobii/sdk/cpp/GazeDataItem.hpp>
+#include "tobii.h"
 namespace tetio = tobii::sdk::cpp;
+#else
+#include <QDateTime>
 #endif
 
 #include "gaze.h"
-#include "tobii.h"
 
 Eyetracker::Eyetracker()
 	: QObject{},
+#ifdef USE_TOBII
 	  factory{nullptr}, tracker{nullptr}, sync_manager{nullptr},
+#endif
 	  tracking{false}
 {
 #ifdef USE_TOBII
@@ -105,7 +109,50 @@ QVariantList Eyetracker::get_calibration()
 
 qint64 Eyetracker::time()
 {
+#ifdef USE_TOBII
 	return clock.getTime();
+#else
+	return QDateTime::currentMSecsSinceEpoch();
+#endif
+}
+
+bool Eyetracker::connected() const
+{
+#ifdef USE_TOBII
+	return sync_manager &&
+	       sync_manager->getSyncState()->getSyncStateFlag() == tetio::SyncState::SYNCHRONIZED;
+#else
+	return true;
+#endif
+}
+
+QString Eyetracker::status() const
+{
+	if (connected())
+		return "Connected to eyetracker.";
+#ifdef USE_TOBII
+	if (factory || tracker)
+		return "Connecting…";
+#endif
+	return "Eyetracker not found.";
+}
+
+void Eyetracker::track(bool enable)
+try {
+#ifdef USE_TOBII
+	if (tracker && enable != tracking) {
+		if (enable)
+			tracker->startTracking();
+		else
+			tracker->stopTracking();
+		tracking = enable;
+	}
+} catch (tobii::sdk::cpp::EyeTrackerException &e) {
+	qWarning() << "error in Eyetracker::track(" << enable << ")"
+		   << "; error code" << e.getErrorCode();
+#endif
+} catch (...) {
+	qWarning() << "error in Eyetracker::track(" << enable << ")";
 }
 
 #ifdef USE_TOBII
@@ -128,37 +175,6 @@ void Eyetracker::try_connect()
 		tracking = false;
 	} catch (...) {
 	}
-}
-
-bool Eyetracker::connected() const
-{
-	return sync_manager &&
-	       sync_manager->getSyncState()->getSyncStateFlag() == tetio::SyncState::SYNCHRONIZED;
-}
-
-QString Eyetracker::status() const
-{
-	if (connected())
-		return "Connected to eyetracker.";
-	if (factory || tracker)
-		return "Connecting…";
-	return "Eyetracker not found.";
-}
-
-void Eyetracker::track(bool enable)
-try {
-	if (tracker && enable != tracking) {
-		if (enable)
-			tracker->startTracking();
-		else
-			tracker->stopTracking();
-		tracking = enable;
-	}
-} catch (tobii::sdk::cpp::EyeTrackerException &e) {
-	qWarning() << "error in Eyetracker::track(" << enable << ")"
-		   << "; error code" << e.getErrorCode();
-} catch (...) {
-	qWarning() << "error in Eyetracker::track(" << enable << ")";
 }
 
 void Eyetracker::handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
