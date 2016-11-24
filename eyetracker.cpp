@@ -16,13 +16,13 @@ namespace tetio = tobii::sdk::cpp;
 #include "gaze.h"
 
 Eyetracker::Eyetracker()
-	: QObject{},
-#ifdef USE_TOBII
-	  factory{nullptr}, tracker{nullptr}, sync_manager{nullptr},
-#endif
-	  tracking{false}
+	: QObject{}, tracking{false}
 {
 #ifdef USE_TOBII
+	factory = nullptr;
+	tracker = nullptr;
+	sync_manager = nullptr;
+
 	connection_timer.setInterval(500);
 	connection_timer.setSingleShot(false);
 
@@ -93,14 +93,14 @@ QVariantList Eyetracker::get_calibration()
 		if (point.leftStatus == 1)
 			lines.push_back(QVariantMap{
 				{"eye", "left"},
-				{"start", start},
-				{"end", point2_to_qpoint(point.leftMapPosition)}
+				{"from", start},
+				{"to", point2_to_qpoint(point.leftMapPosition)}
 			});
 		if (point.rightStatus == 1)
 			lines.push_back(QVariantMap{
 				{"eye", "right"},
-				{"start", start},
-				{"end", point2_to_qpoint(point.rightMapPosition)}
+				{"from", start},
+				{"to", point2_to_qpoint(point.rightMapPosition)}
 			});
 	}
 #endif

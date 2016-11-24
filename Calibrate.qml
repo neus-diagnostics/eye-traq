@@ -10,6 +10,7 @@ Item {
     property var colors: {"left": "#bd4b4b", "right": "#4b86bd"}
 
     function start() {
+        status.text = ""
         plot.lines = []
         plot.requestPaint()
         runner.start("file:tests/calibrate")
@@ -21,17 +22,16 @@ Item {
     }
 
     function end(msg) {
-        var msg = "Calibration successful."
-        if (!eyetracker.calibrate("compute"))
-            msg = "Calibration failed."
+        var success = eyetracker.calibrate("compute")
         stop()
 
-        var calibration = eyetracker.get_calibration();
-        for (var i = 0; i < calibration.length; i++) {
-            var line = calibration[i]
-            plot.addLine(line["start"], line["end"], colors[line["eye"]])
+        if (success) {
+            status.text = "Calibration successful."
+            plot.addLines(eyetracker.get_calibration())
+            plot.requestPaint()
+        } else {
+            status.text = "Calibration failed."
         }
-        plot.requestPaint()
     }
 
     anchors.fill: parent
@@ -55,12 +55,16 @@ Item {
                 id: plot
                 property var lines: []
 
-                function addLine(from, to, color) {
-                    from.x *= width
-                    from.y *= height
-                    to.x *= width
-                    to.y *= height
-                    plot.lines.push({'from': from, 'to': to, 'color': color})
+                function addLines(lines) {
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i]
+                        line.from.x *= width
+                        line.from.y *= height
+                        line.to.x *= width
+                        line.to.y *= height
+                        line.color = colors[line.eye]
+                        plot.lines.push(line)
+                    }
                 }
 
                 anchors.fill: parent
@@ -81,12 +85,24 @@ Item {
             }
         }
 
-        Neus.Button {
-            text: runner.running ? qsTr("Stop") : qsTr("Start")
-            anchors.right: content.right
-            width: content.width * 0.1
+        Item {
+            width: parent.width
             height: firstScreen.height * 0.04
-            onClicked: runner.running ? stop() : start()
+
+            Neus.Label {
+                id: status
+                anchors.left: parent.left
+                font.pixelSize: parent.height * 0.5
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Neus.Button {
+                text: runner.running ? qsTr("Stop") : qsTr("Start")
+                anchors.right: parent.right
+                width: content.width * 0.1
+                height: parent.height
+                onClicked: runner.running ? stop() : start()
+            }
         }
     }
 }
