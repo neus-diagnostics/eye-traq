@@ -55,7 +55,8 @@ Item {
                     text: "⏪"
                     width: content.width * 0.05
                     height: parent.height
-                    // TODO onClicked
+                    enabled: runner.next > 1
+                    onClicked: runner.back()
                 }
 
                 Neus.Button {
@@ -70,7 +71,8 @@ Item {
                     text: "⏩"
                     width: content.width * 0.05
                     height: parent.height
-                    // TODO onClicked
+                    enabled: runner.next < runner.test.length
+                    onClicked: runner.forward()
                 }
             }
 

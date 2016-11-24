@@ -6,6 +6,7 @@ import "Tasks"
 Rectangle {
     property bool running: false
     property bool paused: false
+
     property var test: []
     property var next: 0
 
@@ -15,15 +16,15 @@ Rectangle {
         stop()
         test = recorder.loadTest(testfile)
         next = 0
-        paused = false
         running = true
         recorder.write(eyetracker.time() + '\ttest\tstarted')
         step()
     }
 
     function step() {
+        paused = false
         if (next < test.length) {
-            recorder.write(eyetracker.time() + '\ttest\t' + test[next])
+            recorder.write(eyetracker.time() + '\ttest\tstep\t' + next + '\t' + test[next])
             var tokens = test[next].split('\t')
             next++
             run(tokens[0], tokens.slice(1))
@@ -31,6 +32,29 @@ Rectangle {
             recorder.write(eyetracker.time() + '\ttest\tdone')
             stop()
             done()
+        }
+    }
+
+    function back() {
+        if (running) {
+            tasks.children[tasks.currentIndex].abort()
+            var nsteps = 0
+            while (next > 0 && (test[next] != "checkpoint" || nsteps < 3)) {
+                nsteps++
+                next--
+            }
+            recorder.write(eyetracker.time() + '\ttest\tback')
+            step()
+        }
+    }
+
+    function forward() {
+        if (running) {
+            tasks.children[tasks.currentIndex].abort()
+            while (next < test.length && test[next] != "checkpoint")
+                next++
+            recorder.write(eyetracker.time() + '\ttest\tforward')
+            step()
         }
     }
 
@@ -72,6 +96,9 @@ Rectangle {
                 tasks.currentIndex = 6
                 calibrator.run(args[0], args[1], args[2], args[3])
                 break;
+            case "checkpoint":
+                step()
+                break
         }
     }
 
