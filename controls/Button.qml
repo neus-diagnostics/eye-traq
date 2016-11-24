@@ -64,9 +64,10 @@ T.Button {
 
     //! [background]
     background: Rectangle {
-        opacity: enabled ? 1 : 0.3
+        opacity: enabled ? 1 : 0.8
         visible: !control.flat || control.down || control.checked || control.highlighted
-        color: enabled && (control.checked || control.hovered) ? "#8dc73f" : "#2bb673"
+        color: (enabled && control.checked ? "#8dc73f" :
+                (enabled && control.hovered ? "#42ca89" : "#2bb673"))
         border.color: "#0066ff"
         border.width: control.visualFocus ? 2 : 0
         radius: parent.width * 0.02
