@@ -96,8 +96,8 @@ Rectangle {
                 tasks.currentIndex = 6
                 calibrator.run(args[0], args[1], args[2], args[3])
                 break;
-            case "checkpoint":
-                step()
+            default:
+                step()  // ignore anything we don’t understand
                 break
         }
     }
