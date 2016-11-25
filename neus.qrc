@@ -19,8 +19,10 @@
         <file>Tasks/ShowTxt.qml</file>
         <file>Tasks/Sound.qml</file>
         <file>controls/Button.qml</file>
+        <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>
         <file>controls/TabButton.qml</file>
+        <file>controls/TextField.qml</file>
         <file>fonts/lato-bold.ttf</file>
         <file>fonts/lato-regular.ttf</file>
         <file>images/a.svg</file>

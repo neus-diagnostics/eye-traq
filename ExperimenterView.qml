@@ -79,7 +79,7 @@ Rectangle {
         }
 
         header: Item {
-            height: parent.height * 0.15
+            height: parent.height * 0.12
 
             Row {
                 anchors.right: parent.right
@@ -112,7 +112,7 @@ Rectangle {
         }
 
         footer: Item {
-            height: parent.height * 0.15
+            height: parent.height * 0.12
         }
 
         StackLayout {
