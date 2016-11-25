@@ -36,11 +36,11 @@ Rectangle {
 
         ButtonGroup { id: menuButtons; buttons: menu.children }
 
-        Column {
+        ColumnLayout {
             id: menu
             anchors.centerIn: parent
             width: parent.width * 0.6
-            spacing: main.height * 0.025
+            spacing: parent.width * 0.06
 
             Repeater {
                 model: [
@@ -52,8 +52,7 @@ Rectangle {
                 ]
                 Neus.Button {
                     text: modelData.text
-                    width: parent.width
-                    height: main.height * 0.04
+                    Layout.fillWidth: true
                     checkable: true
                     enabled: eyetracker.connected || modelData.state == "about"
                     onClicked: main.state = modelData.state
@@ -68,7 +67,6 @@ Rectangle {
                 left: parent.left
                 margins: 20
             }
-            font.pixelSize: main.height * 0.02
         }
     }
 

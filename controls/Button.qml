@@ -40,13 +40,17 @@ import QtQuick.Templates 2.0 as T
 T.Button {
     id: control
 
-    padding: 6
     hoverEnabled: true
+    implicitWidth: contentItem.implicitWidth + 2*padding
+    implicitHeight: contentItem.implicitHeight + topPadding + bottomPadding
+    padding: 6
+    topPadding: 8
+    bottomPadding: 8
 
     font {
         family: "Lato"
         capitalization: Font.AllUppercase
-        pixelSize: height * 0.4
+        pointSize: 12
         weight: Font.Bold
     }
 
@@ -71,7 +75,7 @@ T.Button {
                 (enabled && control.hovered ? "#42ca89" : "#2bb673"))
         border.color: "#0066ff"
         border.width: control.visualFocus ? 2 : 0
-        radius: parent.width * 0.02
+        radius: parent.height * 0.05
     }
     //! [background]
 }

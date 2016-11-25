@@ -17,7 +17,7 @@ Task {
         width: parent.width * 0.6
         wrapMode: Text.WordWrap
         color: 'white'
-        font.pixelSize: 32
+        font.pointSize: 24
         lineHeight: 1.2
     }
 }

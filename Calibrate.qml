@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import QtQuick.Layouts 1.3
 
 import "controls" as Neus
 
@@ -38,17 +39,18 @@ Item {
 
     onVisibleChanged: eyetracker.calibrate("stop")
 
-    Column {
+    ColumnLayout {
         id: content
 
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: parent.height * 0.025
+        width: main.width * 0.8
+        spacing: width * 0.02
 
         // duplicate the participant’s view
         ShaderEffectSource {
             sourceItem: runner
-            width: height * (secondScreen.width / secondScreen.height)
-            height: main.height * 0.9
+            width: parent.width
+            height: width * (secondScreen.height / secondScreen.width)
 
             // canvas for drawing calibration plot lines
             Canvas {
@@ -87,12 +89,10 @@ Item {
 
         Item {
             width: parent.width
-            height: firstScreen.height * 0.04
 
             Neus.Label {
                 id: status
                 anchors.left: parent.left
-                font.pixelSize: parent.height * 0.5
                 verticalAlignment: Text.AlignVCenter
             }
 
@@ -100,7 +100,6 @@ Item {
                 text: runner.running ? qsTr("Stop") : qsTr("Start")
                 anchors.right: parent.right
                 width: content.width * 0.1
-                height: parent.height
                 onClicked: runner.running ? stop() : start()
             }
         }
