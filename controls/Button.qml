@@ -43,9 +43,7 @@ T.Button {
     hoverEnabled: true
     implicitWidth: contentItem.implicitWidth + 2*padding
     implicitHeight: contentItem.implicitHeight + topPadding + bottomPadding
-    padding: 6
-    topPadding: 8
-    bottomPadding: 8
+    padding: 8
 
     font {
         family: "Lato"

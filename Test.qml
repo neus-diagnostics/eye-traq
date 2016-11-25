@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.3
 
 import "controls" as Neus
 
-Item {
+ColumnLayout {
     id: main
 
     property var options
@@ -20,66 +20,60 @@ Item {
         recorder.stop()
     }
 
-    anchors.fill: parent
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: parent.width
+    spacing: width * 0.02
 
     Connections {
         target: runner
         onDone: stop()
     }
 
-    ColumnLayout {
-        id: content
+    // duplicate the participant’s view
+    ShaderEffectSource {
+        sourceItem: runner
+        width: parent.width
+        height: width * (secondScreen.height / secondScreen.width)
 
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: main.width * 0.8
-        spacing: width * 0.02
+        Gaze { id: gaze }
+    }
 
-        // duplicate the participant’s view
-        ShaderEffectSource {
-            sourceItem: runner
-            width: parent.width
-            height: width * (secondScreen.height / secondScreen.width)
+    Item {
+        width: parent.width
 
-            Gaze { id: gaze }
-        }
+        Row {
+            anchors.left: parent.left
+            spacing: main.width * 0.01
+            visible: runner.running
 
-        Item {
-            width: parent.width
-
-            Row {
-                anchors.left: parent.left
-                spacing: content.width * 0.01
-                visible: runner.running
-
-                Neus.Button {
-                    text: "⏪"
-                    width: content.width * 0.05
-                    enabled: runner.next > 1
-                    onClicked: runner.back()
-                }
-
-                Neus.Button {
-                    text: "⏯"
-                    width: content.width * 0.05
-                    checked: runner.paused
-                    onClicked: runner.paused = !runner.paused
-                }
-
-                Neus.Button {
-                    text: "⏩"
-                    width: content.width * 0.05
-                    enabled: runner.next < runner.test.length
-                    onClicked: runner.forward()
-                }
+            Neus.Button {
+                text: "⏪"
+                width: main.width * 0.05
+                enabled: runner.next > 1
+                onClicked: runner.back()
             }
 
             Neus.Button {
-                anchors.right: parent.right
-                text: runner.running ? qsTr("Stop") : qsTr("Start")
-                width: content.width * 0.1
-                onClicked: runner.running ? stop() : start()
+                text: "⏯"
+                width: main.width * 0.05
+                checked: runner.paused
+                onClicked: runner.paused = !runner.paused
             }
 
+            Neus.Button {
+                text: "⏩"
+                width: main.width * 0.05
+                enabled: runner.next < runner.test.length
+                onClicked: runner.forward()
+            }
         }
+
+        Neus.Button {
+            anchors.right: parent.right
+            text: runner.running ? qsTr("Stop") : qsTr("Start")
+            width: main.width * 0.1
+            onClicked: runner.running ? stop() : start()
+        }
+
     }
 }

@@ -91,7 +91,7 @@ Rectangle {
                 Button {
                     text: "❌"  // U+274c "close"
                     width: height
-                    font.pixelSize: main.height * 0.02
+                    font.pointSize: 10
                     hoverEnabled: true
                     background: Rectangle {
                         color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
@@ -101,7 +101,7 @@ Rectangle {
                 Button {
                     text: "⚊"  // U+268a "minimize"
                     width: height
-                    font.pixelSize: main.height * 0.02
+                    font.pointSize: 10
                     hoverEnabled: true
                     background: Rectangle {
                         color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
@@ -118,7 +118,9 @@ Rectangle {
         StackLayout {
             id: view
 
-            anchors.fill: parent
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width * 0.8
+            height: parent.height
 
             Start { }
             Options { id: options }
