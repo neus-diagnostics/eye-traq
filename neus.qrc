@@ -17,7 +17,7 @@
         <file>Tasks/Pursuit.qml</file>
         <file>Tasks/Saccade.qml</file>
         <file>Tasks/ShowTxt.qml</file>
-        <file>Tasks/Sound.qml</file>
+        <file>Tasks/Alert.qml</file>
         <file>controls/Button.qml</file>
         <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>

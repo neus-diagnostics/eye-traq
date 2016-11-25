@@ -1,10 +1,9 @@
 import QtMultimedia 5.6
 
 Task {
-    function run(time, soundfile) {
-        sound.source = "../sounds/" + soundfile
+    function run() {
         sound.play()
-        _run(time)
+        _run(500)
     }
 
     function abort() {
@@ -16,5 +15,6 @@ Task {
 
     Audio {
         id: sound
+        source: "../sounds/alert.oga"
     }
 }
