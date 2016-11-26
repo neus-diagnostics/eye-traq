@@ -47,22 +47,22 @@ ColumnLayout {
             visible: runner.running
 
             Neus.Button {
-                text: "⏪"
-                width: main.width * 0.05
+                text: qsTr("Prev")  // TODO: replace with "⏪"
+                width: main.width * 0.08
                 enabled: runner.next > 1
                 onClicked: runner.back()
             }
 
             Neus.Button {
-                text: "⏯"
-                width: main.width * 0.05
+                text: qsTr("Pause")  // TODO: replace with "⏯"
+                width: main.width * 0.08
                 checked: runner.paused
                 onClicked: runner.paused = !runner.paused
             }
 
             Neus.Button {
-                text: "⏩"
-                width: main.width * 0.05
+                text: qsTr("Next")  // TODO: replace with "⏩"
+                width: main.width * 0.08
                 enabled: runner.next < runner.test.length
                 onClicked: runner.forward()
             }

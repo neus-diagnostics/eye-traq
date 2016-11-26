@@ -89,9 +89,9 @@ Rectangle {
                 spacing: 10
 
                 Button {
-                    text: "❌"  // U+274c "close"
+                    text: "×"  // TODO: replace with "❌" (U+274c "close")
                     width: height
-                    font.pointSize: 10
+                    font { pointSize: 12; weight: Font.Bold }
                     hoverEnabled: true
                     background: Rectangle {
                         color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
@@ -99,9 +99,9 @@ Rectangle {
                     onClicked: Qt.quit()
                 }
                 Button {
-                    text: "⚊"  // U+268a "minimize"
+                    text: "–"  // TODO: replace with "⚊" (U+268a "minimize")
                     width: height
-                    font.pointSize: 10
+                    font { pointSize: 12; weight: Font.Bold }
                     hoverEnabled: true
                     background: Rectangle {
                         color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
