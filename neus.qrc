@@ -16,7 +16,7 @@
         <file>Tasks/ImgPair.qml</file>
         <file>Tasks/Pursuit.qml</file>
         <file>Tasks/Saccade.qml</file>
-        <file>Tasks/ShowTxt.qml</file>
+        <file>Tasks/Message.qml</file>
         <file>Tasks/Alert.qml</file>
         <file>controls/Button.qml</file>
         <file>controls/Heading.qml</file>
@@ -25,8 +25,11 @@
         <file>controls/TextField.qml</file>
         <file>fonts/lato-bold.ttf</file>
         <file>fonts/lato-regular.ttf</file>
-        <file>images/a.svg</file>
-        <file>images/b.svg</file>
         <file>sounds/alert.oga</file>
+        <file>sounds/calibrate.oga</file>
+        <file>sounds/ast.oga</file>
+        <file>sounds/pst.oga</file>
+        <file>sounds/pursuit.oga</file>
+        <file>sounds/imgpair.oga</file>
     </qresource>
 </RCC>

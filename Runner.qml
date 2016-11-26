@@ -84,13 +84,13 @@ Rectangle {
                 tasks.currentIndex = 3
                 saccade.run(args[0], args[1], args[2], args[3])
                 break;
-            case "showtxt":
+            case "message":
                 tasks.currentIndex = 4
-                showtxt.run(args[0], args[1])
+                message.run(args[0], args[1], args[2])
                 break;
             case "alert":
                 tasks.currentIndex = 5
-                alert.run(args[0])
+                alert.run()
                 break;
             case "calibrator":
                 tasks.currentIndex = 6
@@ -140,8 +140,8 @@ Rectangle {
             onDone: step()
             onInfo: recorder.write(text)
         }
-        ShowTxt {
-            id: showtxt
+        Message {
+            id: message
             onDone: step()
         }
         Alert {

@@ -4,9 +4,11 @@ Item {
     signal done
     signal info(string text)
 
-    // allow overriding run() and abort()
+    // allow overriding methods
     property var run: _run
     property var abort: _abort
+    property var pause: _pause
+    property var unpause: _unpause
     property alias timer: timer
 
     function _run(time) {
@@ -19,11 +21,11 @@ Item {
         timer.stop()
     }
 
-    function pause() {
+    function _pause() {
         timer.stop()
     }
 
-    function unpause() {
+    function _unpause() {
         timer.start()
     }
 
