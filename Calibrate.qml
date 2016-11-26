@@ -13,7 +13,6 @@ ColumnLayout {
     function start() {
         status.text = ""
         plot.lines = []
-        plot.requestPaint()
         runner.start(path + "/share/tests/calibrate")
     }
 
@@ -29,10 +28,10 @@ ColumnLayout {
         if (success) {
             status.text = "Calibration successful."
             plot.addLines(eyetracker.get_calibration())
-            plot.requestPaint()
         } else {
             status.text = "Calibration failed."
         }
+        plot.requestPaint()
     }
 
     anchors.horizontalCenter: parent.horizontalCenter
@@ -51,6 +50,7 @@ ColumnLayout {
         Canvas {
             id: plot
             property var lines: []
+            visible: !runner.running
 
             function addLines(lines) {
                 for (var i = 0; i < lines.length; i++) {
@@ -77,6 +77,14 @@ ColumnLayout {
                     ctx.lineTo(lines[i]["to"].x, lines[i]["to"].y)
                     ctx.stroke()
                     ctx.closePath()
+                }
+            }
+
+            Connections {
+                target: options
+                onParticipantChanged: {
+                    lines = []
+                    requestPaint()
                 }
             }
         }
