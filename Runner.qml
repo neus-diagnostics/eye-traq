@@ -117,40 +117,59 @@ Rectangle {
     }
 
     StackLayout {
-        id: tasks
-
         anchors.fill: parent
-        focus: true
+        currentIndex: running ? 0 : 1
 
-        Blank {
-            id: blank
-            onDone: step()
+        StackLayout {
+            id: tasks
+
+            anchors.fill: parent
+            focus: true
+
+            Blank {
+                id: blank
+                onDone: step()
+            }
+            ImgPair {
+                id: imgpair
+                onDone: step()
+            }
+            Pursuit {
+                id: pursuit
+                onDone: step()
+                onInfo: recorder.write(text)
+            }
+            Saccade {
+                id: saccade
+                onDone: step()
+                onInfo: recorder.write(text)
+            }
+            Message {
+                id: message
+                onDone: step()
+            }
+            Alert {
+                id: alert
+                onDone: step()
+            }
+            Calibrator {
+                id: calibrator
+                onDone: step()
+            }
         }
-        ImgPair {
-            id: imgpair
-            onDone: step()
-        }
-        Pursuit {
-            id: pursuit
-            onDone: step()
-            onInfo: recorder.write(text)
-        }
-        Saccade {
-            id: saccade
-            onDone: step()
-            onInfo: recorder.write(text)
-        }
-        Message {
-            id: message
-            onDone: step()
-        }
-        Alert {
-            id: alert
-            onDone: step()
-        }
-        Calibrator {
-            id: calibrator
-            onDone: step()
+
+        Rectangle {
+            color: "black"
+            anchors.fill: parent
+            Image {
+                // set the stand-by image
+                // source: ""
+                anchors.centerIn: parent
+                width: parent.width / 2
+                height: parent.height / 2
+                fillMode: Image.PreserveAspectFit
+                sourceSize { width: width; height: height }
+            }
         }
     }
 }
