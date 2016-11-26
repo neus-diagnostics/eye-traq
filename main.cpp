@@ -27,8 +27,8 @@ try {
 
 	qRegisterMetaType<Gaze>("Gaze");
 
-	if (QFontDatabase::addApplicationFont(":/fonts/lato-regular.ttf") == -1 ||
-	    QFontDatabase::addApplicationFont(":/fonts/lato-bold.ttf") == -1)
+	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||
+	    QFontDatabase::addApplicationFont(":/resources/lato-bold.ttf") == -1)
 		qWarning() << "Could not load fonts.";
 
 	// find primary and secondary screen
@@ -53,6 +53,7 @@ try {
 
 	// set up the window
 	QQuickView view;
+	view.rootContext()->setContextProperty("path", "file://" + app.applicationDirPath());
 	view.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
 	view.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
 	view.rootContext()->setContextProperty("eyetracker", &eyetracker);

@@ -15,6 +15,6 @@ Task {
 
     Audio {
         id: sound
-        source: "../sounds/alert.oga"
+        source: "../resources/alert.oga"
     }
 }

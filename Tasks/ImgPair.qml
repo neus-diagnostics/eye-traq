@@ -4,8 +4,8 @@ Task {
     id: screen
 
     function run(time, leftfile, rightfile) {
-        left.source = "../images/" + leftfile
-        right.source = "../images/" + rightfile
+        left.source = path + "/share/images/" + leftfile
+        right.source = path + "/share/images/" + rightfile
         _run(time)
     }
 

@@ -14,7 +14,7 @@ ColumnLayout {
         status.text = ""
         plot.lines = []
         plot.requestPaint()
-        runner.start("file:tests/calibrate")
+        runner.start(path + "/share/tests/calibrate")
     }
 
     function stop() {

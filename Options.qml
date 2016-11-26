@@ -62,8 +62,8 @@ Item {
                 Layout.fillWidth: true
 
                 model: [
-                    { name: "1 minute / trial", file: "file:tests/1minute.py" },
-                    { name: "2 minutes / trial", file: "file:tests/2minute.py" },
+                    { name: "1 minute / trial", file: path + "/share/tests/1minute.py" },
+                    { name: "2 minutes / trial", file: path + "/share/tests/2minute.py" },
                 ]
                 textRole: "name"
             }

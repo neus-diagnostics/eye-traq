@@ -25,13 +25,13 @@ Column {
     Repeater {
         model: [
             [  // first row with three buttons
-                { "text": qsTr("Image pair"), "test": "file:tests/practice-imgpair" },
-                { "text": qsTr("Pro-saccade (H)"), "test": "file:tests/practice-prosaccade-horizontal" },
-                { "text": qsTr("Pro-saccade (V)"), "test": "file:tests/practice-prosaccade-vertical" },
+                { "text": qsTr("Image pair"), "test": "practice-imgpair" },
+                { "text": qsTr("Pro-saccade (H)"), "test": "practice-prosaccade-horizontal" },
+                { "text": qsTr("Pro-saccade (V)"), "test": "practice-prosaccade-vertical" },
             ],
             [  // second row with two buttons
-                { "text": qsTr("Anti-saccade"), "test": "file:tests/practice-antisaccade-horizontal" },
-                { "text": qsTr("Smooth pursuit"), "test": "file:tests/practice-pursuit" },
+                { "text": qsTr("Anti-saccade"), "test": "practice-antisaccade-horizontal" },
+                { "text": qsTr("Smooth pursuit"), "test": "practice-pursuit" },
             ]
         ]
         Row {
@@ -44,7 +44,7 @@ Column {
                     text: modelData.text
                     width: main.width * 0.25
                     onClicked: {
-                        runner.start(modelData.test)
+                        runner.start(path + "/share/tests/" + modelData.test)
                         checked = true
                     }
                     Connections {

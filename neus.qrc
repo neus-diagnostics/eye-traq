@@ -23,13 +23,8 @@
         <file>controls/Label.qml</file>
         <file>controls/TabButton.qml</file>
         <file>controls/TextField.qml</file>
-        <file>fonts/lato-bold.ttf</file>
-        <file>fonts/lato-regular.ttf</file>
-        <file>sounds/alert.oga</file>
-        <file>sounds/calibrate.oga</file>
-        <file>sounds/ast.oga</file>
-        <file>sounds/pst.oga</file>
-        <file>sounds/pursuit.oga</file>
-        <file>sounds/imgpair.oga</file>
+        <file>resources/alert.oga</file>
+        <file>resources/lato-bold.ttf</file>
+        <file>resources/lato-regular.ttf</file>
     </qresource>
 </RCC>

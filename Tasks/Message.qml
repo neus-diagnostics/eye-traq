@@ -8,7 +8,7 @@ Task {
     function run(time, soundfile, text) {
         message.text = text
         if (soundfile != "" && soundfile != "none") {
-            audio.source = "../sounds/" + soundfile
+            audio.source = path + "/share/sounds/" + soundfile
             audio.play()
         }
         _run(time)
