@@ -1,0 +1,5 @@
+blank	1000
+message	18240	ast.oga	Glejte v križec na sredini zaslona. Ko opazite, da se je nekje na zaslonu prikazala bela točka, čim hitreje poglejte v <i>nasprotno</i> stran zaslona. Ko točka izgine, pogled usmerite nazaj v sredino zaslona.
+blank	1000
+alert
+saccade	x	0.2	false	false
