@@ -89,7 +89,7 @@ Task {
         triggeredOnStart: true
 
         onTriggered: {
-            info(eyetracker.time() + '\tdata\t'
+            info(eyetracker.time() + '\ttest\tdata\t'
                  + ((stimulus.x + stimulus.width/2) / screen.width) + '\t'
                  + ((stimulus.y + stimulus.height/2) / screen.height) + '\t')
         }

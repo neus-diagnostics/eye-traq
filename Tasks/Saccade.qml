@@ -58,7 +58,7 @@ Task {
         }
         _run(time)
 
-        info(eyetracker.time() + '\tdata\t' + fixation.visible + '\t' + target.visible)
+        info(eyetracker.time() + '\ttest\tdata\t' + fixation.visible + '\t' + target.visible)
         next++
     }
 
