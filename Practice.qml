@@ -1,8 +1,9 @@
 import QtQuick 2.7
+import QtQuick.Layouts 1.3
 
 import "controls" as Neus
 
-Column {
+ColumnLayout {
     id: main
 
     property var options
