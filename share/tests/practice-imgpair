@@ -2,4 +2,4 @@ blank	1000
 message	11640	imgpair.oga	Med testiranjem se bodo na zaslonu med posameznimi sklopi prikazovali pari slik. Opazujte jih povsem naravno brez premikanja glave.
 blank	1000
 alert
-imgpair	5000	file:images/clipart/alarm-clock-806258.svg	file:images/clipart/country-1294381.svg
+imgpair	5000	set1/alarm-clock.svg	set1/crayon.svg
