@@ -1,5 +1,5 @@
 blank	1000
-message	6840	pursuit.oga	Z očmi čimbolj natančno sledite beli točki na zaslonu.
+message	6840	pursuit.oga	Please follow the white point with your eyes as accurately as possible.
 blank	1000
 alert
 pursuit	x	0.23	6000	2400

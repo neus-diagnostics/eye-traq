@@ -1,5 +1,5 @@
 blank	1000
-message	11640	imgpair.oga	Med testiranjem se bodo na zaslonu med posameznimi sklopi prikazovali pari slik. Opazujte jih povsem naravno brez premikanja glave.
+message	11640	imgpair.oga	During the test, between different tasks, pairs of images will be shown on the screen.<br />Please look at them naturally while keeping your head still.
 blank	1000
 alert
 imgpair	5000	set1/alarm-clock.svg	set1/crayon.svg

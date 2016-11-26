@@ -1,5 +1,5 @@
 blank	1000
-message	16880	pst.oga	Glejte v križec na sredini zaslona. Ko opazite, da se je nekje na zaslonu prikazala bela točka, jo čim hitreje poglejte. Ko točka izgine, pogled usmerite nazaj v sredino zaslona.
+message	16880	pst.oga	Please look at the cross in the middle of the screen.<br />When a white point appears, look at it as quickly as possible.<br />When it disappears, look back at the middle of the screen.
 blank	1000
 alert
 saccade	x	0.2	false	false

@@ -34,7 +34,7 @@ Task {
     Neus.Label {
         id: message
         anchors.centerIn: parent
-        width: parent.width * 0.6
+        width: parent.width * 0.8
         wrapMode: Text.WordWrap
         color: 'white'
         font.pointSize: 24
