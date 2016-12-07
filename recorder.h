@@ -19,7 +19,7 @@ public:
 	virtual ~Recorder();
 
 public slots:
-	QStringList loadTest(const QUrl &testfile);
+	QVariantList loadTest(const QUrl &testfile);
 	void start(const QUrl &testfile, const QString &participant);
 	void stop();
 	void write(const QString &text);

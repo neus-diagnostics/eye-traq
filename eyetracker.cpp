@@ -146,6 +146,7 @@ try {
 		else
 			tracker->stopTracking();
 		tracking = enable;
+		emit trackingChanged();
 	}
 } catch (tobii::sdk::cpp::EyeTrackerException &e) {
 	qWarning() << "error in Eyetracker::track(" << enable << ")"
@@ -157,24 +158,25 @@ try {
 
 #ifdef USE_TOBII
 void Eyetracker::try_connect()
-{
-	try {
-		tracker = factory->createEyeTracker(main_loop.thread);
+try {
+	tracker = factory->createEyeTracker(main_loop.thread);
 
-		tracker->addConnectionErrorListener(
-			boost::bind(&Eyetracker::handle_error, this, _1));
-		tracker->addGazeDataReceivedListener(
-			boost::bind(&Eyetracker::handle_gaze, this, _1));
+	tracker->addConnectionErrorListener(
+		boost::bind(&Eyetracker::handle_error, this, _1));
+	tracker->addGazeDataReceivedListener(
+		boost::bind(&Eyetracker::handle_gaze, this, _1));
 
-		sync_manager = factory->createSyncManager(clock, main_loop.thread);
-		sync_manager->addSyncStateChangedListener(
-			boost::bind(&Eyetracker::handle_sync, this, _1));
+	sync_manager = factory->createSyncManager(clock, main_loop.thread);
+	sync_manager->addSyncStateChangedListener(
+		boost::bind(&Eyetracker::handle_sync, this, _1));
 
-		connection_timer.stop();
-		factory = nullptr;
+	connection_timer.stop();
+	factory = nullptr;
+	if (tracking) {
 		tracking = false;
-	} catch (...) {
+		emit trackingChanged();
 	}
+} catch (...) {
 }
 
 void Eyetracker::handle_browse(tetio::EyeTrackerBrowser::event_type_t type,

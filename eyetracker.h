@@ -47,7 +47,7 @@ class Eyetracker : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
 	Q_PROPERTY(QString status READ status NOTIFY statusChanged STORED false)
-	Q_PROPERTY(bool tracking MEMBER tracking WRITE track STORED false)
+	Q_PROPERTY(bool tracking MEMBER tracking WRITE track NOTIFY trackingChanged STORED false)
 
 public:
 	Eyetracker();
@@ -61,6 +61,7 @@ public slots:
 
 signals:
 	void statusChanged();
+	void trackingChanged();
 	void gaze(const Gaze &g);
 	void gazePoint(const QPointF &point);
 

@@ -7,6 +7,7 @@ Rectangle {
     property bool running: false
     property bool paused: false
 
+    property var name: ''
     property var test: []
     property var next: 0
 
@@ -14,6 +15,7 @@ Rectangle {
 
     function start(testfile) {
         stop()
+        name = testfile.replace(/.*\//, '');  // use filename as test name
         test = recorder.loadTest(testfile)
         next = 0
         running = true
@@ -24,10 +26,10 @@ Rectangle {
     function step() {
         paused = false
         if (next < test.length) {
-            recorder.write(eyetracker.time() + '\ttest\tstep\t' + next + '\t' + test[next])
-            var tokens = test[next].split('\t')
+            recorder.write(eyetracker.time() + '\ttest\tstep\t' + next + '\t' + test[next].pretty)
+            var task = test[next]
             next++
-            run(tokens[0], tokens.slice(1))
+            run(task.name, task.args)
         } else {
             recorder.write(eyetracker.time() + '\ttest\tdone')
             stop()
@@ -39,7 +41,7 @@ Rectangle {
         if (running) {
             tasks.children[tasks.currentIndex].abort()
             var nsteps = 0
-            while (next > 0 && (test[next] != "checkpoint" || nsteps < 3)) {
+            while (next > 0 && (test[next].name != "checkpoint" || nsteps < 3)) {
                 nsteps++
                 next--
             }
@@ -51,7 +53,7 @@ Rectangle {
     function forward() {
         if (running) {
             tasks.children[tasks.currentIndex].abort()
-            while (next < test.length && test[next] != "checkpoint")
+            while (next < test.length && test[next].name != "checkpoint")
                 next++
             recorder.write(eyetracker.time() + '\ttest\tforward')
             step()
@@ -63,6 +65,9 @@ Rectangle {
             tasks.children[tasks.currentIndex].abort()
             tasks.currentIndex = 0
             running = false
+            name = ''
+            test = []
+            next = 0
         }
     }
 

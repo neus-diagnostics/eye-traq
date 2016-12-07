@@ -42,13 +42,15 @@ T.TabButton {
 
     baselineOffset: contentItem.y + contentItem.baselineOffset
     height: parent.height
-    padding: 6
+    hoverEnabled: true
+
+    padding: 4
 
     font {
         family: "Lato"
         capitalization: Font.AllUppercase
-        pixelSize: height * 0.3
-        weight: checked ? Font.Bold : Font.Normal
+        pointSize: 11
+        weight: Font.Normal
     }
 
     contentItem: Text {
@@ -56,16 +58,22 @@ T.TabButton {
         font: control.font
         elide: Text.ElideRight
         opacity: enabled ? 1 : 0.3
-        color: "#6d6e72"
+        color: "#222222"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
 
     background: Rectangle {
-        color: control.checked ? "#2bb673" : "transparent"
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        height: parent.height * 0.162
-        width: contentItem.contentWidth
+        anchors.fill: parent
+        color: control.checked ?
+            (control.hovered ? "#402bb673" : "#302bb673") :
+            (control.hovered ? "#202bb673" : "transparent")
+        Rectangle {
+            color: control.checked ? "#2bb673" : "transparent"
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: parent.height * 0.1
+            width: parent.width
+        }
     }
 }

@@ -44,11 +44,13 @@ T.Button {
     implicitWidth: contentItem.implicitWidth + 2*padding
     implicitHeight: contentItem.implicitHeight + topPadding + bottomPadding
     padding: 8
+    topPadding: 4
+    bottomPadding: topPadding
 
     font {
         family: "Lato"
         capitalization: Font.AllUppercase
-        pointSize: 12
+        pointSize: 11
         weight: Font.Bold
     }
 

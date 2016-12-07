@@ -7,6 +7,8 @@
 #include <QQuickItem>
 #include <QRegularExpression>
 #include <QUrl>
+#include <QVariantList>
+#include <QVariantMap>
 #include <QtDebug>
 
 Recorder::Recorder()
@@ -19,7 +21,7 @@ Recorder::~Recorder()
 	stop();
 }
 
-QStringList Recorder::loadTest(const QUrl &testfile)
+QVariantList Recorder::loadTest(const QUrl &testfile)
 {
 	QString testdata;
 
@@ -43,8 +45,20 @@ QStringList Recorder::loadTest(const QUrl &testfile)
 		testdata = QTextStream{&file}.readAll();
 	}
 
+	QVariantList tasks;
 	// remove empty lines and comments
-	return testdata.split('\n').filter(QRegularExpression("^[^#]"));
+	int i = 0;
+	for (const auto &line : testdata.split('\n').filter(QRegularExpression("^[^#]"))) {
+		const auto &tokens = line.split('\t');
+		const auto &name = tokens[0];
+		const auto &args = QStringList{tokens.mid(1)};
+		tasks.push_back(QVariantMap{
+			{"name", name},
+			{"args", args},
+			{"index", i++}
+		});
+	}
+	return tasks;
 }
 
 void Recorder::start(const QUrl &testfile, const QString &participant)
