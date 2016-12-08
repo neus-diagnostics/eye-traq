@@ -3,7 +3,7 @@ import QtQuick 2.7
 Task {
     id: screen
 
-    function run(coord, offset, time, period) {
+    function run(time, coord, offset, period) {
         offset = Number(offset)
         period = Number(period)
 

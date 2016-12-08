@@ -1,5 +1,6 @@
 blank	1000
 message	11640	imgpair.oga	During the test, between different tasks, pairs of images will be shown on the screen.<br />Please look at them naturally while keeping your head still.
 blank	1000
-alert
+checkpoint
+alert	500
 imgpair	5000	set1/alarm-clock.svg	set1/crayon.svg

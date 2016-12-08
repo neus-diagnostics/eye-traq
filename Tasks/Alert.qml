@@ -1,9 +1,9 @@
 import QtMultimedia 5.6
 
 Task {
-    function run() {
+    function run(time) {
         sound.play()
-        _run(500)
+        _run(time)
     }
 
     function abort() {

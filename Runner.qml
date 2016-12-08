@@ -34,7 +34,7 @@ Rectangle {
                  test[next].name + '\t' + test[next].args.join('\t'))
             var task = test[next]
             next++
-            run(task.name, task.args)
+            run(task)
         } else {
             info(eyetracker.time() + '\ttest\tdone')
             done()
@@ -70,39 +70,42 @@ Rectangle {
             tasks.children[tasks.currentIndex].abort()
             tasks.currentIndex = 0
             running = false
+            test = []
+            next = 0
             stopped()
         }
     }
 
-    function run(name, args) {
-        switch (name) {
+    function run(task) {
+        var args = task.args
+        switch (task.name) {
             case "blank":
                 tasks.currentIndex = 0
-                blank.run(args[0])
+                blank.run(task.duration)
                 break;
             case "imgpair":
                 tasks.currentIndex = 1
-                imgpair.run(args[0], args[1], args[2])
+                imgpair.run(task.duration, args[0], args[1])
                 break;
             case "pursuit":
                 tasks.currentIndex = 2
-                pursuit.run(args[0], args[1], args[2], args[3])
+                pursuit.run(task.duration, args[0], args[1], args[2])
                 break;
             case "saccade":
                 tasks.currentIndex = 3
-                saccade.run(args[0], args[1], args[2], args[3])
+                saccade.run(task.duration, args[0], args[1], args[2], args[3])
                 break;
             case "message":
                 tasks.currentIndex = 4
-                message.run(args[0], args[1], args[2])
+                message.run(task.duration, args[0], args[1])
                 break;
             case "alert":
                 tasks.currentIndex = 5
-                alert.run()
+                alert.run(task.duration)
                 break;
             case "calibrator":
                 tasks.currentIndex = 6
-                calibrator.run(args[0], args[1], args[2], args[3])
+                calibrator.run(task.duration, args[0], args[1], args[2])
                 break;
             default:
                 step()  // ignore anything we don’t understand

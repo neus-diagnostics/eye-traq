@@ -48,15 +48,21 @@ QVariantList Recorder::loadTest(const QUrl &testfile)
 	QVariantList tasks;
 	// remove empty lines and comments
 	int i = 0;
+	int total_time = 0;
 	for (const auto &line : testdata.split('\n').filter(QRegularExpression("^[^#]"))) {
 		const auto &tokens = line.split('\t');
 		const auto &name = tokens[0];
 		const auto &args = QStringList{tokens.mid(1)};
+		const int time = args.isEmpty() ? 0.0f : args[0].toFloat();
+
 		tasks.push_back(QVariantMap{
 			{"name", name},
-			{"args", args},
-			{"index", i++}
+			{"args", QStringList{args.mid(1)}},
+			{"index", i++},
+			{"start", total_time},
+			{"duration", time}
 		});
+		total_time += time;
 	}
 	return tasks;
 }

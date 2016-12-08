@@ -6,10 +6,13 @@ Task {
     property var gap: true
     property var overlap: true
     property var start_time: 0
+    property var total_time: 0
     property var next: 0
 
-    function run(dir, offset, gap, overlap) {
+    function run(time, dir, offset, gap, overlap) {
+        time = Number(time)
         offset = Number(offset)
+
         if (dir == 'x') {
             target.x = (0.5 + offset) * screen.width - target.width / 2
             target.y = (screen.height - target.height) / 2
@@ -21,6 +24,7 @@ Task {
         this.gap = (gap == "true")
         this.overlap = (overlap == "true")
         this.start_time = 2500 + Math.random() * 1000
+        this.total_time = time
 
         next = 0
         run_step()
@@ -50,7 +54,7 @@ Task {
             case 3:
                 fixation.visible = true
                 target.visible = false
-                time = 8000 - (start_time + 1000 + (gap ? 200 : 0))
+                time = total_time - (start_time + 1000 + (gap ? 200 : 0))
                 break
             case 4:
                 done()

@@ -7,10 +7,10 @@ Item {
 
     signal done
 
-    function run(step, x, y, time) {
+    function run(time, step, x, y) {
+        time = Number(time)
         x = Number(x)
         y = Number(y)
-        time = Number(time)
 
         var screen_x = width*x
         var screen_y = height*y
