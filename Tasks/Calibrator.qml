@@ -27,7 +27,6 @@ Item {
             stimulus.y = target_y
             stimulus.scale = 1.0
             point = null
-            eyetracker.calibrate("start")
         } else {
             grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
             moveX.to = target_x

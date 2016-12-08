@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.3
 import "Tasks"
 
 Rectangle {
+    id: main
+
     property bool running: false
     property bool paused: false
 
@@ -11,7 +13,9 @@ Rectangle {
     property var test: []
     property var next: 0
 
+    signal info(string text)
     signal done
+    signal stopped
 
     function start(testfile) {
         stop()
@@ -19,21 +23,22 @@ Rectangle {
         test = recorder.loadTest(testfile)
         next = 0
         running = true
-        recorder.write(eyetracker.time() + '\ttest\tstarted')
+        info(eyetracker.time() + '\ttest\tstarted')
         step()
     }
 
     function step() {
         paused = false
         if (next < test.length) {
-            recorder.write(eyetracker.time() + '\ttest\tstep\t' + next + '\t' + test[next].pretty)
+            info(eyetracker.time() + '\ttest\tstep\t' + next + '\t' +
+                 test[next].name + '\t' + test[next].args.join('\t'))
             var task = test[next]
             next++
             run(task.name, task.args)
         } else {
-            recorder.write(eyetracker.time() + '\ttest\tdone')
-            stop()
+            info(eyetracker.time() + '\ttest\tdone')
             done()
+            stop()
         }
     }
 
@@ -45,7 +50,7 @@ Rectangle {
                 nsteps++
                 next--
             }
-            recorder.write(eyetracker.time() + '\ttest\tback')
+            info(eyetracker.time() + '\ttest\tback')
             step()
         }
     }
@@ -55,7 +60,7 @@ Rectangle {
             tasks.children[tasks.currentIndex].abort()
             while (next < test.length && test[next].name != "checkpoint")
                 next++
-            recorder.write(eyetracker.time() + '\ttest\tforward')
+            info(eyetracker.time() + '\ttest\tforward')
             step()
         }
     }
@@ -65,9 +70,7 @@ Rectangle {
             tasks.children[tasks.currentIndex].abort()
             tasks.currentIndex = 0
             running = false
-            name = ''
-            test = []
-            next = 0
+            stopped()
         }
     }
 
@@ -113,10 +116,10 @@ Rectangle {
         if (!running)
             return;
         if (paused) {
-            recorder.write(eyetracker.time() + '\ttest\tpaused')
+            info(eyetracker.time() + '\ttest\tpaused')
             tasks.children[tasks.currentIndex].pause()
         } else {
-            recorder.write(eyetracker.time() + '\ttest\tresumed')
+            info(eyetracker.time() + '\ttest\tresumed')
             tasks.children[tasks.currentIndex].unpause()
         }
     }
@@ -142,12 +145,12 @@ Rectangle {
             Pursuit {
                 id: pursuit
                 onDone: step()
-                onInfo: recorder.write(text)
+                onInfo: main.info(text)
             }
             Saccade {
                 id: saccade
                 onDone: step()
-                onInfo: recorder.write(text)
+                onInfo: main.info(text)
             }
             Message {
                 id: message

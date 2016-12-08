@@ -68,8 +68,9 @@ signals:
 private:
 	bool connected() const;
 	QString status() const;
-
 	void track(bool enable);
+
+	bool calibrating;
 	bool tracking;
 
 #ifdef USE_TOBII

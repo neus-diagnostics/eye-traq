@@ -12,6 +12,11 @@ Rectangle {
 
     signal minimize
 
+    onParticipantChanged: {
+        calibrate.score = null
+        viewer.plot()
+    }
+
     Rectangle {
         id: left
         color: "#d6d3cc"
@@ -76,12 +81,91 @@ Rectangle {
                         ScrollBar.vertical: ScrollBar { }
                     }
                 }
+
+                // calibrate
+                RowLayout {
+                    id: calibrate
+
+                    property var score: null
+                    property var time: null
+
+                    width: parent.width
+
+                    function end() {
+                        if (eyetracker.calibrate("compute")) {
+                            var data = eyetracker.get_calibration()
+                            var score = 0.0
+                            for (var i = 0; i < data.length; i++) {
+                                var a = data[i].from
+                                var b = data[i].to
+                                score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
+                            }
+                            score /= data.length > 0 ? data.length : 1
+                            calibrate.time = new Date()
+                            calibrate.score = score
+                            viewer.plot(data)
+                        } else {
+                            viewer.plot([])
+                        }
+                    }
+
+                    Neus.Label {
+                        id: txtCalibrated
+                        text: qsTr("Not calibrated.")
+                        Layout.fillWidth: true
+                    }
+
+                    Neus.Button {
+                        text: qsTr("Calibrate")
+                        enabled: !runner.running
+                        onClicked: {
+                            calibrate.state = "running"
+                            eyetracker.calibrate("start")
+                            runner.start(path + "/share/tests/calibrate")
+                        }
+                    }
+                    states: [
+                        State {
+                            name: ""
+                            PropertyChanges {
+                                target: txtCalibrated
+                                text: calibrate.score === null ? qsTr("Not calibrated.") :
+                                    qsTr("Calibrated at ") +
+                                    calibrate.time.getHours() + ':' + calibrate.time.getMinutes() +
+                                    qsTr(", score: ") + calibrate.score.toFixed(2)
+                            }
+                        },
+                        State {
+                            name: "running"
+                            PropertyChanges {
+                                target: runner
+                                onDone: calibrate.end()
+                                onStopped: {
+                                    eyetracker.calibrate("stop")
+                                    calibrate.state = ""
+                                }
+                            }
+                            PropertyChanges {
+                                target: txtCalibrated
+                                text: qsTr("Calibrating…")
+                            }
+                        }
+                    ]
+                }
             }
 
-            // eyetracker stuff
+            // test & practice
             Column {
+                id: test
+
                 width: parent.width
                 spacing: parent.spacing / 4
+
+                function start(file) {
+                    state = "running"
+                    recorder.start(file, participant)
+                    runner.start(file)
+                }
 
                 Column {
                     width: parent.width
@@ -96,7 +180,6 @@ Rectangle {
                         width: parent.width
                         height: 30
 
-                        Neus.TabButton { text: qsTr("Calibrate") }
                         Neus.TabButton { text: qsTr("Practice") }
                         Neus.TabButton { text: qsTr("Run") }
 
@@ -114,62 +197,11 @@ Rectangle {
                 }
 
                 StackLayout {
-                    id: page
-
                     anchors.horizontalCenter: parent.horizontalCenter
-                    property alias status: status.text
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     currentIndex: tabs.currentIndex
-
-                    // calibrate
-                    ColumnLayout {
-                        id: calibrate
-                        Layout.fillWidth: true
-
-                        function start() {
-                            status.text = qsTr("Calibrating…")
-                            viewer.plot()
-                            runner.start(path + "/share/tests/calibrate")
-                        }
-
-                        function stop() {
-                            status.text = qsTr("Calibration aborted.")
-                            runner.stop()
-                            eyetracker.calibrate("stop")
-                        }
-
-                        function end(msg) {
-                            var success = eyetracker.calibrate("compute")
-                            stop()
-
-                            if (success) {
-                                status.text = "Calibration successful."
-                                viewer.plot(eyetracker.get_calibration())
-                            } else {
-                                status.text = "Calibration failed."
-                            }
-                        }
-                        Connections {
-                            target: main
-                            onParticipantChanged: viewer.plot()
-                        }
-
-                        Neus.Label {
-                            id: status
-                            text: "Not calibrated."
-                            Layout.fillWidth: true
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-
-                        Neus.Button {
-                            text: qsTr("Start")
-                            enabled: !runner.running
-                            onClicked: calibrate.start()
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
 
                     // practice
                     ColumnLayout {
@@ -188,7 +220,7 @@ Rectangle {
                                 enabled: !runner.running
 
                                 onClicked: {
-                                    runner.start(path + "/share/tests/" + modelData.test)
+                                    test.start(path + "/share/tests/" + modelData.test)
                                     checked = true
                                 }
                                 Connections {
@@ -201,23 +233,7 @@ Rectangle {
 
                     // test
                     GridLayout {
-                        id: test
                         columns: 2
-
-                        function start() {
-                            recorder.start(testFile.file, participant)
-                            runner.start(testFile.file)
-                        }
-
-                        function stop() {
-                            runner.stop()
-                            recorder.stop()
-                        }
-
-                        Connections {
-                            target: runner
-                            onDone: test.stop()
-                        }
 
                         Neus.Label { text: qsTr("Test type") }
                         ComboBox {
@@ -250,7 +266,22 @@ Rectangle {
                             text: qsTr("Start")
                             enabled: !runner.running
                             width: main.width * 0.1
-                            onClicked: test.start()
+                            onClicked: test.start(testFile.file)
+                        }
+                    }
+                }
+                states: State {
+                    name: "running"
+                    PropertyChanges {
+                        target: runner
+                        onInfo: {
+                            console.log(text)
+                            recorder.write(text)
+                        }
+                        onStopped: {
+                            console.log("recording stopped")
+                            recorder.stop()
+                            state = ""
                         }
                     }
                 }
@@ -321,33 +352,4 @@ Rectangle {
             onClicked: minimize()
         }
     }
-
-    states: [
-        State {
-            name: "calibrate"
-            when: tabs.currentIndex == 0
-            PropertyChanges {
-                target: runner
-                onDone: calibrate.end()
-            }
-        },
-        State {
-            name: "practice"
-            when: tabs.currentIndex == 1
-            PropertyChanges {
-                target: eyetracker
-                tracking: true
-                onGazePoint: viewer.gaze(point)
-            }
-        },
-        State {
-            name: "test"
-            when: tabs.currentIndex == 2
-            PropertyChanges {
-                target: eyetracker
-                tracking: true
-                onGazePoint: viewer.gaze(point)
-            }
-        }
-    ]
 }

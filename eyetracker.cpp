@@ -16,7 +16,7 @@ namespace tetio = tobii::sdk::cpp;
 #include "gaze.h"
 
 Eyetracker::Eyetracker()
-	: QObject{}, tracking{false}
+	: QObject{}, calibrating{false}, tracking{false}
 {
 #ifdef USE_TOBII
 	factory = nullptr;
@@ -56,12 +56,16 @@ bool Eyetracker::calibrate(const QString &what)
 	if (!tracker)
 		return false;
 	try {
-		if (what == "start")
+		if (what == "start" && !calibrating) {
+			calibrating = true;
 			tracker->startCalibration();
-		else if (what == "stop")
+		} else if (what == "stop" && calibrating) {
 			tracker->stopCalibration();
-		else if (what == "compute")
+			calibrating = false;
+		} else if (what == "compute" && calibrating) {
 			tracker->computeCalibration();
+			calibrating = false;
+		}
 		return true;
 	} catch (tobii::sdk::cpp::EyeTrackerException &e) {
 		qWarning() << "error in EyeTracker::calibrate(" << what << ")"
@@ -172,6 +176,7 @@ try {
 
 	connection_timer.stop();
 	factory = nullptr;
+	calibrating = false;
 	if (tracking) {
 		tracking = false;
 		emit trackingChanged();

@@ -11,11 +11,26 @@ Item {
     }
 
     function plot(lines) {
-        lines = lines || []
+        if (lines === undefined) {
+            canvas.visible = false
+            return
+        }
+        txtMessage.text = lines.length > 0 ?
+            '<font color="green">' + qsTr("Calibration succeded.") + '</font>' :
+            '<font color="red">' + qsTr("Calibration failed.") + '</font>'
         canvas.lines = []
         for (var i = 0; i < lines.length; i++)
             canvas.addLine(lines[i])
         canvas.requestPaint()
+        canvas.visible = true
+    }
+
+    Connections {
+        target: runner
+        onRunningChanged: {
+            if (runner.running)
+                canvas.visible = false;
+        }
     }
 
     Neus.Heading {
@@ -30,10 +45,7 @@ Item {
         anchors.bottom: parent. bottom
         width: parent.width
 
-        ShaderEffectSource {
-            id: view
-            sourceItem: runner
-
+        Item {
             Layout.fillWidth: true
             Layout.preferredHeight: width * (secondScreen.height / secondScreen.width)
 
@@ -44,7 +56,7 @@ Item {
                 property var lines: []
                 property var colors: {"left": "#bd4b4b", "right": "#4b86bd"}
 
-                visible: !eyetracker.tracking
+                z: 0
 
                 function addLine(line) {
                     line.from.x *= width
@@ -57,9 +69,12 @@ Item {
 
                 anchors.fill: parent
                 focus: true
+                visible: false
+
                 onPaint: {
                     var ctx = getContext("2d")
-                    ctx.clearRect(0, 0, width, height)
+                    ctx.fillStyle = "#000000"
+                    ctx.fillRect(0, 0, width, height)
                     ctx.lineWidth = 1;
                     for (var i = 0; i < lines.length; i++) {
                         ctx.strokeStyle = lines[i]["color"]
@@ -70,8 +85,23 @@ Item {
                         ctx.closePath()
                     }
                 }
+
+                Neus.Label {
+                    id: txtMessage
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    y: parent.height * 3/4
+                }
             }
-            Gaze { id: gaze_overlay }
+
+            ShaderEffectSource {
+                id: view
+                sourceItem: runner
+                anchors.fill: parent
+                visible: !canvas.visible
+                z: 1
+            }
+
+            Gaze { id: gaze_overlay; z: 2 }
         }
 
         Row {
