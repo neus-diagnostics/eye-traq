@@ -1,11 +1,9 @@
 import QtQuick 2.7
 
-Item {
+Task {
     id: screen
 
     property var point: null
-
-    signal done
 
     function run(time, step, x, y) {
         time = Number(time)
@@ -20,7 +18,6 @@ Item {
 
         var target_x = screen_x - stimulus.width/2
         var target_y = screen_y - stimulus.height/2
-        timer.interval = time
 
         if (step == "start") {
             stimulus.x = target_x
@@ -36,16 +33,15 @@ Item {
             shrink.to = 0.25
             shrink.duration = 1000
             point = Qt.point(x, y)
-            timer.interval += grow.duration + move_time + shrink.duration
+            time += grow.duration + move_time + shrink.duration
             anim.start()
         }
-
-        timer.start()
+        _run(time)
     }
 
     function abort() {
         anim.stop()
-        timer.stop()
+        _abort()
     }
 
     anchors.fill: parent
@@ -62,6 +58,7 @@ Item {
         SequentialAnimation {
             id: anim
             running: false
+            paused: running && !timer.running
             NumberAnimation {
                 id: grow
                 target: stimulus
@@ -93,14 +90,10 @@ Item {
         }
     }
 
-    Timer {
-        id: timer
-        repeat: false
-        onTriggered: {
-            anim.stop()
-            if (point)
-                eyetracker.calibrate(point)
-            done()
-        }
+    timer.onTriggered: {
+        anim.stop()
+        if (point)
+            eyetracker.calibrate(point)
+        done()
     }
 }
