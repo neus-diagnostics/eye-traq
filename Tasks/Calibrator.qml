@@ -25,15 +25,13 @@ Task {
             stimulus.scale = 1.0
             point = null
         } else {
-            grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
             moveX.to = target_x
             moveY.to = target_y
-            moveX.duration = move_time
-            moveY.duration = move_time
             shrink.to = 0.25
+            grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
             shrink.duration = 1000
+            moveX.duration = time - (grow.duration + shrink.duration + 200)
             point = Qt.point(x, y)
-            time += grow.duration + move_time + shrink.duration
             anim.start()
         }
         _run(time)
@@ -75,6 +73,7 @@ Task {
                 }
                 NumberAnimation {
                     id: moveY;
+                    duration: moveX.duration
                     target: stimulus;
                     property: "y";
                     easing.type: Easing.InOutSine
