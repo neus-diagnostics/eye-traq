@@ -28,7 +28,6 @@ Rectangle {
     }
 
     function step() {
-        paused = false
         if (next < test.length) {
             info(eyetracker.time() + '\ttest\tstep\t' + next + '\t' +
                  test[next].name + '\t' + test[next].args.join('\t'))
@@ -43,25 +42,25 @@ Rectangle {
     }
 
     function back() {
-        if (running) {
+        var nsteps = 2
+        if (running && next > nsteps) {
             tasks.children[tasks.currentIndex].abort()
-            var nsteps = 0
-            while (next > 0 && (test[next].name != "checkpoint" || nsteps < 3)) {
-                nsteps++
+            while (next > 0 && (nsteps-- > 0 || test[next-1].name != "checkpoint"))
                 next--
-            }
             info(eyetracker.time() + '\ttest\tback')
             step()
+            paused = false
         }
     }
 
     function forward() {
-        if (running) {
+        if (running && next < test.length) {
             tasks.children[tasks.currentIndex].abort()
             while (next < test.length && test[next].name != "checkpoint")
                 next++
             info(eyetracker.time() + '\ttest\tforward')
             step()
+            paused = false
         }
     }
 
@@ -70,6 +69,7 @@ Rectangle {
             tasks.children[tasks.currentIndex].abort()
             tasks.currentIndex = 0
             running = false
+            paused = false
             test = []
             next = 0
             stopped()
@@ -114,12 +114,15 @@ Rectangle {
     onPausedChanged: {
         if (!running)
             return;
+        var task = tasks.children[tasks.currentIndex]
         if (paused) {
             info(eyetracker.time() + '\ttest\tpaused')
-            tasks.children[tasks.currentIndex].pause()
+            if (task.running)
+                task.pause()
         } else {
             info(eyetracker.time() + '\ttest\tresumed')
-            tasks.children[tasks.currentIndex].unpause()
+            if (!task.running)
+                task.unpause()
         }
     }
 

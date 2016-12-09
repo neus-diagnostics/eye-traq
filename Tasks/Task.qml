@@ -10,6 +10,7 @@ Item {
     property var pause: _pause
     property var unpause: _unpause
     property alias timer: timer
+    property alias running: timer.running
 
     function _run(time) {
         // time can be a string when reading test from a file
