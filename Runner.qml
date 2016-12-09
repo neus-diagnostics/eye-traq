@@ -42,10 +42,10 @@ Rectangle {
     }
 
     function back() {
-        var nsteps = 2
-        if (running && next > nsteps) {
+        if (running && next > 0) {
             tasks.children[tasks.currentIndex].abort()
-            while (next > 0 && (nsteps-- > 0 || test[next-1].name != "checkpoint"))
+            var nsteps = 0
+            while (next > 0 && (nsteps++ < 3 || test[next].name != "message"))
                 next--
             info(eyetracker.time() + '\ttest\tback')
             step()
@@ -56,7 +56,7 @@ Rectangle {
     function forward() {
         if (running && next < test.length) {
             tasks.children[tasks.currentIndex].abort()
-            while (next < test.length && test[next].name != "checkpoint")
+            while (next < test.length && test[next].name != "message")
                 next++
             info(eyetracker.time() + '\ttest\tforward')
             step()
