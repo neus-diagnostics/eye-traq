@@ -2,5 +2,5 @@ blank	1000
 message	6840	pursuit.oga	Please follow the white point with your eyes as accurately as possible.
 blank	1000
 checkpoint
-alert	500
+message	500	alert.oga
 pursuit	6000	x	0.23	2400

@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>Main.qml</file>
         <file>ExperimenterView.qml</file>
-        <file>Start.qml</file>
         <file>About.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
@@ -14,14 +13,12 @@
         <file>Tasks/Pursuit.qml</file>
         <file>Tasks/Saccade.qml</file>
         <file>Tasks/Message.qml</file>
-        <file>Tasks/Alert.qml</file>
         <file>controls/Button.qml</file>
         <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>
         <file>controls/TabButton.qml</file>
         <file>controls/TextArea.qml</file>
         <file>controls/TextField.qml</file>
-        <file>resources/alert.oga</file>
         <file>resources/lato-bold.ttf</file>
         <file>resources/lato-regular.ttf</file>
     </qresource>

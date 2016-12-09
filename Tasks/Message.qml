@@ -6,8 +6,8 @@ import "../controls" as Neus
 
 Task {
     function run(time, soundfile, text) {
-        message.text = text
-        if (soundfile != "" && soundfile != "none") {
+        message.text = text || ""
+        if (soundfile) {
             audio.source = path + "/share/sounds/" + soundfile
             audio.play()
         }

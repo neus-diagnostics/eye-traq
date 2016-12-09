@@ -99,12 +99,8 @@ Rectangle {
                 tasks.currentIndex = 4
                 message.run(task.duration, args[0], args[1])
                 break;
-            case "alert":
-                tasks.currentIndex = 5
-                alert.run(task.duration)
-                break;
             case "calibrator":
-                tasks.currentIndex = 6
+                tasks.currentIndex = 5
                 calibrator.run(task.duration, args[0], args[1], args[2])
                 break;
             default:
@@ -157,10 +153,6 @@ Rectangle {
             }
             Message {
                 id: message
-                onDone: step()
-            }
-            Alert {
-                id: alert
                 onDone: step()
             }
             Calibrator {
