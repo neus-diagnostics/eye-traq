@@ -279,15 +279,16 @@ Rectangle {
                     name: "running"
                     PropertyChanges {
                         target: runner
-                        onInfo: {
-                            console.log(text)
-                            recorder.write(text)
-                        }
+                        onInfo: recorder.write(text)
                         onStopped: {
-                            console.log("recording stopped")
                             recorder.stop()
-                            state = ""
+                            test.state = ""
                         }
+                    }
+                    PropertyChanges {
+                        target: eyetracker
+                        onGazePoint: viewer.gaze(point)
+                        tracking: true
                     }
                 }
             }
