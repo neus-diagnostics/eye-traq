@@ -98,13 +98,15 @@ QVariantList Eyetracker::get_calibration()
 			lines.push_back(QVariantMap{
 				{"eye", "left"},
 				{"from", start},
-				{"to", point2_to_qpoint(point.leftMapPosition)}
+				{"to", point2_to_qpoint(point.leftMapPosition)},
+				{"status", point.leftStatus}
 			});
 		if (point.rightStatus == 1)
 			lines.push_back(QVariantMap{
 				{"eye", "right"},
 				{"from", start},
-				{"to", point2_to_qpoint(point.rightMapPosition)}
+				{"to", point2_to_qpoint(point.rightMapPosition)},
+				{"status", point.rightStatus}
 			});
 	}
 #endif

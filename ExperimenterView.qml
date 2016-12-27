@@ -95,11 +95,16 @@ Rectangle {
                         if (eyetracker.calibrate("compute")) {
                             var data = eyetracker.get_calibration()
                             var score = 0.0
+                            recorder.start(path + "/share/tests/calibrate", participant)
                             for (var i = 0; i < data.length; i++) {
                                 var a = data[i].from
                                 var b = data[i].to
+                                recorder.write(
+                                    data[i].eye + '\t' + data[i].status + '\t' +
+                                    a.x + '\t' + a.y + '\t' + b.x + '\t' + b.y)
                                 score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
                             }
+                            recorder.stop()
                             score /= data.length > 0 ? data.length : 1
                             calibrate.time = new Date()
                             calibrate.score = score
