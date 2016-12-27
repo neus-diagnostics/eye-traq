@@ -21,8 +21,8 @@ Task {
                 break
         }
 
-        stimulus.x = screen.width/2
-        stimulus.y = screen.height/2
+        stimulus.x = screen.width/2 - stimulus.width/2
+        stimulus.y = screen.height/2 - stimulus.height/2
         stimulus.visible = true
 
         anim.start()
