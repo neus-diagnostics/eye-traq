@@ -74,11 +74,10 @@ Rectangle {
                 Column {
                     width: parent.width
                     Neus.Label { text: qsTr("Notes") }
-                    Flickable {
+                    Neus.TextArea {
+                        id: notes
                         width: parent.width
                         height: main.height * 0.2
-                        TextArea.flickable: Neus.TextArea { wrapMode: TextArea.Wrap }
-                        ScrollBar.vertical: ScrollBar { }
                     }
                 }
 
