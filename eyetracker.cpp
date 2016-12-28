@@ -64,7 +64,6 @@ bool Eyetracker::calibrate(const QString &what)
 			calibrating = false;
 		} else if (what == "compute" && calibrating) {
 			tracker->computeCalibration();
-			calibrating = false;
 		}
 		return true;
 	} catch (tobii::sdk::cpp::EyeTrackerException &e) {
