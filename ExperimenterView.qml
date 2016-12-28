@@ -81,6 +81,8 @@ Rectangle {
                 // notes
                 Column {
                     width: parent.width
+                    enabled: participant != ""
+
                     Neus.Label { text: qsTr("Notes") }
                     Neus.TextArea {
                         id: notes
@@ -101,6 +103,7 @@ Rectangle {
             Column {
                 width: parent.width
                 spacing: parent.spacing / 5
+                enabled: participant != ""
 
                 Neus.Heading {
                     text: qsTr("Calibrate")
@@ -191,6 +194,7 @@ Rectangle {
 
                 width: parent.width
                 spacing: parent.spacing / 4
+                enabled: participant != ""
 
                 function start(file) {
                     state = "running"
