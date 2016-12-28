@@ -11,8 +11,8 @@
 #include <QVariantMap>
 #include <QtDebug>
 
-Recorder::Recorder()
-	: QObject{}, logfile{nullptr}
+Recorder::Recorder(const QString &datadir)
+	: QObject{}, datadir{datadir}, logfile{nullptr}
 {
 }
 
@@ -72,18 +72,15 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 	if (participant.isEmpty())
 		return;
 
-	// does the testfile exist?
-	const QString testpath{testfile.toLocalFile()};
-
-	// open logfile
-	QDir path{"data"};
-	path.mkpath(participant);
-
-	// open a logfile for this test
+	// construct filename
 	const auto now = QDateTime::currentDateTimeUtc();
-	const auto testname = QFileInfo{testpath}.baseName();
-	QString filename = "data/" + participant + "/" +
-	                   now.toString("yyyyMMdd-HHmmss") + "-" + testname + ".log";
+	const auto testname = QFileInfo{testfile.toLocalFile()}.baseName();
+	const QString filename =
+		datadir.filePath(participant + "/" +
+		now.toString("yyyyMMdd-HHmmss") + "-" + testname + ".log");
+
+	// open file
+	datadir.mkpath(participant);
 	logfile = new QFile{filename};
 	if (!logfile->open(QIODevice::WriteOnly)) {
 		qWarning() << "Cannot open file" << filename;

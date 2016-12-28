@@ -1,6 +1,7 @@
 #ifndef RECORDER_H
 #define RECORDER_H
 
+#include <QDir>
 #include <QFile>
 #include <QVector>
 #include <QPair>
@@ -15,7 +16,7 @@
 class Recorder : public QObject {
 	Q_OBJECT
 public:
-	Recorder();
+	Recorder(const QString &datadir);
 	virtual ~Recorder();
 
 public slots:
@@ -26,6 +27,7 @@ public slots:
 	void write_gaze(const Gaze& gaze);
 
 private:
+	QDir datadir;
 	QFile *logfile;
 };
 

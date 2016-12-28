@@ -47,7 +47,7 @@ try {
 
 	// construct global objects
 	Eyetracker eyetracker;
-	Recorder recorder;
+	Recorder recorder{"data"};
 	QObject::connect(&eyetracker, &Eyetracker::gaze,
 	                 &recorder, &Recorder::write_gaze);
 
