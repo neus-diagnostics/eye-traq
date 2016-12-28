@@ -3,22 +3,24 @@ import QtQuick 2.7
 Task {
     id: screen
 
-    function run(time, coord, offset, period) {
+    // dir: x/y for horizontal/vertical saccade
+    // offset: target displacement from fixation [cm]
+    // period: travel time from left to right and back
+    function run(time, dir, offset, period) {
         offset = Number(offset)
         period = Number(period)
 
         init.duration = period / 3
         left.duration = right.duration = period / 2
-        init.properties = left.properties = right.properties = coord
-        switch (coord) {
-            case 'x':
-                left.to = screen.width * (0.5-offset) - stimulus.width/2
-                init.to = right.to = screen.width * (0.5+offset) - stimulus.width/2
-                break
-            case 'y':
-                left.to = screen.height * (0.5-offset) - stimulus.height/2
-                init.to = right.to = screen.height * (0.5+offset) - stimulus.height/2
-                break
+        init.properties = left.properties = right.properties = dir
+        if (dir == "x") {
+            var relative_offset = 10*offset/secondScreen.physicalSize.width
+            left.to = screen.width * (0.5-relative_offset) - stimulus.width/2
+            init.to = right.to = screen.width * (0.5+relative_offset) - stimulus.width/2
+        } else {
+            var relative_offset = 10*offset/secondScreen.physicalSize.height
+            left.to = screen.height * (0.5-relative_offset) - stimulus.height/2
+            init.to = right.to = screen.height * (0.5+relative_offset) - stimulus.height/2
         }
 
         stimulus.x = screen.width/2 - stimulus.width/2

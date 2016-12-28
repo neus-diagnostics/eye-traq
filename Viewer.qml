@@ -47,7 +47,7 @@ Item {
 
         Item {
             Layout.fillWidth: true
-            Layout.preferredHeight: width * (secondScreen.height / secondScreen.width)
+            Layout.preferredHeight: width * (secondScreen.geometry.height / secondScreen.geometry.width)
 
             // canvas for drawing calibration plot lines
             Canvas {

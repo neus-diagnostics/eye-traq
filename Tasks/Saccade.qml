@@ -8,16 +8,21 @@ Task {
     property var total_time: 0
     property var next: 0
 
+    // dir: x/y for horizontal/vertical saccade
+    // offset: target displacement from fixation [cm]
+    // type: step/gap/overlap
     function run(time, dir, offset, type) {
         time = Number(time)
         offset = Number(offset)
 
         if (dir == 'x') {
-            target.x = (0.5 + offset) * screen.width - target.width / 2
+            var relative_offset = 10*offset/secondScreen.physicalSize.width
+            target.x = (0.5 + relative_offset) * screen.width - target.width / 2
             target.y = (screen.height - target.height) / 2
         } else {
+            var relative_offset = 10*offset/secondScreen.physicalSize.height
             target.x = (screen.width - target.width) / 2
-            target.y = (0.5 + offset) * screen.height - target.height / 2
+            target.y = (0.5 + relative_offset) * screen.height - target.height / 2
         }
 
         this.type = type

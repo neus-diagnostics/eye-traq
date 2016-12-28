@@ -54,8 +54,8 @@ try {
 	// set up the window
 	QQuickView view;
 	view.rootContext()->setContextProperty("path", "file://" + app.applicationDirPath());
-	view.rootContext()->setContextProperty("firstScreen", first_screen->geometry());
-	view.rootContext()->setContextProperty("secondScreen", second_screen->geometry());
+	view.rootContext()->setContextProperty("firstScreen", first_screen);
+	view.rootContext()->setContextProperty("secondScreen", second_screen);
 	view.rootContext()->setContextProperty("eyetracker", &eyetracker);
 	view.rootContext()->setContextProperty("recorder", &recorder);
 

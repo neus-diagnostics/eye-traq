@@ -7,18 +7,18 @@ Rectangle {
 
     ExperimenterView {
         runner: runner
-        x: firstScreen.x
-        y: firstScreen.y
-        width: firstScreen.width
-        height: firstScreen.height
+        x: firstScreen.geometry.x
+        y: firstScreen.geometry.y
+        width: firstScreen.geometry.width
+        height: firstScreen.geometry.height
         onMinimize: parent.minimize()
     }
 
     Runner {
         id: runner
-        x: secondScreen.x
-        y: secondScreen.y
-        width: secondScreen.width
-        height: secondScreen.height
+        x: secondScreen.geometry.x
+        y: secondScreen.geometry.y
+        width: secondScreen.geometry.width
+        height: secondScreen.geometry.height
     }
 }
