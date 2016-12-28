@@ -14,6 +14,7 @@
         <file>Tasks/Saccade.qml</file>
         <file>Tasks/Message.qml</file>
         <file>controls/Button.qml</file>
+        <file>controls/AutoComplete.qml</file>
         <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>
         <file>controls/TabButton.qml</file>

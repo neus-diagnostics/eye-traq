@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import Qt.labs.folderlistmodel 2.1
 
 import "controls" as Neus
 
@@ -11,11 +12,6 @@ Rectangle {
     property alias participant: txtParticipant.text
 
     signal minimize
-
-    onParticipantChanged: {
-        calibrate.score = null
-        viewer.plot()
-    }
 
     Rectangle {
         id: left
@@ -44,14 +40,26 @@ Rectangle {
                 // subject ID
                 Column {
                     width: parent.width
+                    z: 1  // ensure participant autocomplete dropdown is on top
+
                     Neus.Label { text: qsTr("Subject ID") }
                     Row {
                         spacing: height * 0.2
-                        Neus.TextField {
+                        Neus.AutoComplete {
                             id: txtParticipant
                             anchors.verticalCenter: parent.verticalCenter
                             width: main.width * 0.15
+                            completions: FolderListModel {
+                                folder: Qt.resolvedUrl("file:data")
+                                showFiles: false
+                            }
+                            field: "fileName"
+                            onTextChanged: {
+                                calibrate.score = null
+                                viewer.plot()
+                            }
                         }
+
                         Neus.Button {
                             text: qsTr("New")
                             anchors.verticalCenter: parent.verticalCenter
