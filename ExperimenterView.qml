@@ -55,6 +55,7 @@ Rectangle {
                             }
                             field: "fileName"
                             onTextChanged: {
+                                notes.text = recorder.getNotes(text)
                                 calibrate.score = null
                                 viewer.plot()
                             }
@@ -85,6 +86,13 @@ Rectangle {
                         id: notes
                         width: parent.width
                         height: main.height * 0.2
+                    }
+                    Neus.Button {
+                        text: "Save"
+                        anchors.right: parent.right
+                        font.pointSize: 8
+                        padding: 6
+                        onClicked: recorder.setNotes(participant, notes.text)
                     }
                 }
             }

@@ -67,6 +67,22 @@ QVariantList Recorder::loadTest(const QUrl &testfile)
 	return tasks;
 }
 
+QString Recorder::getNotes(const QString &participant)
+{
+	QFile file{datadir.filePath(participant + "/notes.txt")};
+	if (file.open(QFile::ReadOnly | QFile::Text))
+		return QTextStream{&file}.readAll();
+	return "";
+}
+
+void Recorder::setNotes(const QString &participant, const QString &notes)
+{
+	QFile file{datadir.filePath(participant + "/notes.txt")};
+	datadir.mkpath(participant);
+	if (file.open(QFile::WriteOnly | QFile::Text))
+		QTextStream{&file} << notes;
+}
+
 void Recorder::start(const QUrl &testfile, const QString &participant)
 {
 	if (participant.isEmpty())

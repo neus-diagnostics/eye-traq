@@ -21,6 +21,8 @@ public:
 
 public slots:
 	QVariantList loadTest(const QUrl &testfile);
+	QString getNotes(const QString &participant);
+	void setNotes(const QString &participant, const QString &notes);
 	void start(const QUrl &testfile, const QString &participant);
 	void stop();
 	void write(const QString &text);
