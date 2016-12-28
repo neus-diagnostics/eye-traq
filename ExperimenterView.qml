@@ -152,7 +152,7 @@ Rectangle {
 
                     Neus.Button {
                         text: qsTr("Start")
-                        enabled: !runner.running
+                        enabled: eyetracker.connected && !runner.running
                         onClicked: {
                             calibrate.state = "running"
                             eyetracker.calibrate("start")
