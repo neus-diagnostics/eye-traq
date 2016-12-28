@@ -3,13 +3,12 @@ import QtQuick 2.7
 Task {
     id: screen
 
-    property var gap: true
-    property var overlap: true
+    property var type: "step"
     property var start_time: 0
     property var total_time: 0
     property var next: 0
 
-    function run(time, dir, offset, gap, overlap) {
+    function run(time, dir, offset, type) {
         time = Number(time)
         offset = Number(offset)
 
@@ -21,8 +20,7 @@ Task {
             target.y = (0.5 + offset) * screen.height - target.height / 2
         }
 
-        this.gap = (gap == "true")
-        this.overlap = (overlap == "true")
+        this.type = type
         this.start_time = 2500 + Math.random() * 1000
         this.total_time = time
 
@@ -39,7 +37,7 @@ Task {
                 time = start_time
                 break
             case 1:
-                if (gap) {
+                if (type == "gap") {
                     fixation.visible = false
                     time = 200
                     break
@@ -47,14 +45,14 @@ Task {
                     next++  // fall through if no gap
                 }
             case 2:
-                fixation.visible = overlap
+                fixation.visible = type == "overlap"
                 target.visible = true
                 time = 1000
                 break
             case 3:
                 fixation.visible = true
                 target.visible = false
-                time = total_time - (start_time + 1000 + (gap ? 200 : 0))
+                time = total_time - (start_time + 1000 + (type == "gap" ? 200 : 0))
                 break
             case 4:
                 done()

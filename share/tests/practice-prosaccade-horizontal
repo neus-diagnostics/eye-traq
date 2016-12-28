@@ -2,4 +2,4 @@ blank	1000
 message	16880	pst.oga	Please look at the cross in the middle of the screen.<br />When a white point appears, look at it as quickly as possible.<br />When it disappears, look back at the middle of the screen.
 blank	1000
 message	500	alert.oga
-saccade	8000	x	0.2	false	false
+saccade	8000	x	0.2	step
