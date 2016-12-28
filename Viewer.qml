@@ -119,18 +119,21 @@ Item {
 
             ListView {
                 id: list
+
                 anchors.fill: parent
                 anchors.margins: parent.border.width
                 clip: true
 
-                currentIndex: Math.max(runner.next - 1, 0)
                 model: runner.test
+                currentIndex: Math.max(runner.next - 1, 0)
+                onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Center)
 
                 delegate: Row {
                     width: list.width
                     padding: 2
                     leftPadding: 8
                     rightPadding: 8
+
                     Neus.Label {
                         text: modelData.index
                         width: parent.width * 0.05
@@ -141,7 +144,7 @@ Item {
                     }
                     Neus.Label {
                         text: modelData.args.join(", ")
-                        width: parent.width * 0.8
+                        width: parent.width * 0.75
                         maximumLineCount: 1
                         elide: Text.ElideRight
                     }

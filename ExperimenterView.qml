@@ -26,14 +26,13 @@ Rectangle {
         width: main.width * 0.3
 
         Column {
-            anchors { fill: parent; margins: spacing*3/4; leftMargin: spacing }
-            spacing: main.width * 0.04
+            anchors { fill: parent; margins: spacing*1.5 }
+            spacing: main.width * 0.03
 
-            // options
+            // participant data
             Column {
-                id: options
                 width: parent.width
-                spacing: parent.spacing / 4
+                spacing: parent.spacing / 5
 
                 Neus.Heading {
                     text: qsTr("Info")
@@ -80,8 +79,20 @@ Rectangle {
                         height: main.height * 0.2
                     }
                 }
+            }
 
-                // calibrate
+            // calibrate
+            Column {
+                width: parent.width
+                spacing: parent.spacing / 5
+
+                Neus.Heading {
+                    text: qsTr("Calibrate")
+                    font.weight: Font.Bold
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
                 RowLayout {
                     id: calibrate
 
@@ -120,7 +131,7 @@ Rectangle {
                     }
 
                     Neus.Button {
-                        text: qsTr("Calibrate")
+                        text: qsTr("Start")
                         enabled: !runner.running
                         onClicked: {
                             calibrate.state = "running"
@@ -292,6 +303,8 @@ Rectangle {
                 }
             }
         }
+
+        // eyetracker status
         Neus.Label {
             text: eyetracker.status
             anchors.bottom: parent.bottom
@@ -310,19 +323,13 @@ Rectangle {
     // runner view
     Rectangle {
         id: right
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            right: parent.right
-            left: left.right
-        }
+        anchors { right: parent.right; left: left.right }
+        height: parent.height
         color: "#eae9e5"
 
         Viewer {
             id: viewer
-            anchors.fill: parent
-            anchors.rightMargin: main.width * 0.04
-            anchors.margins: anchors.rightMargin * 3/4
+            anchors { fill: parent; margins: main.width * 0.03 * 1.5 }
         }
     }
 
