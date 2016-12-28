@@ -135,8 +135,15 @@ Item {
                     rightPadding: 8
 
                     Neus.Label {
-                        text: modelData.index
-                        width: parent.width * 0.05
+                        function format(time) {
+                            var minutes = Math.floor(time/60000)
+                            var seconds = (time / 1000) % 60
+                            return "" +
+                                (minutes < 10 ? " " : "") + minutes + ":" +
+                                (seconds < 10 ? "0" : "") + seconds.toFixed(2)
+                        }
+                        text: format(modelData.start)
+                        width: parent.width * 0.1
                     }
                     Neus.Label {
                         text: modelData.name
@@ -185,7 +192,6 @@ Item {
 
             Neus.Button {
                 text: qsTr("Stop")  // TODO: replace with unicode char
-                enabled: runner.running
                 onClicked: runner.stop()
             }
         }

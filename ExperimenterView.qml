@@ -54,6 +54,7 @@ Rectangle {
                                 showFiles: false
                             }
                             field: "fileName"
+                            validator: RegExpValidator { regExp: /[^/]*/ }
                             onTextChanged: {
                                 notes.text = recorder.getNotes(text)
                                 calibrate.score = null
@@ -65,7 +66,7 @@ Rectangle {
                             text: qsTr("New")
                             anchors.verticalCenter: parent.verticalCenter
                             font.pointSize: 8
-                            padding: 3
+                            padding: 6
                             onClicked: {
                                 function pad(n) { return (n < 10 ? "0" : "") + n }
                                 var t = new Date()

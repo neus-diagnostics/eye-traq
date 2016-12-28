@@ -7,6 +7,7 @@ import "." as Neus
 Item {
     property alias text: input.text
     property alias completions: model.model
+    property alias validator: input.validator
     property string field
 
     function filter() {
@@ -23,10 +24,7 @@ Item {
 
     Neus.TextField {
         id: input
-
         width: parent.width
-        validator: RegExpValidator { regExp: /[^/]*/ }
-
         onTextChanged: {
             filter()
             dropdown.visible = text.length > 0 && list.count > 0
