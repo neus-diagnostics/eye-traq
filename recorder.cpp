@@ -30,19 +30,17 @@ QVariantList Recorder::loadTest(const QUrl &testfile)
 		// run testfile and load the test from stdout
 		QProcess testgen;
 		testgen.start(testpath);
-		if (!testgen.waitForFinished() || testgen.exitCode() != 0) {
+		if (testgen.waitForFinished() && testgen.exitCode() == 0)
+			testdata = QString::fromUtf8(testgen.readAllStandardOutput());
+		else
 			qWarning() << "could not start test program";
-			return {};
-		}
-		testdata = QString::fromUtf8(testgen.readAllStandardOutput());
 	} else {
 		// load the testfile directly
 		QFile file(testpath);
-		if (!file.open(QIODevice::ReadOnly)) {
+		if (file.open(QIODevice::ReadOnly))
+			testdata = QTextStream{&file}.readAll();
+		else
 			qWarning() << "could not open testfile";
-			return {};
-		}
-		testdata = QTextStream{&file}.readAll();
 	}
 
 	QVariantList tasks;
