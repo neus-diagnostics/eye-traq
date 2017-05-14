@@ -40,11 +40,12 @@ Rectangle {
                 // subject ID
                 Column {
                     width: parent.width
+                    spacing: width * 0.02
                     z: 1  // ensure participant autocomplete dropdown is on top
 
                     Neus.Label { text: qsTr("Subject ID") }
                     Row {
-                        spacing: height * 0.2
+                        spacing: parent.width * 0.02
                         Neus.AutoComplete {
                             id: txtParticipant
                             anchors.verticalCenter: parent.verticalCenter
@@ -83,6 +84,7 @@ Rectangle {
                 Column {
                     width: parent.width
                     enabled: participant != ""
+                    spacing: width * 0.02
 
                     Neus.Label { text: qsTr("Notes") }
                     Neus.TextArea {
