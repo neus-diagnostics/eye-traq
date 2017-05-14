@@ -73,7 +73,7 @@ T.Button {
                     (control.down ? "#7eb830" : "#95ce48") : "#8dc73f") :
                 (enabled && control.hovered ?
                     (control.down ? "#31ba78" : "#42ca89") : "#2bb673")
-        border.color: control.visualFocus ? "#0066ff" : Qt.darker(color, 1.1)
+        border.color: control.visualFocus ? "#0066ff" : Qt.darker(color, 1.2)
         border.width: control.visualFocus ? 2 : 1
         radius: parent.height * 0.05
     }

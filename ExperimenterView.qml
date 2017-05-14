@@ -23,28 +23,19 @@ Rectangle {
 
         ColumnLayout {
             anchors { top: parent.top; left: parent.left; right: parent.right; bottom: status.top; margins: spacing*2 }
-            spacing: parent.width * 0.05
+            spacing: parent.width * 0.06
 
             // participant info & calibration
-            ColumnLayout {
-                spacing: 10
-                z: 1  // ensure participant autocomplete dropdown is on top
-                Layout.fillWidth: true
-
-                Neus.Heading {
-                    Layout.fillWidth: true
-                    text: qsTr("Calibrate")
-                }
-
                 Column {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: 10
+                    z: 1  // ensure participant autocomplete dropdown is on top
 
                     RowLayout {
                         z: 1  // ensure participant autocomplete dropdown is on top
                         anchors { left: parent.left; right: parent.right }
                         spacing: parent.spacing
-                        Neus.Label { text: qsTr("ID")}
+                        Neus.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
                         Neus.AutoComplete {
                             id: txtParticipant
                             anchors.verticalCenter: parent.verticalCenter
@@ -65,7 +56,7 @@ Rectangle {
                                 text: qsTr("New")
                                 anchors { right: parent.right; verticalCenter: parent.verticalCenter; rightMargin: 4 }
                                 font.pointSize: 8
-                                padding: 3
+                                padding: 2
                                 topPadding: 1
 
                                 MouseArea {
@@ -164,7 +155,6 @@ Rectangle {
                         ]
                     }
                 }
-            }
 
             // practice
             ColumnLayout {
@@ -201,6 +191,7 @@ Rectangle {
                                 text: checked & !hovered ? "✔" : "▸"
                                 font.weight: Font.Bold
                                 Layout.preferredWidth: 32
+                                Layout.preferredHeight: 24
 
                                 onClicked: {
                                     var file = path + "/share/tests/" + modelData.test

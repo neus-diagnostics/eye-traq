@@ -12,11 +12,11 @@ Label {
     background: Rectangle {
         color: "transparent"
         Rectangle {
-            anchors { left: parent.left; right: parent.right }
+            width: parent.width
             height: 1
             anchors.bottom: parent.bottom
             color: "transparent"
-            border.color: "#777777"
+            border.color: "#aaaaaa"
         }
     }
 }
