@@ -15,9 +15,9 @@
         <file>Tasks/Message.qml</file>
         <file>controls/Button.qml</file>
         <file>controls/AutoComplete.qml</file>
+        <file>controls/ComboBox.qml</file>
         <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>
-        <file>controls/TabButton.qml</file>
         <file>controls/TextArea.qml</file>
         <file>controls/TextField.qml</file>
         <file>resources/lato-bold.ttf</file>

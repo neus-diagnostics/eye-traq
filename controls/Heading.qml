@@ -4,14 +4,15 @@ import QtQuick.Controls 2.0
 Label {
     font {
         family: "Lato"
-        pointSize: 14
+        pointSize: 13
         capitalization: Font.AllUppercase
+        weight: Font.Bold
     }
 
     background: Rectangle {
         color: "transparent"
         Rectangle {
-            width: parent.width
+            anchors { left: parent.left; right: parent.right }
             height: 1
             anchors.bottom: parent.bottom
             color: "transparent"
