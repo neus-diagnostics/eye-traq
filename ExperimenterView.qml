@@ -280,7 +280,7 @@ Rectangle {
                         columns: 2
 
                         Neus.Label { text: qsTr("Test type") }
-                        ComboBox {
+                        Neus.ComboBox {
                             id: testFile
                             property var file: model[currentIndex].file
                             Layout.fillWidth: true
@@ -293,7 +293,7 @@ Rectangle {
                         }
 
                         Neus.Label { text: qsTr("Images"); Layout.row: 2 }
-                        ComboBox {
+                        Neus.ComboBox {
                             property var folder: model[currentIndex].folder
                             Layout.fillWidth: true
 
