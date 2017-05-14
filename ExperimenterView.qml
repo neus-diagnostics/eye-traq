@@ -151,8 +151,8 @@ Rectangle {
                     }
 
                     Neus.Button {
-                        text: qsTr("Start")
-                        enabled: eyetracker.connected && !runner.running
+                        text: qsTr("Calibrate")
+                        enabled: !runner.running
                         onClicked: {
                             calibrate.state = "running"
                             eyetracker.calibrate("start")
@@ -242,6 +242,7 @@ Rectangle {
                     // practice
                     ColumnLayout {
                         width: parent.width / 2
+
                         Repeater {
                             model: [
                                 { "text": qsTr("Image pair"), "test": "practice-imgpair" },
@@ -250,14 +251,21 @@ Rectangle {
                                 { "text": qsTr("Anti-saccade"), "test": "practice-antisaccade-horizontal" },
                                 { "text": qsTr("Smooth pursuit"), "test": "practice-pursuit" },
                             ]
-                            Neus.Button {
-                                text: modelData.text
-                                Layout.fillWidth: true
-                                enabled: !runner.running
+                            RowLayout {
+                                property alias checked: button.checked
 
-                                onClicked: {
-                                    test.start(path + "/share/tests/" + modelData.test)
-                                    checked = true
+                                Neus.Label {
+                                    text: modelData.text
+                                    Layout.fillWidth: true
+                                }
+                                Neus.Button {
+                                    id: button
+                                    text: checked ? "✔" : "▸"
+                                    enabled: !runner.running
+                                    onClicked: {
+                                        test.start(path + "/share/tests/" + modelData.test)
+                                        checked = true
+                                    }
                                 }
                                 Connections {
                                     target: main
@@ -369,7 +377,8 @@ Rectangle {
             font { pointSize: 12; weight: Font.Bold }
             hoverEnabled: true
             background: Rectangle {
-                color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
+                color: parent.hovered ? "#d6d6d6" : "#e0e0e0"
+                border.color: Qt.darker(color, 1.1)
             }
             onClicked: Qt.quit()
         }
@@ -380,7 +389,8 @@ Rectangle {
             font { pointSize: 12; weight: Font.Bold }
             hoverEnabled: true
             background: Rectangle {
-                color: parent.hovered ? "#d0d0d0" : "#e0e0e0"
+                color: parent.hovered ? "#d6d6d6" : "#e0e0e0"
+                border.color: Qt.darker(color, 1.1)
             }
             onClicked: minimize()
         }

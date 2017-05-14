@@ -45,13 +45,11 @@ T.Button {
     implicitHeight: contentItem.implicitHeight + topPadding + bottomPadding
     padding: 8
     topPadding: 4
-    bottomPadding: topPadding
+    bottomPadding: topPadding + 2
 
     font {
         family: "Lato"
-        capitalization: Font.AllUppercase
         pointSize: 11
-        weight: Font.Bold
     }
 
     //! [contentItem]
@@ -75,8 +73,8 @@ T.Button {
                     (control.down ? "#7eb830" : "#95ce48") : "#8dc73f") :
                 (enabled && control.hovered ?
                     (control.down ? "#31ba78" : "#42ca89") : "#2bb673")
-        border.color: "#0066ff"
-        border.width: control.visualFocus ? 2 : 0
+        border.color: control.visualFocus ? "#0066ff" : Qt.darker(color, 1.1)
+        border.width: control.visualFocus ? 2 : 1
         radius: parent.height * 0.05
     }
     //! [background]
