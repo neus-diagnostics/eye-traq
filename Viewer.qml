@@ -185,7 +185,7 @@ Item {
                 onClicked: runner.forward()
             }
 
-            ProgressBar {
+            Neus.ProgressBar {
                 Layout.fillWidth: true
                 value: runner.running ? runner.next / runner.test.length : 0
             }

@@ -18,6 +18,7 @@
         <file>controls/ComboBox.qml</file>
         <file>controls/Heading.qml</file>
         <file>controls/Label.qml</file>
+        <file>controls/ProgressBar.qml</file>
         <file>controls/TextArea.qml</file>
         <file>controls/TextField.qml</file>
         <file>resources/lato-bold.ttf</file>

@@ -263,8 +263,6 @@ Rectangle {
                         Layout.fillWidth: true
 
                         model: [
-                            { name: "1 minute / trial", file: path + "/share/tests/neus.py" },
-                            { name: "2 minutes / trial", file: path + "/share/tests/2minute.py" },
                         ]
                         textRole: "name"
                     }
