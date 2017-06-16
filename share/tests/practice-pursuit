@@ -1,5 +1,5 @@
 blank	1000
-message	6840	pursuit.oga	Please follow the white point with your eyes as accurately as possible.
+message	6840	pursuit.oga	center	Please follow the white point with your eyes as accurately as possible.
 blank	1000
 message	500	alert.oga
 pursuit	6000	x	12.8	2400

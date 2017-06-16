@@ -5,7 +5,8 @@ import QtMultimedia 5.6
 import "../controls" as Neus
 
 Task {
-    function run(time, soundfile, text) {
+    function run(time, soundfile, align, text) {
+        message.horizontalAlignment = (align == "left" ? Text.AlignLeft : Text.AlignHCenter)
         message.text = text || ""
         if (soundfile) {
             audio.source = path + "/share/sounds/" + soundfile
@@ -40,7 +41,6 @@ Task {
         font.pointSize: 24
         lineHeight: 1.2
         textFormat: Text.StyledText
-        horizontalAlignment: Text.AlignHCenter
     }
 
     Audio { id: audio }

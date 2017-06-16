@@ -97,7 +97,7 @@ Rectangle {
                 break;
             case "message":
                 tasks.currentIndex = 4
-                message.run(task.duration, args[0], args[1])
+                message.run(task.duration, args[0], args[1], args[2])
                 break;
             case "calibrator":
                 tasks.currentIndex = 5
