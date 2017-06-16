@@ -175,6 +175,7 @@ Rectangle {
 
                     Repeater {
                         model: [
+                            { "text": qsTr("Fake instructions"), "test": "practice-fake-instructions" },
                             { "text": qsTr("Visual paired comparison"), "test": "practice-imgpair" },
                             { "text": qsTr("Pro-saccade task (horizontal)"), "test": "practice-prosaccade-horizontal" },
                             { "text": qsTr("Pro-saccade task (vertical)"), "test": "practice-prosaccade-vertical" },
