@@ -33,21 +33,18 @@ Item {
         }
     }
 
-    Neus.Heading {
-        id: header
-        font.weight: Font.Bold
-        width: parent.width
-        horizontalAlignment: Text.AlignHCenter
-    }
-
     ColumnLayout {
-        anchors.top: header.bottom
-        anchors.bottom: parent. bottom
-        width: parent.width
+        anchors.fill: parent
 
+        // use at most 4/5 of Viewer height to show participant’s view with the correct aspect ratio
         Item {
-            Layout.fillWidth: true
-            Layout.preferredHeight: width * (secondScreen.geometry.height / secondScreen.geometry.width)
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth:
+                (secondScreen.geometry.width / secondScreen.geometry.height < parent.width / (parent.height*4/5)) ?
+                    (parent.height*4/5 * (secondScreen.geometry.width / secondScreen.geometry.height)) : parent.width
+            Layout.preferredHeight:
+                (secondScreen.geometry.width / secondScreen.geometry.height < parent.width / (parent.height*4/5)) ?
+                    (parent.height*4/5) : (parent.width * (secondScreen.geometry.height / secondScreen.geometry.width))
 
             // canvas for drawing calibration plot lines
             Canvas {
@@ -104,6 +101,7 @@ Item {
             Gaze { id: gaze_overlay; z: 2 }
         }
 
+        // use remaining space to show test progress
         Row {
             opacity: runner.running ? 1.0 : 0.0
             spacing: 10
