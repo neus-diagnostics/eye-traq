@@ -26,135 +26,135 @@ Rectangle {
             spacing: parent.width * 0.06
 
             // participant info & calibration
-                Column {
-                    Layout.fillWidth: true
-                    spacing: 10
+            Column {
+                Layout.fillWidth: true
+                spacing: 10
+                z: 1  // ensure participant autocomplete dropdown is on top
+
+                RowLayout {
                     z: 1  // ensure participant autocomplete dropdown is on top
-
-                    RowLayout {
-                        z: 1  // ensure participant autocomplete dropdown is on top
-                        anchors { left: parent.left; right: parent.right }
-                        spacing: parent.spacing
-                        Neus.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
-                        Neus.AutoComplete {
-                            id: txtParticipant
-                            anchors.verticalCenter: parent.verticalCenter
-                            Layout.fillWidth: true
-                            completions: FolderListModel {
-                                folder: Qt.resolvedUrl("file:data")
-                                showFiles: false
-                            }
-                            field: "fileName"
-                            validator: RegExpValidator { regExp: /[^/]*/ }
-                            onTextChanged: {
-                                notes.text = recorder.getNotes(text)
-                                calibrate.score = null
-                                viewer.plot()
-                            }
-
-                            Neus.Button {
-                                text: qsTr("New")
-                                anchors { right: parent.right; verticalCenter: parent.verticalCenter; rightMargin: 4 }
-                                font.pointSize: 8
-                                padding: 2
-                                topPadding: 1
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        function pad(n) { return (n < 10 ? "0" : "") + n }
-                                        var t = new Date()
-                                        txtParticipant.text =
-                                            "" + t.getUTCFullYear() + pad(t.getUTCMonth() + 1) + pad(t.getUTCDate()) +
-                                            "-" + pad(t.getUTCHours()) + pad(t.getUTCMinutes()) + pad(t.getUTCSeconds()) +
-                                            "-" + pad(Math.floor(Math.random() * 100))
-                                    }
-                                }
-                            }
+                    anchors { left: parent.left; right: parent.right }
+                    spacing: parent.spacing
+                    Neus.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
+                    Neus.AutoComplete {
+                        id: txtParticipant
+                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.fillWidth: true
+                        completions: FolderListModel {
+                            folder: Qt.resolvedUrl("file:data")
+                            showFiles: false
                         }
-                    }
-
-                    // calibrate
-                    RowLayout {
-                        id: calibrate
-
-                        property var score: null
-                        property var time: null
-
-                        enabled: participant != ""
-                        width: parent.width
-
-                        function end() {
-                            if (eyetracker.calibrate("compute")) {
-                                var data = eyetracker.get_calibration()
-                                var score = 0.0
-                                recorder.start(path + "/share/tests/calibrate", participant)
-                                for (var i = 0; i < data.length; i++) {
-                                    var a = data[i].from
-                                    var b = data[i].to
-                                    recorder.write(
-                                        data[i].eye + '\t' + data[i].status + '\t' +
-                                        a.x + '\t' + a.y + '\t' + b.x + '\t' + b.y)
-                                    score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
-                                }
-                                recorder.stop()
-                                score /= data.length > 0 ? data.length : 1
-                                calibrate.time = new Date()
-                                calibrate.score = score
-                                viewer.plot(data)
-                            } else {
-                                viewer.plot([])
-                            }
-                        }
-
-                        Neus.Label {
-                            id: txtCalibrated
-                            text: qsTr("Not calibrated.")
-                            Layout.fillWidth: true
+                        field: "fileName"
+                        validator: RegExpValidator { regExp: /[^/]*/ }
+                        onTextChanged: {
+                            notes.text = recorder.getNotes(text)
+                            calibrate.score = null
+                            viewer.plot()
                         }
 
                         Neus.Button {
-                            text: qsTr("Calibrate")
-                            enabled: !runner.running
-                            onClicked: {
-                                calibrate.state = "running"
-                                eyetracker.calibrate("start")
-                                runner.start(path + "/share/tests/calibrate")
+                            text: qsTr("New")
+                            anchors { right: parent.right; verticalCenter: parent.verticalCenter; rightMargin: 4 }
+                            font.pointSize: 8
+                            padding: 2
+                            topPadding: 1
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    function pad(n) { return (n < 10 ? "0" : "") + n }
+                                    var t = new Date()
+                                    txtParticipant.text =
+                                        "" + t.getUTCFullYear() + pad(t.getUTCMonth() + 1) + pad(t.getUTCDate()) +
+                                        "-" + pad(t.getUTCHours()) + pad(t.getUTCMinutes()) + pad(t.getUTCSeconds()) +
+                                        "-" + pad(Math.floor(Math.random() * 100))
+                                }
                             }
                         }
-                        states: [
-                            State {
-                                name: ""
-                                PropertyChanges {
-                                    target: txtCalibrated
-                                    text: {
-                                        if (calibrate.score === null)
-                                            return qsTr("Not calibrated.");
-                                        function pad(n) { return (n < 10 ? "0" : "") + n }
-                                        return qsTr("Calibrated at ") +
-                                            calibrate.time.getHours() + ':' + pad(calibrate.time.getMinutes()) +
-                                            qsTr(", score: ") + calibrate.score.toFixed(2) + "."
-                                    }
-                                }
-                            },
-                            State {
-                                name: "running"
-                                PropertyChanges {
-                                    target: runner
-                                    onDone: calibrate.end()
-                                    onStopped: {
-                                        eyetracker.calibrate("stop")
-                                        calibrate.state = ""
-                                    }
-                                }
-                                PropertyChanges {
-                                    target: txtCalibrated
-                                    text: qsTr("Calibrating…")
-                                }
-                            }
-                        ]
                     }
                 }
+
+                // calibrate
+                RowLayout {
+                    id: calibrate
+
+                    property var score: null
+                    property var time: null
+
+                    enabled: participant != ""
+                    width: parent.width
+
+                    function end() {
+                        if (eyetracker.calibrate("compute")) {
+                            var data = eyetracker.get_calibration()
+                            var score = 0.0
+                            recorder.start(path + "/share/tests/calibrate", participant)
+                            for (var i = 0; i < data.length; i++) {
+                                var a = data[i].from
+                                var b = data[i].to
+                                recorder.write(
+                                    data[i].eye + '\t' + data[i].status + '\t' +
+                                    a.x + '\t' + a.y + '\t' + b.x + '\t' + b.y)
+                                score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
+                            }
+                            recorder.stop()
+                            score /= data.length > 0 ? data.length : 1
+                            calibrate.time = new Date()
+                            calibrate.score = score
+                            viewer.plot(data)
+                        } else {
+                            viewer.plot([])
+                        }
+                    }
+
+                    Neus.Label {
+                        id: txtCalibrated
+                        text: qsTr("Not calibrated.")
+                        Layout.fillWidth: true
+                    }
+
+                    Neus.Button {
+                        text: qsTr("Calibrate")
+                        enabled: !runner.running
+                        onClicked: {
+                            calibrate.state = "running"
+                            eyetracker.calibrate("start")
+                            runner.start(path + "/share/tests/calibrate")
+                        }
+                    }
+                    states: [
+                        State {
+                            name: ""
+                            PropertyChanges {
+                                target: txtCalibrated
+                                text: {
+                                    if (calibrate.score === null)
+                                        return qsTr("Not calibrated.");
+                                    function pad(n) { return (n < 10 ? "0" : "") + n }
+                                    return qsTr("Calibrated at ") +
+                                        calibrate.time.getHours() + ':' + pad(calibrate.time.getMinutes()) +
+                                        qsTr(", score: ") + calibrate.score.toFixed(2) + "."
+                                }
+                            }
+                        },
+                        State {
+                            name: "running"
+                            PropertyChanges {
+                                target: runner
+                                onDone: calibrate.end()
+                                onStopped: {
+                                    eyetracker.calibrate("stop")
+                                    calibrate.state = ""
+                                }
+                            }
+                            PropertyChanges {
+                                target: txtCalibrated
+                                text: qsTr("Calibrating…")
+                            }
+                        }
+                    ]
+                }
+            }
 
             // practice
             ColumnLayout {
