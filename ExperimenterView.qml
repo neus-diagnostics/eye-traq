@@ -196,7 +196,7 @@ Rectangle {
 
                                 onClicked: {
                                     var file = path + "/share/tests/" + modelData.test
-                                    practice.state = "running"
+                                    test.state = "running"
                                     recorder.start(file, participant)
                                     runner.start(file)
                                     checked = true
@@ -211,23 +211,6 @@ Rectangle {
                                 onParticipantChanged: checked = false
                             }
                         }
-                    }
-                }
-
-                states: State {
-                    name: "running"
-                    PropertyChanges {
-                        target: runner
-                        onInfo: recorder.write(text)
-                        onStopped: {
-                            recorder.stop()
-                            practice.state = ""
-                        }
-                    }
-                    PropertyChanges {
-                        target: eyetracker
-                        onGazePoint: viewer.gaze(point)
-                        tracking: true
                     }
                 }
             }
