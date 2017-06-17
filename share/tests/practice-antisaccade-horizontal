@@ -2,4 +2,4 @@ blank	1000
 message	18240	ast.oga	center	Prosim, glejte v križec na sredini zaslona.<br>Ko opazite, da se je nekje na zaslonu prikazala bela točka,<br>čim hitreje poglejte v <font color="red">nasprotno</font> stran zaslona.<br>Ko točka izgine, pogled usmerite nazaj v sredino zaslona.
 blank	1000
 message	500	alert.oga
-saccade	9000	4000	x	12.8	false	false
+saccade	9000	4000	x	13.8	false	false
