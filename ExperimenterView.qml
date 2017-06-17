@@ -102,6 +102,7 @@ Rectangle {
                             calibrate.time = new Date()
                             calibrate.score = score
                             viewer.plot(data)
+                            notes.log("Calibrated, score: " + score.toFixed(2) + ".")
                         } else {
                             viewer.plot([])
                         }
@@ -179,6 +180,7 @@ Rectangle {
                             recorder.start(testFile, participant)
                             runner.start(testFile)
                             checked = true
+                            notes.log("Started " + modelData.test + ".")
                         }
                     }
                     Neus.Label {
@@ -282,6 +284,14 @@ Rectangle {
 
                     Neus.TextArea {
                         id: notes
+                        function log(message) {
+                            if (text && text.slice(-1) != "\n")
+                                text += "\n"
+                            text += new Date().toLocaleString(Qt.locale(), "yyyy-MM-dd hh:mm (t)")
+                            text += ": " + message + "\n"
+                            recorder.setNotes(participant, text)
+                        }
+
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
