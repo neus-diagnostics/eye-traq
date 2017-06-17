@@ -93,7 +93,7 @@ Rectangle {
                 break;
             case "saccade":
                 tasks.currentIndex = 3
-                saccade.run(task.duration, args[0], args[1], args[2])
+                saccade.run(task.duration, args[0], args[1], args[2], args[3])
                 break;
             case "message":
                 tasks.currentIndex = 4

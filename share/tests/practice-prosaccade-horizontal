@@ -2,4 +2,4 @@ blank	1000
 message	16880	pst.oga	center	Prosim, glejte v križec na sredini zaslona.<br>Ko opazite, da se je nekje na zaslonu prikazala bela točka, jo čim hitreje poglejte.<br>Ko točka izgine, pogled usmerite nazaj v sredino zaslona.
 blank	1000
 message	500	alert.oga
-saccade	8000	x	12.8	step
+saccade	8000	3000	x	12.8	step

@@ -4,15 +4,17 @@ Task {
     id: screen
 
     property var type: "step"
-    property var start_time: 0
+    property var delay: 0
     property var total_time: 0
     property var next: 0
 
+    // delay: show the initial fixation for this long [ms]
     // dir: x/y for horizontal/vertical saccade
     // offset: target displacement from fixation [cm]
     // type: step/gap/overlap
-    function run(time, dir, offset, type) {
+    function run(time, delay, dir, offset, type) {
         time = Number(time)
+        delay = Number(delay)
         offset = Number(offset)
 
         if (dir == 'x') {
@@ -26,7 +28,7 @@ Task {
         }
 
         this.type = type
-        this.start_time = 2500 + Math.random() * 1000
+        this.delay = delay
         this.total_time = time
 
         next = 0
@@ -39,7 +41,7 @@ Task {
             case 0:
                 target.visible = false
                 fixation.visible = true
-                time = start_time
+                time = delay
                 break
             case 1:
                 if (type == "gap") {
@@ -57,7 +59,7 @@ Task {
             case 3:
                 fixation.visible = true
                 target.visible = false
-                time = total_time - (start_time + 1000 + (type == "gap" ? 200 : 0))
+                time = total_time - (delay + 1000 + (type == "gap" ? 200 : 0))
                 break
             case 4:
                 done()
