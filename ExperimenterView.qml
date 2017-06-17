@@ -156,6 +156,42 @@ Rectangle {
                 }
             }
 
+            // button (with label on right) for running practice / tests
+            Component {
+                id: testButton
+
+                RowLayout {
+                    property alias checked: button.checked
+
+                    enabled: !runner.running
+                    spacing: 10
+
+                    Neus.Button {
+                        id: button
+                        text: checked & !hovered ? "✔" : "▸"
+                        font.weight: Font.Bold
+                        Layout.preferredWidth: 32
+                        Layout.preferredHeight: 24
+
+                        onClicked: {
+                            var testFile = path + "/share/tests/" + modelData.test
+                            test.state = "running"
+                            recorder.start(testFile, participant)
+                            runner.start(testFile)
+                            checked = true
+                        }
+                    }
+                    Neus.Label {
+                        text: modelData.text
+                        Layout.fillWidth: true
+                    }
+                    Connections {
+                        target: main
+                        onParticipantChanged: checked = false
+                    }
+                }
+            }
+
             // practice
             ColumnLayout {
                 id: practice
@@ -182,35 +218,7 @@ Rectangle {
                             { "text": qsTr("Anti-saccade task (horizontal)"), "test": "practice-antisaccade-horizontal" },
                             { "text": qsTr("Smooth pursuit (horizontal)"), "test": "practice-pursuit" },
                         ]
-                        RowLayout {
-                            property alias checked: button.checked
-                            enabled: !runner.running
-                            spacing: 10
-
-                            Neus.Button {
-                                id: button
-                                text: checked & !hovered ? "✔" : "▸"
-                                font.weight: Font.Bold
-                                Layout.preferredWidth: 32
-                                Layout.preferredHeight: 24
-
-                                onClicked: {
-                                    var file = path + "/share/tests/" + modelData.test
-                                    test.state = "running"
-                                    recorder.start(file, participant)
-                                    runner.start(file)
-                                    checked = true
-                                }
-                            }
-                            Neus.Label {
-                                text: modelData.text
-                                Layout.fillWidth: true
-                            }
-                            Connections {
-                                target: main
-                                onParticipantChanged: checked = false
-                            }
-                        }
+                        delegate: testButton
                     }
                 }
             }
@@ -235,35 +243,7 @@ Rectangle {
                     Repeater {
                         model: [
                         ]
-                        RowLayout {
-                            property alias checked: button.checked
-                            enabled: !runner.running
-                            spacing: 10
-
-                            Neus.Button {
-                                id: button
-                                text: checked & !hovered ? "✔" : "▸"
-                                font.weight: Font.Bold
-                                Layout.preferredWidth: 32
-                                Layout.preferredHeight: 24
-
-                                onClicked: {
-                                    var file = path + "/share/tests/" + modelData.test
-                                    test.state = "running"
-                                    recorder.start(file, participant)
-                                    runner.start(file)
-                                    checked = true
-                                }
-                            }
-                            Neus.Label {
-                                text: modelData.text
-                                Layout.fillWidth: true
-                            }
-                            Connections {
-                                target: main
-                                onParticipantChanged: checked = false
-                            }
-                        }
+                        delegate: testButton
                     }
                 }
 
