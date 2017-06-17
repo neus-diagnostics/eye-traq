@@ -228,45 +228,45 @@ Rectangle {
                     Layout.fillWidth: true
                 }
 
-                GridLayout {
-                    columns: 2
+                ColumnLayout {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.fillWidth: true
 
-                    Neus.Label { text: qsTr("Test type") }
-                    Neus.ComboBox {
-                        id: testFile
-                        property var file: model[currentIndex].file
-                        Layout.fillWidth: true
-
+                    Repeater {
                         model: [
                         ]
-                        textRole: "name"
-                    }
+                        RowLayout {
+                            property alias checked: button.checked
+                            enabled: !runner.running
+                            spacing: 10
 
-                    Neus.Label { text: qsTr("Images"); Layout.row: 2 }
-                    Neus.ComboBox {
-                        property var folder: model[currentIndex].folder
-                        Layout.fillWidth: true
+                            Neus.Button {
+                                id: button
+                                text: checked & !hovered ? "✔" : "▸"
+                                font.weight: Font.Bold
+                                Layout.preferredWidth: 32
+                                Layout.preferredHeight: 24
 
-                        model: [
-                            { name: "Set 1", dir: "images/set1" },
-                            { name: "Set 2", dir: "images/set2" },
-                        ]
-                        textRole: "name"
-                    }
-
-                    Neus.Button {
-                        Layout.columnSpan: 2
-                        Layout.alignment: Qt.AlignRight
-                        text: qsTr("Start")
-                        enabled: !runner.running
-                        width: main.width * 0.1
-                        onClicked: {
-                            test.state = "running"
-                            recorder.start(testFile.file, participant)
-                            runner.start(testFile.file)
+                                onClicked: {
+                                    var file = path + "/share/tests/" + modelData.test
+                                    test.state = "running"
+                                    recorder.start(file, participant)
+                                    runner.start(file)
+                                    checked = true
+                                }
+                            }
+                            Neus.Label {
+                                text: modelData.text
+                                Layout.fillWidth: true
+                            }
+                            Connections {
+                                target: main
+                                onParticipantChanged: checked = false
+                            }
                         }
                     }
                 }
+
                 states: State {
                     name: "running"
                     PropertyChanges {
