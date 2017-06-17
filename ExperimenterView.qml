@@ -56,8 +56,8 @@ Rectangle {
                             text: qsTr("New")
                             anchors { right: parent.right; verticalCenter: parent.verticalCenter; rightMargin: 4 }
                             font.pointSize: 8
-                            padding: 2
-                            topPadding: 1
+                            padding: 4
+                            topPadding: 2
 
                             MouseArea {
                                 anchors.fill: parent
