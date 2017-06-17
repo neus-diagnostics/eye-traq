@@ -27,6 +27,7 @@ Item {
         width: parent.width
         onTextChanged: {
             filter()
+            list.currentIndex = 0
             dropdown.visible = text.length > 0 && list.count > 0
         }
         onFocusChanged: {
