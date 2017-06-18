@@ -39,7 +39,7 @@ Task {
 
         Rectangle {
             color: "#dddddd"
-            height: screen.height / 2
+            height: width * 10/8
             width: screen.width / 4
             Image {
                 id: left
@@ -50,7 +50,7 @@ Task {
 
         Rectangle {
             color: "#dddddd"
-            height: screen.height / 2
+            height: width * 10/8
             width: screen.width / 4
             Image {
                 id: right
