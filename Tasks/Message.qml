@@ -38,7 +38,7 @@ Task {
         width: parent.width * 0.66
         wrapMode: Text.WordWrap
         color: 'white'
-        font.pointSize: 24
+        font.pointSize: 32
         lineHeight: 1.2
         textFormat: Text.StyledText
     }
