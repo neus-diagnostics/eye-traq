@@ -81,7 +81,7 @@ Rectangle {
                     property var score: null
                     property var time: null
 
-                    enabled: participant != ""
+                    enabled: eyetracker.connected && participant != ""
                     width: parent.width
 
                     function end() {
