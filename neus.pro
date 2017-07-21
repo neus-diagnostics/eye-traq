@@ -4,13 +4,6 @@ CONFIG += c++11
 
 #QMAKE_CXXFLAGS += -g -ggdb
 
-exists($$PWD/3rdparty/lib/libtetio.so) {
-	DEFINES += USE_TOBII
-	INCLUDEPATH += $$PWD/3rdparty/include
-	LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
-	LIBS += -ltetio -lboost_system -lboost_thread
-}
-
 SOURCES += \
 	eyetracker.cpp \
 	gaze.cpp \
@@ -22,7 +15,15 @@ HEADERS += \
 	eyetracker.h \
 	gaze.h \
 	player.h \
-	recorder.h \
-	tobii.h
+	recorder.h
 
 RESOURCES += neus.qrc
+
+exists($$PWD/3rdparty/lib/libtetio.so) {
+	DEFINES += USE_TOBII
+	SOURCES += eyetracker-tobii.cpp
+	HEADERS += eyetracker-tobii.h
+	INCLUDEPATH += $$PWD/3rdparty/include
+	LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
+	LIBS += -ltetio -lboost_system -lboost_thread
+}

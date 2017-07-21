@@ -1,47 +1,12 @@
 #ifndef EYETRACKER_H
 #define EYETRACKER_H
 
-#include <QLineF>
-#include <QList>
 #include <QObject>
 #include <QString>
 #include <QPointF>
-#include <QTimer>
 #include <QVariant>
 
 #include "gaze.h"
-
-#ifdef USE_TOBII
-#include <QThread>
-
-#include <tobii/sdk/cpp/GazeDataItem.hpp>
-#include <tobii/sdk/cpp/EyeTracker.hpp>
-#include <tobii/sdk/cpp/EyeTrackerBrowser.hpp>
-#include <tobii/sdk/cpp/EyeTrackerFactory.hpp>
-#include <tobii/sdk/cpp/EyeTrackerInfo.hpp>
-#include <tobii/sdk/cpp/MainLoop.hpp>
-namespace tetio = tobii::sdk::cpp;
-
-struct BrowseEvent : QObject {
-	BrowseEvent(tetio::EyeTrackerBrowser::event_type_t type,
-	            tetio::EyeTrackerInfo::pointer_t info)
-		: QObject{}, type{type}, info{info}
-	{
-	}
-	tetio::EyeTrackerBrowser::event_type_t type;
-	tetio::EyeTrackerInfo::pointer_t info;
-};
-
-class MainLoop : public QThread {
-	Q_OBJECT
-public:
-	~MainLoop() { quit(); wait(); }
-	void run() { thread.run(); }
-	void quit() { thread.quit(); }
-
-        tetio::MainLoop thread;
-};
-#endif
 
 class Eyetracker : public QObject {
 	Q_OBJECT
@@ -54,10 +19,10 @@ public:
 	virtual ~Eyetracker();
 
 public slots:
-	bool calibrate(const QString &what);
-	bool calibrate(const QPointF &point);
-	QVariantList get_calibration();
-	qint64 time();
+	virtual bool calibrate(const QString &what);
+	virtual bool calibrate(const QPointF &point);
+	virtual QVariantList get_calibration();
+	virtual qint64 time();
 
 signals:
 	void statusChanged();
@@ -65,40 +30,13 @@ signals:
 	void gaze(const Gaze &g);
 	void gazePoint(const QPointF &point);
 
-private:
-	bool connected() const;
-	QString status() const;
-	void track(bool enable);
-
-	bool calibrating;
+protected:
 	bool tracking;
 
-#ifdef USE_TOBII
-signals:
-	void browsed(BrowseEvent *event);
-
-private slots:
-	void on_browsed(BrowseEvent *event);
-	void try_connect();
-
 private:
-	void handle_browse(tetio::EyeTrackerBrowser::event_type_t type,
-	                   tetio::EyeTrackerInfo::pointer_t info);
-	void handle_error(uint32_t error);
-	void handle_sync(tetio::SyncState::pointer_t sync_state);
-	void handle_gaze(tetio::GazeDataItem::pointer_t gaze_data);
-
-	MainLoop main_loop;
-
-	tetio::EyeTrackerBrowser::pointer_t browser;
-	tetio::EyeTrackerFactory::pointer_t factory;
-	tetio::EyeTracker::pointer_t tracker;
-
-	tetio::Clock clock;
-	tetio::SyncManager::pointer_t sync_manager;
-
-	QTimer connection_timer;
-#endif
+	virtual bool connected() const;
+	virtual QString status() const;
+	virtual void track(bool enable);
 };
 
 #endif

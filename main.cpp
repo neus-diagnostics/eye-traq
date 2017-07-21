@@ -1,4 +1,5 @@
 #include <exception>
+#include <memory>
 
 #include <QApplication>
 #include <QFontDatabase>
@@ -10,15 +11,15 @@
 #include <QScreen>
 #include <QtDebug>
 
-#ifdef USE_TOBII
-#include <tobii/sdk/cpp/Library.hpp>
-namespace tetio = tobii::sdk::cpp;
-#endif
-
 #include "eyetracker.h"
 #include "gaze.h"
 #include "player.h"
 #include "recorder.h"
+
+#ifdef USE_TOBII
+#include <tobii/sdk/cpp/Library.hpp>
+#include "eyetracker-tobii.h"
+#endif
 
 int main(int argc, char *argv[])
 try {
@@ -42,13 +43,14 @@ try {
 	}
 
 #ifdef USE_TOBII
-	tetio::Library::init();
+	tobii::sdk::cpp::Library::init();
+	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{}};
+#else
+	std::unique_ptr<Eyetracker> eyetracker{new Eyetracker{}};
 #endif
 
-	// construct global objects
-	Eyetracker eyetracker;
 	Recorder recorder{"data"};
-	QObject::connect(&eyetracker, &Eyetracker::gaze,
+	QObject::connect(eyetracker.get(), &Eyetracker::gaze,
 	                 &recorder, &Recorder::write_gaze);
 
 	// set up the window
@@ -56,7 +58,7 @@ try {
 	view.rootContext()->setContextProperty("path", "file://" + app.applicationDirPath());
 	view.rootContext()->setContextProperty("firstScreen", first_screen);
 	view.rootContext()->setContextProperty("secondScreen", second_screen);
-	view.rootContext()->setContextProperty("eyetracker", &eyetracker);
+	view.rootContext()->setContextProperty("eyetracker", eyetracker.get());
 	view.rootContext()->setContextProperty("recorder", &recorder);
 
 	view.setSource(QUrl{"qrc:/Main.qml"});
