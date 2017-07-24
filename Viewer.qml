@@ -20,7 +20,8 @@ Item {
             '<font color="red">' + qsTr("Calibration failed.") + '</font>'
         canvas.lines = []
         for (var i = 0; i < lines.length; i++)
-            canvas.addLine(lines[i])
+            if (lines[i].valid)
+                canvas.addLine(lines[i])
         canvas.requestPaint()
         canvas.visible = true
     }

@@ -17,7 +17,6 @@
 #include "recorder.h"
 
 #ifdef USE_TOBII
-#include <tobii/sdk/cpp/Library.hpp>
 #include "eyetracker-tobii.h"
 #endif
 
@@ -43,7 +42,6 @@ try {
 	}
 
 #ifdef USE_TOBII
-	tobii::sdk::cpp::Library::init();
 	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{}};
 #else
 	std::unique_ptr<Eyetracker> eyetracker{new Eyetracker{}};

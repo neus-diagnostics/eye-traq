@@ -93,7 +93,7 @@ Rectangle {
                                 var a = data[i].from
                                 var b = data[i].to
                                 recorder.write(
-                                    data[i].eye + '\t' + data[i].status + '\t' +
+                                    data[i].eye + '\t' + data[i].valid + '\t' +
                                     a.x + '\t' + a.y + '\t' + b.x + '\t' + b.y)
                                 score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
                             }

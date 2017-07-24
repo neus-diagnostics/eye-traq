@@ -19,11 +19,11 @@ HEADERS += \
 
 RESOURCES += neus.qrc
 
-exists($$PWD/3rdparty/lib/libtetio.so) {
+exists($$PWD/3rdparty/lib/libtobii_research.so) {
 	DEFINES += USE_TOBII
 	SOURCES += eyetracker-tobii.cpp
 	HEADERS += eyetracker-tobii.h
 	INCLUDEPATH += $$PWD/3rdparty/include
 	LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
-	LIBS += -ltetio -lboost_system -lboost_thread
+	LIBS += -ltobii_research -ltobii_pro -ltobii_stream_engine
 }
