@@ -9,7 +9,7 @@
 class Eyetracker : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
-	Q_PROPERTY(QString status READ status NOTIFY statusChanged STORED false)
+	Q_PROPERTY(QString name MEMBER name NOTIFY statusChanged)
 	Q_PROPERTY(bool tracking MEMBER tracking WRITE track NOTIFY trackingChanged STORED false)
 
 public:
@@ -28,11 +28,10 @@ signals:
 	void gaze(const QVariantMap &data);
 
 protected:
+	QString name;
 	bool tracking;
 
-private:
 	virtual bool connected() const;
-	virtual QString status() const;
 	virtual void track(bool enable);
 };
 

@@ -325,7 +325,7 @@ Rectangle {
         // eyetracker status
         Neus.Label {
             id: status
-            text: eyetracker.status
+            text: eyetracker.connected ? qsTr("Eyetracker conected.") : qsTr("Eyetracker disconnected.")
             anchors.bottom: parent.bottom
             width: parent.width
             padding: 10

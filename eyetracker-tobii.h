@@ -25,7 +25,6 @@ private:
 
 class EyetrackerTobii : public Eyetracker {
 	Q_OBJECT
-
 public:
 	EyetrackerTobii();
 	virtual ~EyetrackerTobii();
@@ -42,7 +41,6 @@ private:
 	QThread watcher_thread;
 
 	TobiiResearchEyeTracker *tracker;
-	QString name;
 
 	bool calibrating;
 	QVariantList calibration;
@@ -51,7 +49,6 @@ private:
 
 	void handle_connected(void *tracker, const QString &name);
 	bool connected() const;
-	QString status() const;
 	void track(bool enable);
 };
 

@@ -3,7 +3,7 @@
 #include <QDateTime>
 
 Eyetracker::Eyetracker()
-	: QObject{}, tracking{false}
+	: QObject{}, name{}, tracking{false}
 {
 }
 
@@ -34,13 +34,6 @@ qint64 Eyetracker::time()
 bool Eyetracker::connected() const
 {
 	return true;
-}
-
-QString Eyetracker::status() const
-{
-	if (connected())
-		return "Connected to eyetracker.";
-	return "Eyetracker not found.";
 }
 
 void Eyetracker::track(bool)

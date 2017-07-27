@@ -24,14 +24,14 @@ void Watcher::try_connect()
 			// just take the first eye tracker
 			auto tracker = eyetrackers->eyetrackers[0];
 
-			char *device_address;
-			char *device_name;
-			tobii_research_get_address(tracker, &device_address);
-			tobii_research_get_device_name(tracker, &device_name);
-			address = device_address;
-			emit connected(tracker, QString{device_name});
-			tobii_research_free_string(device_address);
-			tobii_research_free_string(device_name);
+			char *address;
+			char *serial;
+			tobii_research_get_address(tracker, &address);
+			tobii_research_get_serial_number(tracker, &serial);
+			this->address = address;
+			emit connected(tracker, QString{serial});
+			tobii_research_free_string(address);
+			tobii_research_free_string(serial);
 		}
 		tobii_research_free_eyetrackers(eyetrackers);
 	} else {
@@ -47,11 +47,12 @@ void Watcher::try_connect()
 EyetrackerTobii::EyetrackerTobii()
 	: Eyetracker{}, tracker{nullptr}, calibrating{false}
 {
+	// start connection thread
 	connect(&watcher, &Watcher::connected, this, &EyetrackerTobii::handle_connected);
-
 	watcher.moveToThread(&watcher_thread);
 	watcher_thread.start();
 
+	// start connection timer
 	connection_timer.setInterval(1000);
 	connection_timer.setSingleShot(false);
 	connect(&connection_timer, &QTimer::timeout, &watcher, &Watcher::try_connect);
@@ -159,13 +160,6 @@ qint64 EyetrackerTobii::time()
 bool EyetrackerTobii::connected() const
 {
 	return tracker;
-}
-
-QString EyetrackerTobii::status() const
-{
-	return connected() ?
-		"Connected to eyetracker." :
-		"Eyetracker not found.";
 }
 
 void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
