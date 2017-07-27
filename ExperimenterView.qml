@@ -88,6 +88,7 @@ Rectangle {
                         if (eyetracker.calibrate("compute")) {
                             var samples = eyetracker.get_calibration()
                             recorder.start(path + "/share/tests/calibrate", participant)
+                            recorder.write("# eyetracker: " + eyetracker.name)
                             recorder.write("# eye\tvalid\tpoint_x\tpoint_y\tgaze_x\tgaze_y")
                             for (var i = 0; i < samples.length; i++)
                                 recorder.write(
@@ -173,6 +174,7 @@ Rectangle {
                             var testFile = path + "/share/tests/" + modelData.test
                             test.state = "running"
                             recorder.start(testFile, participant)
+                            recorder.write("# eyetracker: " + eyetracker.name)
                             recorder.write(
                                 "# time\tevent\t" +
                                 "eye\tpupil_valid\tpupil_diameter\t" +
