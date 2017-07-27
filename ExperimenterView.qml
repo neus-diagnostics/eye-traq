@@ -48,7 +48,7 @@ Rectangle {
                         validator: RegExpValidator { regExp: /[^/]*/ }
                         onTextChanged: {
                             notes.text = recorder.getNotes(text)
-                            calibrate.score = null
+                            calibrate.calibrated = false
                             viewer.plot()
                         }
 
@@ -78,7 +78,7 @@ Rectangle {
                 RowLayout {
                     id: calibrate
 
-                    property var score: null
+                    property var calibrated: false
                     property var time: null
 
                     enabled: eyetracker.connected && participant != ""
@@ -86,23 +86,18 @@ Rectangle {
 
                     function end() {
                         if (eyetracker.calibrate("compute")) {
-                            var data = eyetracker.get_calibration()
-                            var score = 0.0
+                            var samples = eyetracker.get_calibration()
                             recorder.start(path + "/share/tests/calibrate", participant)
-                            for (var i = 0; i < data.length; i++) {
-                                var a = data[i].from
-                                var b = data[i].to
+                            for (var i = 0; i < samples.length; i++)
                                 recorder.write(
-                                    data[i].eye + '\t' + data[i].valid + '\t' +
-                                    a.x + '\t' + a.y + '\t' + b.x + '\t' + b.y)
-                                score += Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
-                            }
+                                    samples[i].eye + '\t' + samples[i].valid + '\t' +
+                                    samples[i].from.x + '\t' + samples[i].from.y + '\t' +
+                                    samples[i].to.x + '\t' + samples[i].to.y)
                             recorder.stop()
-                            score /= data.length > 0 ? data.length : 1
+                            calibrate.calibrated = true
                             calibrate.time = new Date()
-                            calibrate.score = score
-                            viewer.plot(data)
-                            notes.log("Calibrated, score: " + score.toFixed(2) + ".")
+                            viewer.plot(samples)
+                            notes.log("Calibrated.")
                         } else {
                             viewer.plot([])
                         }
@@ -129,12 +124,11 @@ Rectangle {
                             PropertyChanges {
                                 target: txtCalibrated
                                 text: {
-                                    if (calibrate.score === null)
+                                    if (!calibrate.calibrated)
                                         return qsTr("Not calibrated.");
                                     function pad(n) { return (n < 10 ? "0" : "") + n }
                                     return qsTr("Calibrated at ") +
-                                        calibrate.time.getHours() + ':' + pad(calibrate.time.getMinutes()) +
-                                        qsTr(", score: ") + calibrate.score.toFixed(2) + "."
+                                        calibrate.time.getHours() + ':' + pad(calibrate.time.getMinutes()) + "."
                                 }
                             }
                         },
@@ -199,7 +193,7 @@ Rectangle {
                 id: practice
 
                 Layout.fillWidth: true
-                enabled: participant != "" && calibrate.score
+                enabled: participant != "" && calibrate.calibrated
                 spacing: 10
 
                 Neus.Heading {
@@ -229,7 +223,7 @@ Rectangle {
             ColumnLayout {
                 id: test
 
-                enabled: participant != "" && calibrate.score
+                enabled: participant != "" && calibrate.calibrated
                 spacing: 10
                 Layout.fillWidth: true
 
