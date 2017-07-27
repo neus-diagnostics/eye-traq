@@ -1,5 +1,6 @@
 #include "eyetracker-tobii.h"
 
+#include <cmath>
 #include <cstddef>
 #include <utility>
 
@@ -64,14 +65,20 @@ EyetrackerTobii::~EyetrackerTobii()
 	watcher_thread.wait(1000);
 }
 
+// Tobii SDK occasionally returns weird NaNs that crash QML
+static inline float nanify(const float num)
+{
+	return std::isnan(num) ? NAN : num;
+}
+
 static inline QPointF point2_to_qpoint(const TobiiResearchNormalizedPoint2D &p)
 {
-	return QPointF{p.x, p.y};
+	return QPointF{nanify(p.x), nanify(p.y)};
 }
 
 static inline QVector3D point3_to_qvec(const TobiiResearchPoint3D &p)
 {
-	return QVector3D{p.x, p.y, p.z};
+	return QVector3D{nanify(p.x), nanify(p.y), nanify(p.z)};
 }
 
 bool EyetrackerTobii::calibrate(const QString &what)
@@ -174,7 +181,7 @@ void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 			{"pupil_valid", data.pupil_data.validity == TOBII_RESEARCH_VALIDITY_VALID},
 			{"gaze_valid", data.gaze_point.validity == TOBII_RESEARCH_VALIDITY_VALID},
 			{"eye_valid", data.gaze_origin.validity == TOBII_RESEARCH_VALIDITY_VALID},
-			{"pupil_diameter", data.pupil_data.diameter},
+			{"pupil_diameter", nanify(data.pupil_data.diameter)},
 			{"gaze_screen", point2_to_qpoint(data.gaze_point.position_on_display_area)},
 			{"gaze_ucs", point3_to_qvec(data.gaze_point.position_in_user_coordinates)},
 			{"eye_ucs", point3_to_qvec(data.gaze_origin.position_in_user_coordinates)},
