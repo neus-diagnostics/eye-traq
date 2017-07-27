@@ -6,8 +6,6 @@
 #include <QPointF>
 #include <QVariant>
 
-#include "gaze.h"
-
 class Eyetracker : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
@@ -27,8 +25,7 @@ public slots:
 signals:
 	void statusChanged();
 	void trackingChanged();
-	void gaze(const Gaze &g);
-	void gazePoint(const QPointF &point);
+	void gaze(const QVariantMap &data);
 
 protected:
 	bool tracking;

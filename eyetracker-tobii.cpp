@@ -1,6 +1,7 @@
 #include "eyetracker-tobii.h"
 
 #include <cstddef>
+#include <utility>
 
 #include <QPointF>
 #include <QVector3D>
@@ -162,30 +163,24 @@ QString EyetrackerTobii::status() const
 
 void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 {
-	Gaze g{};
-	g.time = gaze_data->system_time_stamp;
-	g.eyetracker_time = gaze_data->device_time_stamp;
-
-	const auto left = gaze_data->left_eye;
-	g.pupil_l = left.pupil_data.diameter;
-	g.screen_l = point2_to_qpoint(left.gaze_point.position_on_display_area);
-	g.ucs_l = point3_to_qvec(left.gaze_point.position_in_user_coordinates);
-	g.valid_l = left.gaze_point.validity;
-	g.eye_ucs_l = point3_to_qvec(left.gaze_origin.position_in_user_coordinates);
-	g.eye_track_l = point3_to_qvec(left.gaze_origin.position_in_track_box_coordinates);
-
-	const auto right = gaze_data->right_eye;
-	g.pupil_r = right.pupil_data.diameter;
-	g.screen_r = point2_to_qpoint(right.gaze_point.position_on_display_area);
-	g.ucs_r = point3_to_qvec(right.gaze_point.position_in_user_coordinates);
-	g.valid_r = right.gaze_point.validity;
-	g.eye_ucs_r = point3_to_qvec(right.gaze_origin.position_in_user_coordinates);
-	g.eye_track_r = point3_to_qvec(right.gaze_origin.position_in_track_box_coordinates);
-
-	auto object = static_cast<EyetrackerTobii*>(self);
-	object->emit gaze(g);
-	object->emit gazePoint(g.screen_l);
-	object->emit gazePoint(g.screen_r);
+	for (const auto &eye_data : {
+			std::make_pair("left", gaze_data->left_eye),
+			std::make_pair("right", gaze_data->right_eye)}) {
+		const auto &data = eye_data.second;
+		static_cast<EyetrackerTobii*>(self)->emit gaze(QVariantMap{
+			{"time", QVariant::fromValue(gaze_data->system_time_stamp)},
+			{"eyetracker_time", QVariant::fromValue(gaze_data->device_time_stamp)},
+			{"eye", eye_data.first},
+			{"pupil_valid", data.pupil_data.validity == TOBII_RESEARCH_VALIDITY_VALID},
+			{"gaze_valid", data.gaze_point.validity == TOBII_RESEARCH_VALIDITY_VALID},
+			{"eye_valid", data.gaze_origin.validity == TOBII_RESEARCH_VALIDITY_VALID},
+			{"pupil_diameter", data.pupil_data.diameter},
+			{"gaze_screen", point2_to_qpoint(data.gaze_point.position_on_display_area)},
+			{"gaze_ucs", point3_to_qvec(data.gaze_point.position_in_user_coordinates)},
+			{"eye_ucs", point3_to_qvec(data.gaze_origin.position_in_user_coordinates)},
+			{"eye_trackbox", point3_to_qvec(data.gaze_origin.position_in_track_box_coordinates)}
+		});
+	}
 }
 
 void EyetrackerTobii::handle_connected(void *tracker, const QString &name)

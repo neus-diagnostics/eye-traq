@@ -261,7 +261,20 @@ Rectangle {
                     }
                     PropertyChanges {
                         target: eyetracker
-                        onGazePoint: viewer.gaze(point)
+                        onGaze: {
+                            if (data.gaze_valid)
+                                viewer.gaze(data.gaze_screen)
+                            recorder.write(
+                                data.time + '\tgaze\t' + data.eye + '\t' +
+                                data.pupil_valid + '\t' + data.pupil_diameter + '\t' +
+                                data.gaze_valid + '\t' +
+                                data.gaze_screen.x + '\t' + data.gaze_screen.y + '\t' +
+                                data.gaze_ucs.x + '\t' + data.gaze_ucs.y + '\t' + data.gaze_ucs.z + '\t' +
+                                data.eye_valid + '\t' +
+                                data.eye_ucs.x + '\t' + data.eye_ucs.y + '\t' + data.eye_ucs.z + '\t' +
+                                data.eye_trackbox.x + '\t' + data.eye_trackbox.y + '\t' + data.eye_trackbox.z + '\t' +
+                                data.eyetracker_time)
+                        }
                         tracking: true
                     }
                 }

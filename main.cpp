@@ -4,7 +4,6 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QQmlContext>
-#include <QMetaType>
 #include <QObject>
 #include <QQuickItem>
 #include <QQuickView>
@@ -12,7 +11,6 @@
 #include <QtDebug>
 
 #include "eyetracker.h"
-#include "gaze.h"
 #include "player.h"
 #include "recorder.h"
 
@@ -24,8 +22,6 @@ int main(int argc, char *argv[])
 try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
-
-	qRegisterMetaType<Gaze>("Gaze");
 
 	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||
 	    QFontDatabase::addApplicationFont(":/resources/lato-bold.ttf") == -1)
@@ -48,8 +44,6 @@ try {
 #endif
 
 	Recorder recorder{"data"};
-	QObject::connect(eyetracker.get(), &Eyetracker::gaze,
-	                 &recorder, &Recorder::write_gaze);
 
 	// set up the window
 	QQuickView view;

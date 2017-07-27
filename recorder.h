@@ -3,15 +3,10 @@
 
 #include <QDir>
 #include <QFile>
-#include <QVector>
-#include <QPair>
 #include <QObject>
-#include <QQmlEngine>
 #include <QString>
-#include <QStringList>
-#include <QQmlComponent>
-
-#include "gaze.h"
+#include <QUrl>
+#include <QVariantList>
 
 class Recorder : public QObject {
 	Q_OBJECT
@@ -26,7 +21,6 @@ public slots:
 	void start(const QUrl &testfile, const QString &participant);
 	void stop();
 	void write(const QString &text);
-	void write_gaze(const Gaze& gaze);
 
 private:
 	QDir datadir;

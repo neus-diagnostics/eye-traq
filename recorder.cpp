@@ -1,13 +1,9 @@
 #include "recorder.h"
 
 #include <QDateTime>
-#include <QDir>
 #include <QFileInfo>
 #include <QProcess>
-#include <QQuickItem>
 #include <QRegularExpression>
-#include <QUrl>
-#include <QVariantList>
 #include <QVariantMap>
 #include <QtDebug>
 
@@ -106,39 +102,14 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 
 void Recorder::stop()
 {
-	if (!logfile)
-		return;
-	delete logfile;
-	logfile = nullptr;
+	if (logfile) {
+		delete logfile;
+		logfile = nullptr;
+	}
 }
 
 void Recorder::write(const QString &text)
 {
-	if (!logfile)
-		return;
-	QTextStream{logfile} << text << '\n';
-}
-
-void Recorder::write_gaze(const Gaze &gaze)
-{
-	if (!logfile)
-		return;
-	QTextStream{logfile}
-	       << gaze.time << "\tgaze\tleft\t"
-	       << gaze.eyetracker_time << '\t'
-	       << gaze.valid_l << '\t'
-	       << gaze.screen_l.x() << '\t' << gaze.screen_l.y() << '\t'
-	       << gaze.pupil_l << '\t'
-	       << gaze.eye_ucs_l.x() << '\t' << gaze.eye_ucs_l.y() << '\t' << gaze.eye_ucs_l.z() << '\t'
-	       << gaze.eye_track_l.x() << '\t' << gaze.eye_track_l.y() << '\t' << gaze.eye_track_l.z() << '\t'
-	       << gaze.ucs_l.x() << '\t' << gaze.ucs_l.y() << '\t' << gaze.ucs_l.z() << '\n'
-
-	       << gaze.time << "\tgaze\tright\t"
-	       << gaze.eyetracker_time << '\t'
-	       << gaze.valid_r << '\t'
-	       << gaze.screen_r.x() << '\t' << gaze.screen_r.y() << '\t'
-	       << gaze.pupil_r << '\t'
-	       << gaze.eye_ucs_r.x() << '\t' << gaze.eye_ucs_r.y() << '\t' << gaze.eye_ucs_r.z() << '\t'
-	       << gaze.eye_track_r.x() << '\t' << gaze.eye_track_r.y() << '\t' << gaze.eye_track_r.z() << '\t'
-	       << gaze.ucs_r.x() << '\t' << gaze.ucs_r.y() << '\t' << gaze.ucs_r.z() << '\n';
+	if (logfile)
+		QTextStream{logfile} << text << '\n';
 }

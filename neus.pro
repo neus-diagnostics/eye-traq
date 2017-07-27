@@ -6,14 +6,12 @@ CONFIG += c++11
 
 SOURCES += \
 	eyetracker.cpp \
-	gaze.cpp \
 	main.cpp \
 	player.cpp \
 	recorder.cpp
 
 HEADERS += \
 	eyetracker.h \
-	gaze.h \
 	player.h \
 	recorder.h
 
