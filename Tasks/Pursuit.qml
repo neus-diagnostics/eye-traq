@@ -28,18 +28,21 @@ Task {
         stimulus.visible = true
 
         anim.start()
-        infoTimer.start()
         _run(time)
     }
 
     function abort() {
         anim.stop()
-        infoTimer.stop()
         _abort()
     }
 
+    function infoMessage() {
+        info(eyetracker.time() + '\ttest\tdata\t' +
+            ((stimulus.x + stimulus.width/2) / screen.width) + '\t' +
+            ((stimulus.y + stimulus.height/2) / screen.height) + '\t')
+    }
+
     timer.onTriggered: {
-        infoTimer.stop()
         anim.stop()
         done()
     }
@@ -51,6 +54,9 @@ Task {
         radius: width/2
         color: "white"
         visible: false
+
+        onXChanged: infoMessage()
+        onYChanged: infoMessage()
 
         SequentialAnimation {
             id: anim
@@ -81,19 +87,6 @@ Task {
                     easing.type: Easing.InOutSine
                 }
             }
-        }
-    }
-
-    Timer {
-        id: infoTimer
-        interval: 1000/60
-        repeat: true
-        triggeredOnStart: true
-
-        onTriggered: {
-            info(eyetracker.time() + '\ttest\tdata\t'
-                 + ((stimulus.x + stimulus.width/2) / screen.width) + '\t'
-                 + ((stimulus.y + stimulus.height/2) / screen.height) + '\t')
         }
     }
 }
