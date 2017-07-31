@@ -14,7 +14,6 @@ Task {
         var screen_y = height*y
         var dist_x = screen_x-stimulus.x
         var dist_y = screen_y-stimulus.y
-        var move_time = 1.2 * Math.sqrt(dist_x*dist_x + dist_y*dist_y)
 
         var target_x = screen_x - stimulus.width/2
         var target_y = screen_y - stimulus.height/2
@@ -27,10 +26,9 @@ Task {
         } else {
             moveX.to = target_x
             moveY.to = target_y
-            shrink.to = 0.25
+            pause.duration = (stimulus.scale < 1.0 ? 1000 : 0)
             grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
-            shrink.duration = 1000
-            moveX.duration = time - (grow.duration + shrink.duration + 200)
+            moveX.duration = time - (pause.duration + grow.duration + shrink.duration)
             point = Qt.point(x, y)
             anim.start()
         }
@@ -57,12 +55,14 @@ Task {
             id: anim
             running: false
             paused: running && !timer.running
+            PauseAnimation {
+                id: pause
+            }
             NumberAnimation {
                 id: grow
                 target: stimulus
                 property: "scale"
                 to: 1.0
-                duration: 500
             }
             ParallelAnimation {
                 NumberAnimation {
@@ -73,7 +73,7 @@ Task {
                 }
                 NumberAnimation {
                     id: moveY;
-                    duration: moveX.duration
+                    duration: moveX.duration // synchronize with X animation
                     target: stimulus;
                     property: "y";
                     easing.type: Easing.InOutSine
