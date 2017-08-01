@@ -17,10 +17,15 @@ class EyetrackerTobiiHelper : public QObject {
 	Q_OBJECT
 signals:
 	void connected(void *tracker, const QString &address);
+public:
+	EyetrackerTobiiHelper();
+	~EyetrackerTobiiHelper();
 public slots:
 	void try_connect();
 	void calibrate(void *tracker, const QPointF &point);
 private:
+	QThread thread;
+	QTimer connection_timer;
 	QString address;
 };
 
@@ -37,20 +42,17 @@ public slots:
 	qint64 time();
 
 private:
-	QTimer connection_timer;
-	EyetrackerTobiiHelper helper;
-	QThread helper_thread;
-
 	TobiiResearchEyeTracker *tracker;
 
 	bool calibrating;
 	QVariantList calibration;
 
-	static void gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self);
-
-	void handle_connected(void *tracker, const QString &name);
 	bool connected() const;
 	void track(bool enable);
+	static void gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self);
+
+	EyetrackerTobiiHelper helper;
+	void handle_connected(void *tracker, const QString &name);
 };
 
 #endif

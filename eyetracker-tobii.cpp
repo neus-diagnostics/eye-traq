@@ -12,6 +12,23 @@ extern "C" {
 #include <tobii_research_calibration.h>
 }
 
+EyetrackerTobiiHelper::EyetrackerTobiiHelper()
+{
+	moveToThread(&thread);
+	thread.start();
+
+	connect(&connection_timer, &QTimer::timeout, this, &EyetrackerTobiiHelper::try_connect);
+	connection_timer.setInterval(1000);
+	connection_timer.setSingleShot(false);
+	connection_timer.start();
+}
+
+EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
+{
+	thread.quit();
+	thread.wait(10000);
+}
+
 void EyetrackerTobiiHelper::try_connect()
 {
 	if (address.isEmpty()) {
@@ -54,23 +71,12 @@ void EyetrackerTobiiHelper::calibrate(void *tracker, const QPointF &point)
 EyetrackerTobii::EyetrackerTobii()
 	: Eyetracker{}, tracker{nullptr}, calibrating{false}
 {
-	// start helper thread
 	connect(&helper, &EyetrackerTobiiHelper::connected, this, &EyetrackerTobii::handle_connected);
-	helper.moveToThread(&helper_thread);
-	helper_thread.start();
-
-	// start connection timer
-	connection_timer.setInterval(1000);
-	connection_timer.setSingleShot(false);
-	connect(&connection_timer, &QTimer::timeout, &helper, &EyetrackerTobiiHelper::try_connect);
-	connection_timer.start();
 }
 
 EyetrackerTobii::~EyetrackerTobii()
 {
 	track(false);
-	helper_thread.quit();
-	helper_thread.wait(10000);
 }
 
 // Tobii SDK occasionally returns weird NaNs that crash QML
