@@ -63,25 +63,21 @@ bool EyetrackerTobii::calibrate(const QString &what)
 
 		if (status == TOBII_RESEARCH_STATUS_OK &&
 		    result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
+			// store calibration result
 			for (std::size_t i = 0; i < result->calibration_point_count; i++) {
 				const auto point = result->calibration_points[i];
 				const QPointF real{point2_to_qpoint(point.position_on_display_area)};
 				for (std::size_t j = 0; j < point.calibration_sample_count; j++) {
-					const auto left = point.calibration_samples[j].left_eye;
-					calibration.push_back(QVariantMap{
-						{"eye", "left"},
-						{"from", real},
-						{"to", point2_to_qpoint(left.position_on_display_area)},
-						{"valid", left.validity == TOBII_RESEARCH_CALIBRATION_EYE_VALIDITY_VALID_AND_USED}
-					});
-
-					const auto right = point.calibration_samples[j].right_eye;
-					calibration.push_back(QVariantMap{
-						{"eye", "right"},
-						{"from", real},
-						{"to", point2_to_qpoint(right.position_on_display_area)},
-						{"valid", left.validity == TOBII_RESEARCH_CALIBRATION_EYE_VALIDITY_VALID_AND_USED}
-					});
+					for (const auto &eye : {
+							std::make_pair("left", point.calibration_samples[j].left_eye),
+							std::make_pair("right", point.calibration_samples[j].right_eye)}) {
+						calibration.push_back(QVariantMap{
+							{"eye", eye.first},
+							{"from", real},
+							{"to", point2_to_qpoint(eye.second.position_on_display_area)},
+							{"valid", eye.second.validity == TOBII_RESEARCH_CALIBRATION_EYE_VALIDITY_VALID_AND_USED}
+						});
+					}
 				}
 			}
 		}
