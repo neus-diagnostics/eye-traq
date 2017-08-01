@@ -197,10 +197,7 @@ void EyetrackerTobii::handle_connected(void *tracker, const QString &name)
 		this->tracker = static_cast<TobiiResearchEyeTracker*>(tracker);
 		this->name = name;
 		calibrating = false;
-		if (tracking) {
-			tracking = false;
-			emit trackingChanged();
-		}
+		tracking = false;
 		emit statusChanged();
 	}
 }
@@ -213,6 +210,5 @@ void EyetrackerTobii::track(bool enable)
 		else
 			tobii_research_unsubscribe_from_gaze_data(tracker, gaze_data_cb);
 		tracking = enable;
-		emit trackingChanged();
 	}
 }
