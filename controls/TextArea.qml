@@ -3,6 +3,7 @@ import QtQuick.Controls 2.0
 
 Flickable {
     property alias text: area.text
+    property alias cursorPosition: area.cursorPosition
 
     TextArea.flickable: TextArea {
         id: area

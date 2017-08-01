@@ -312,6 +312,7 @@ Rectangle {
                                 text += "\n"
                             text += new Date().toLocaleString(Qt.locale(), "yyyy-MM-dd hh:mm (t)")
                             text += ": " + message + "\n"
+                            cursorPosition = text.length
                         }
 
                         function save() {
