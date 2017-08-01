@@ -360,31 +360,28 @@ Rectangle {
 
         layoutDirection: Qt.RightToLeft
         padding: 10
-        spacing: 10
+        spacing: padding
 
-        Button {
-            text: "×"  // TODO: replace with "❌" (U+274c "close")
-            width: height
-            padding: 2
-            font { pointSize: 12; weight: Font.Bold }
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.hovered ? "#d6d6d6" : "#e0e0e0"
-                border.color: Qt.darker(color, 1.1)
+        // passing functions does not work directly in model: below
+        property var buttons: [
+            { "text": "❌", "click": Qt.quit},
+            { "text": "⚊", "click": minimize},
+        ]
+        Repeater {
+            model: parent.buttons
+            delegate: Button {
+                width: height
+                bottomPadding: padding + 2
+                padding: 2
+                background: Rectangle {
+                    color: parent.hovered ? "#d6d6d6" : "#e0e0e0"
+                    border.color: Qt.darker(color, 1.1)
+                }
+                hoverEnabled: true
+                font.pointSize: 10
+                text: modelData.text
+                onClicked: parent.buttons[index].click()
             }
-            onClicked: Qt.quit()
-        }
-        Button {
-            text: "–"  // TODO: replace with "⚊" (U+268a "minimize")
-            width: height
-            padding: 2
-            font { pointSize: 12; weight: Font.Bold }
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.hovered ? "#d6d6d6" : "#e0e0e0"
-                border.color: Qt.darker(color, 1.1)
-            }
-            onClicked: minimize()
         }
     }
 }
