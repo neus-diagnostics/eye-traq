@@ -47,7 +47,7 @@ Rectangle {
                         field: "fileName"
                         validator: RegExpValidator { regExp: /[^/]*/ }
                         onTextChanged: {
-                            notes.text = recorder.getNotes(text)
+                            notes.load(recorder.getNotes(text))
                             calibrate.calibrated = false
                             viewer.plot()
                         }
@@ -99,7 +99,7 @@ Rectangle {
                             calibrate.calibrated = true
                             calibrate.time = new Date()
                             viewer.plot(samples)
-                            notes.log("Calibrated.")
+                            notes.append("Calibrated.")
                         } else {
                             viewer.plot([])
                         }
@@ -187,7 +187,7 @@ Rectangle {
                                 "eyetracker_time")
                             runner.start(testFile)
                             checked = true
-                            notes.log("Started " + modelData.test + ".")
+                            notes.append("Started " + modelData.test + ".")
                         }
                     }
                     Neus.Label {
@@ -304,21 +304,37 @@ Rectangle {
 
                     Neus.TextArea {
                         id: notes
-                        function log(message) {
+
+                        property var modified: false
+
+                        function append(message) {
                             if (text && text.slice(-1) != "\n")
                                 text += "\n"
                             text += new Date().toLocaleString(Qt.locale(), "yyyy-MM-dd hh:mm (t)")
                             text += ": " + message + "\n"
-                            recorder.setNotes(participant, text)
                         }
+
+                        function save() {
+                            recorder.setNotes(participant, text)
+                            modified = false
+                        }
+
+                        function load(text) {
+                            notes.text = text
+                            modified = false
+                        }
+
+                        onTextChanged: modified = true
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
+
                     Neus.Button {
                         text: "Save"
+                        enabled: notes.modified
+                        onClicked: notes.save()
                         Layout.alignment: Qt.AlignRight
-                        onClicked: recorder.setNotes(participant, notes.text)
                     }
                 }
             }
