@@ -13,12 +13,13 @@ extern "C" {
 #include <tobii_research_streams.h>
 }
 
-class Watcher : public QObject {
+class EyetrackerTobiiHelper : public QObject {
 	Q_OBJECT
 signals:
 	void connected(void *tracker, const QString &address);
 public slots:
 	void try_connect();
+	void calibrate(void *tracker, const QPointF &point);
 private:
 	QString address;
 };
@@ -37,8 +38,8 @@ public slots:
 
 private:
 	QTimer connection_timer;
-	Watcher watcher;
-	QThread watcher_thread;
+	EyetrackerTobiiHelper helper;
+	QThread helper_thread;
 
 	TobiiResearchEyeTracker *tracker;
 

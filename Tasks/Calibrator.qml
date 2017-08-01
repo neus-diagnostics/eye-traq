@@ -23,6 +23,9 @@ Task {
             stimulus.y = target_y
             stimulus.scale = 1.0
             point = null
+        } else if (step == "end") {
+            // wait some time for the final calibrate call to finish
+            point = null
         } else {
             moveX.to = target_x
             moveY.to = target_y

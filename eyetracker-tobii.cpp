@@ -12,7 +12,7 @@ extern "C" {
 #include <tobii_research_calibration.h>
 }
 
-void Watcher::try_connect()
+void EyetrackerTobiiHelper::try_connect()
 {
 	if (address.isEmpty()) {
 		TobiiResearchEyeTrackers* eyetrackers{nullptr};
@@ -44,26 +44,33 @@ void Watcher::try_connect()
 	}
 }
 
+void EyetrackerTobiiHelper::calibrate(void *tracker, const QPointF &point)
+{
+	// TODO x2-60 always succeeds here, check for other trackers
+	tobii_research_screen_based_calibration_collect_data(
+		static_cast<TobiiResearchEyeTracker*>(tracker), point.x(), point.y());
+}
+
 EyetrackerTobii::EyetrackerTobii()
 	: Eyetracker{}, tracker{nullptr}, calibrating{false}
 {
-	// start connection thread
-	connect(&watcher, &Watcher::connected, this, &EyetrackerTobii::handle_connected);
-	watcher.moveToThread(&watcher_thread);
-	watcher_thread.start();
+	// start helper thread
+	connect(&helper, &EyetrackerTobiiHelper::connected, this, &EyetrackerTobii::handle_connected);
+	helper.moveToThread(&helper_thread);
+	helper_thread.start();
 
 	// start connection timer
 	connection_timer.setInterval(1000);
 	connection_timer.setSingleShot(false);
-	connect(&connection_timer, &QTimer::timeout, &watcher, &Watcher::try_connect);
+	connect(&connection_timer, &QTimer::timeout, &helper, &EyetrackerTobiiHelper::try_connect);
 	connection_timer.start();
 }
 
 EyetrackerTobii::~EyetrackerTobii()
 {
 	track(false);
-	watcher_thread.quit();
-	watcher_thread.wait(1000);
+	helper_thread.quit();
+	helper_thread.wait(10000);
 }
 
 // Tobii SDK occasionally returns weird NaNs that crash QML
@@ -139,9 +146,9 @@ bool EyetrackerTobii::calibrate(const QPointF &point)
 {
 	if (!tracker)
 		return false;
-	// TODO x2-60 always succeeds here, check for other trackers
-	// TODO this blocks, try moving to other thread
-	tobii_research_screen_based_calibration_collect_data(tracker, point.x(), point.y());
+	// Tobii SDK blocks here, so call it in the helper thread
+	QMetaObject::invokeMethod(&helper, "calibrate", Qt::AutoConnection,
+		Q_ARG(void*, tracker), Q_ARG(QPointF, point));
 	return true;
 }
 
