@@ -12,62 +12,6 @@ extern "C" {
 #include <tobii_research_calibration.h>
 }
 
-EyetrackerTobiiHelper::EyetrackerTobiiHelper()
-{
-	moveToThread(&thread);
-	thread.start();
-
-	connect(&connection_timer, &QTimer::timeout, this, &EyetrackerTobiiHelper::try_connect);
-	connection_timer.setInterval(1000);
-	connection_timer.setSingleShot(false);
-	connection_timer.start();
-}
-
-EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
-{
-	thread.quit();
-	thread.wait(10000);
-}
-
-void EyetrackerTobiiHelper::try_connect()
-{
-	if (address.isEmpty()) {
-		TobiiResearchEyeTrackers* eyetrackers{nullptr};
-		auto status = tobii_research_find_all_eyetrackers(&eyetrackers);
-		if (status != TOBII_RESEARCH_STATUS_OK)
-			return;
-
-		if (eyetrackers->count > 0) {
-			// just take the first eye tracker
-			auto tracker = eyetrackers->eyetrackers[0];
-
-			char *address;
-			char *serial;
-			tobii_research_get_address(tracker, &address);
-			tobii_research_get_serial_number(tracker, &serial);
-			this->address = address;
-			emit connected(tracker, QString{serial});
-			tobii_research_free_string(address);
-			tobii_research_free_string(serial);
-		}
-		tobii_research_free_eyetrackers(eyetrackers);
-	} else {
-		TobiiResearchEyeTracker* t{nullptr};
-		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &t);
-		if (status == TOBII_RESEARCH_STATUS_OK)
-			return;
-		address.clear();
-		emit connected(nullptr, "");
-	}
-}
-
-void EyetrackerTobiiHelper::calibrate(void *tracker, const QPointF &point)
-{
-	// TODO x2-60 always succeeds here, check for other trackers
-	tobii_research_screen_based_calibration_collect_data(
-		static_cast<TobiiResearchEyeTracker*>(tracker), point.x(), point.y());
-}
-
 EyetrackerTobii::EyetrackerTobii()
 	: Eyetracker{}, tracker{nullptr}, calibrating{false}
 {
@@ -217,4 +161,60 @@ void EyetrackerTobii::track(bool enable)
 			tobii_research_unsubscribe_from_gaze_data(tracker, gaze_data_cb);
 		tracking = enable;
 	}
+}
+
+EyetrackerTobiiHelper::EyetrackerTobiiHelper()
+{
+	moveToThread(&thread);
+	thread.start();
+
+	connect(&connection_timer, &QTimer::timeout, this, &EyetrackerTobiiHelper::try_connect);
+	connection_timer.setInterval(1000);
+	connection_timer.setSingleShot(false);
+	connection_timer.start();
+}
+
+EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
+{
+	thread.quit();
+	thread.wait(10000);
+}
+
+void EyetrackerTobiiHelper::try_connect()
+{
+	if (address.isEmpty()) {
+		TobiiResearchEyeTrackers* eyetrackers{nullptr};
+		auto status = tobii_research_find_all_eyetrackers(&eyetrackers);
+		if (status != TOBII_RESEARCH_STATUS_OK)
+			return;
+
+		if (eyetrackers->count > 0) {
+			// just take the first eye tracker
+			auto tracker = eyetrackers->eyetrackers[0];
+
+			char *address;
+			char *serial;
+			tobii_research_get_address(tracker, &address);
+			tobii_research_get_serial_number(tracker, &serial);
+			this->address = address;
+			emit connected(tracker, QString{serial});
+			tobii_research_free_string(address);
+			tobii_research_free_string(serial);
+		}
+		tobii_research_free_eyetrackers(eyetrackers);
+	} else {
+		TobiiResearchEyeTracker* t{nullptr};
+		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &t);
+		if (status == TOBII_RESEARCH_STATUS_OK)
+			return;
+		address.clear();
+		emit connected(nullptr, "");
+	}
+}
+
+void EyetrackerTobiiHelper::calibrate(void *tracker, const QPointF &point)
+{
+	// TODO x2-60 always succeeds here, check for other trackers
+	tobii_research_screen_based_calibration_collect_data(
+		static_cast<TobiiResearchEyeTracker*>(tracker), point.x(), point.y());
 }
