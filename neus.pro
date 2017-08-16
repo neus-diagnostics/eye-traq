@@ -17,7 +17,7 @@ HEADERS += \
 
 RESOURCES += neus.qrc
 
-exists($$PWD/3rdparty/lib/libtobii_research.so) {
+exists("$$PWD/3rdparty/lib/*tobii_research*") {
 	DEFINES += USE_TOBII
 	SOURCES += eyetracker-tobii.cpp
 	HEADERS += eyetracker-tobii.h
