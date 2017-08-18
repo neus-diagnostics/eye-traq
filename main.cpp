@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app{argc, argv};
+	const QString path = app.applicationDirPath();
 
 	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||
 	    QFontDatabase::addApplicationFont(":/resources/lato-bold.ttf") == -1)
@@ -38,7 +39,7 @@ try {
 	}
 
 #ifdef USE_TOBII
-	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{}};
+	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{path + "/share/tobii_license.key"}};
 #else
 	std::unique_ptr<Eyetracker> eyetracker{new Eyetracker{}};
 #endif

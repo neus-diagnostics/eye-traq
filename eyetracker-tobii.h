@@ -3,6 +3,7 @@
 
 #include "eyetracker.h"
 
+#include <QByteArray>
 #include <QString>
 #include <QThread>
 #include <QTimer>
@@ -18,7 +19,7 @@ class EyetrackerTobiiHelper : public QObject {
 signals:
 	void connected(void *tracker, const QString &address);
 public:
-	EyetrackerTobiiHelper();
+	EyetrackerTobiiHelper(const QString &license_path);
 	~EyetrackerTobiiHelper();
 public slots:
 	void try_connect();
@@ -27,12 +28,13 @@ private:
 	QThread thread;
 	QTimer connection_timer;
 	QString address;
+	QByteArray license;
 };
 
 class EyetrackerTobii : public Eyetracker {
 	Q_OBJECT
 public:
-	EyetrackerTobii();
+	EyetrackerTobii(const QString &license_path = "");
 	virtual ~EyetrackerTobii();
 
 public slots:

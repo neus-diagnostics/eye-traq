@@ -2,8 +2,10 @@
 
 #include <cmath>
 #include <cstddef>
+#include <stdexcept>
 #include <utility>
 
+#include <QFile>
 #include <QPointF>
 #include <QVector3D>
 #include <QtDebug>
@@ -12,8 +14,8 @@ extern "C" {
 #include <tobii_research_calibration.h>
 }
 
-EyetrackerTobii::EyetrackerTobii()
-	: Eyetracker{}, tracker{nullptr}, calibrating{false}
+EyetrackerTobii::EyetrackerTobii(const QString &license_path)
+	: Eyetracker{}, tracker{nullptr}, calibrating{false}, helper{license_path}
 {
 	connect(&helper, &EyetrackerTobiiHelper::connected, this, &EyetrackerTobii::handle_connected);
 }
@@ -159,8 +161,16 @@ void EyetrackerTobii::track(bool enable)
 	}
 }
 
-EyetrackerTobiiHelper::EyetrackerTobiiHelper()
+EyetrackerTobiiHelper::EyetrackerTobiiHelper(const QString &license_path)
 {
+	// load license data from file
+	if (!license_path.isEmpty()) {
+		QFile license_file{license_path};
+		if (!license_file.open(QIODevice::ReadOnly))
+			throw std::runtime_error{"could not open license file: " + license_path.toStdString()};
+		license = license_file.readAll();
+	}
+
 	moveToThread(&thread);
 	thread.start();
 
@@ -178,33 +188,49 @@ EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
 
 void EyetrackerTobiiHelper::try_connect()
 {
+	TobiiResearchEyeTracker* tracker{nullptr};
 	if (address.isEmpty()) {
 		TobiiResearchEyeTrackers* eyetrackers{nullptr};
 		auto status = tobii_research_find_all_eyetrackers(&eyetrackers);
-		if (status != TOBII_RESEARCH_STATUS_OK)
-			return;
-
-		if (eyetrackers->count > 0) {
+		if (status == TOBII_RESEARCH_STATUS_OK && eyetrackers->count > 0) {
 			// just take the first eye tracker
-			auto tracker = eyetrackers->eyetrackers[0];
+			tracker = eyetrackers->eyetrackers[0];
+			tobii_research_free_eyetrackers(eyetrackers);
 
-			char *address;
-			char *serial;
-			tobii_research_get_address(tracker, &address);
-			tobii_research_get_serial_number(tracker, &serial);
-			this->address = address;
-			emit connected(tracker, QString{serial});
-			tobii_research_free_string(address);
-			tobii_research_free_string(serial);
+			// load license if present
+			if (!license.isEmpty()) {
+				const void* key = license.data();
+				size_t size = license.size();
+				TobiiResearchLicenseValidationResult result;
+				TobiiResearchStatus status = tobii_research_apply_licenses(tracker, &key, &size, &result, 1);
+
+				if (status != TOBII_RESEARCH_STATUS_OK ||
+				    result != TOBII_RESEARCH_LICENSE_VALIDATION_RESULT_OK) {
+					qWarning() << "Failure applying license:" << result;
+					tracker = nullptr;
+				}
+			}
 		}
-		tobii_research_free_eyetrackers(eyetrackers);
+
+		if (tracker) {
+			char *address;
+			tobii_research_get_address(tracker, &address);
+			this->address = address;
+			tobii_research_free_string(address);
+
+			char *serial;
+			tobii_research_get_serial_number(tracker, &serial);
+			const QString name{serial};
+			tobii_research_free_string(serial);
+
+			emit connected(tracker, name);
+		}
 	} else {
-		TobiiResearchEyeTracker* t{nullptr};
-		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &t);
-		if (status == TOBII_RESEARCH_STATUS_OK)
-			return;
-		address.clear();
-		emit connected(nullptr, "");
+		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &tracker);
+		if (status != TOBII_RESEARCH_STATUS_OK) {
+			address.clear();
+			emit connected(nullptr, "");
+		}
 	}
 }
 
