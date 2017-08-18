@@ -8,6 +8,7 @@
 #include <QQuickItem>
 #include <QQuickView>
 #include <QScreen>
+#include <QTextCodec>
 #include <QtDebug>
 
 #include "eyetracker.h"
@@ -21,6 +22,8 @@
 int main(int argc, char *argv[])
 try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
+
 	QApplication app{argc, argv};
 	const QString path = app.applicationDirPath();
 
