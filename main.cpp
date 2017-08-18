@@ -48,7 +48,7 @@ try {
 
 	// set up the window
 	QQuickView view;
-	view.rootContext()->setContextProperty("path", "file://" + app.applicationDirPath());
+	view.rootContext()->setContextProperty("path", path);
 	view.rootContext()->setContextProperty("firstScreen", first_screen);
 	view.rootContext()->setContextProperty("secondScreen", second_screen);
 	view.rootContext()->setContextProperty("eyetracker", eyetracker.get());

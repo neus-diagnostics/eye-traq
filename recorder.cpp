@@ -2,7 +2,6 @@
 
 #include <QDateTime>
 #include <QFileInfo>
-#include <QProcess>
 #include <QRegularExpression>
 #include <QVariantMap>
 #include <QtDebug>
@@ -17,32 +16,19 @@ Recorder::~Recorder()
 	stop();
 }
 
-QVariantList Recorder::loadTest(const QUrl &testfile)
+QVariantList Recorder::loadTest(const QString &testpath)
 {
-	QString testdata;
-
-	const QString testpath{testfile.toLocalFile()};
-	if (QFileInfo{testpath}.isExecutable()) {
-		// run testfile and load the test from stdout
-		QProcess testgen;
-		testgen.start(testpath);
-		if (testgen.waitForFinished() && testgen.exitCode() == 0)
-			testdata = QString::fromUtf8(testgen.readAllStandardOutput());
-		else
-			qWarning() << "could not start test program";
-	} else {
-		// load the testfile directly
-		QFile file(testpath);
-		if (file.open(QIODevice::ReadOnly))
-			testdata = QTextStream{&file}.readAll();
-		else
-			qWarning() << "could not open testfile";
+	QFile file{testpath};
+	if (!file.open(QIODevice::ReadOnly)) {
+		qWarning() << "could not open test:" << testpath;
+		return {};
 	}
+	QString testdata = QTextStream{&file}.readAll();
 
 	QVariantList tasks;
-	// remove empty lines and comments
 	int i = 0;
 	int total_time = 0;
+	// remove empty lines and comments
 	for (const auto &line : testdata.split('\n').filter(QRegularExpression("^[^#]"))) {
 		const auto &tokens = line.split('\t');
 		const auto &name = tokens[0];
@@ -77,14 +63,14 @@ void Recorder::setNotes(const QString &participant, const QString &notes)
 		QTextStream{&file} << notes;
 }
 
-void Recorder::start(const QUrl &testfile, const QString &participant)
+void Recorder::start(const QString &testpath, const QString &participant)
 {
 	if (participant.isEmpty())
 		return;
 
 	// construct filename
 	const auto now = QDateTime::currentDateTimeUtc();
-	const auto testname = QFileInfo{testfile.toLocalFile()}.baseName();
+	const auto testname = QFileInfo{testpath}.baseName();
 	const QString filename =
 		datadir.filePath(participant + "/" +
 		now.toString("yyyyMMdd-HHmmss") + "-" + testname + ".log");
@@ -93,7 +79,7 @@ void Recorder::start(const QUrl &testfile, const QString &participant)
 	datadir.mkpath(participant);
 	logfile = new QFile{filename};
 	if (!logfile->open(QIODevice::WriteOnly)) {
-		qWarning() << "Cannot open file" << filename;
+		qWarning() << "could not open file:" << filename;
 		delete logfile;
 		logfile = nullptr;
 		return;
