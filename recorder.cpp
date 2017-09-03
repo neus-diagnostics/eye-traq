@@ -7,7 +7,7 @@
 #include <QtDebug>
 
 Recorder::Recorder(const QString &datadir)
-	: QObject{}, datadir{datadir}, logfile{nullptr}
+	: QObject{}, datadir{datadir}, stream{nullptr}
 {
 }
 
@@ -76,25 +76,27 @@ void Recorder::start(const QString &test_name, const QString &participant)
 
 	// open file
 	datadir.mkpath(participant);
-	logfile = new QFile{filename};
-	if (!logfile->open(QIODevice::WriteOnly)) {
+	QFile *file = new QFile{filename};
+	if (file->open(QIODevice::WriteOnly)) {
+		stream = new QTextStream{file};
+	} else {
 		qWarning() << "could not open file:" << filename;
-		delete logfile;
-		logfile = nullptr;
-		return;
+		delete file;
 	}
 }
 
 void Recorder::stop()
 {
-	if (logfile) {
-		delete logfile;
-		logfile = nullptr;
+	if (stream) {
+		auto *file = stream->device();
+		delete stream;
+		delete file;
+		stream = nullptr;
 	}
 }
 
 void Recorder::write(const QString &text)
 {
-	if (logfile)
-		QTextStream{logfile} << text << '\n';
+	if (stream)
+		(*stream) << text << '\n';
 }

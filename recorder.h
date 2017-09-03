@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QObject>
 #include <QString>
+#include <QTextStream>
 #include <QVariantList>
 
 class Recorder : public QObject {
@@ -23,7 +24,7 @@ public slots:
 
 private:
 	QDir datadir;
-	QFile *logfile;
+	QTextStream *stream;
 };
 
 #endif
