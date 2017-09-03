@@ -88,7 +88,7 @@ Rectangle {
                     function end() {
                         if (eyetracker.calibrate("compute")) {
                             var samples = eyetracker.get_calibration()
-                            recorder.start(path + "/share/tests/calibrate", participant)
+                            recorder.start(path + "/share/tests/calibrate-" + settings.language, participant)
                             recorder.write("# eyetracker: " + eyetracker.name)
                             recorder.write("# eye\tvalid\tpoint_x\tpoint_y\tgaze_x\tgaze_y")
                             for (var i = 0; i < samples.length; i++)
@@ -118,7 +118,7 @@ Rectangle {
                         onClicked: {
                             calibrate.state = "running"
                             eyetracker.calibrate("start")
-                            runner.start(path + "/share/tests/calibrate")
+                            runner.start(path + "/share/tests/calibrate-" + settings.language)
                         }
                     }
                     states: [
