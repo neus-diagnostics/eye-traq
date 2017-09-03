@@ -172,9 +172,10 @@ Rectangle {
                         Layout.preferredHeight: 24
 
                         onClicked: {
-                            var testFile = path + "/share/tests/" + modelData.test
+                            var testName = modelData.test + "-" + settings.language
+                            var testFile = path + "/share/tests/" + testName
                             test.state = "running"
-                            recorder.start(testFile, participant)
+                            recorder.start(testName, participant)
                             recorder.write("# eyetracker: " + eyetracker.name)
                             recorder.write(
                                 "# time\tevent\t" +
@@ -188,7 +189,7 @@ Rectangle {
                                 "eyetracker_time")
                             runner.start(testFile)
                             checked = true
-                            notes.append("Started " + modelData.test + ".")
+                            notes.append("Started " + testName + ".")
                         }
                     }
                     Neus.Label {
@@ -220,6 +221,8 @@ Rectangle {
                 RowLayout {
                     anchors { left: parent.left; right: parent.right }
                     spacing: parent.spacing
+                    enabled: !runner.running
+
                     Neus.Label { text: qsTr("Language") }
                     Neus.ComboBox {
                         model: [

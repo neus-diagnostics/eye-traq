@@ -63,17 +63,16 @@ void Recorder::setNotes(const QString &participant, const QString &notes)
 		QTextStream{&file} << notes;
 }
 
-void Recorder::start(const QString &testpath, const QString &participant)
+void Recorder::start(const QString &test_name, const QString &participant)
 {
 	if (participant.isEmpty())
 		return;
 
 	// construct filename
 	const auto now = QDateTime::currentDateTimeUtc();
-	const auto testname = QFileInfo{testpath}.baseName();
 	const QString filename =
 		datadir.filePath(participant + "/" +
-		now.toString("yyyyMMdd-HHmmss") + "-" + testname + ".log");
+		now.toString("yyyyMMdd-HHmmss") + "-" + test_name + ".log");
 
 	// open file
 	datadir.mkpath(participant);
