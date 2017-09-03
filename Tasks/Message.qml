@@ -9,7 +9,7 @@ Task {
         message.horizontalAlignment = (align == "left" ? Text.AlignLeft : Text.AlignHCenter)
         message.text = text || ""
         if (soundfile) {
-            audio.source = path + "/share/sounds/" + soundfile
+            audio.source = "file:///" + path + "/share/sounds/" + soundfile
             audio.play()
         }
         _run(time)

@@ -6,8 +6,8 @@ Task {
     property var fade: 150
 
     function run(time, leftfile, rightfile) {
-        left.source = path + "/share/images/" + leftfile
-        right.source = path + "/share/images/" + rightfile
+        left.source = "file:///" + path + "/share/images/" + leftfile
+        right.source = "file:///" + path + "/share/images/" + rightfile
 
         time = Number(time)
         pause.duration = time - 2*fade
