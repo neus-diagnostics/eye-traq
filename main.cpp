@@ -25,6 +25,8 @@ try {
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 
 	QApplication app{argc, argv};
+	app.setOrganizationName("Neus");
+	app.setOrganizationDomain("neus-diagnostics.com");
 	const QString path = app.applicationDirPath();
 
 	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||

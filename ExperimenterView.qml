@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import Qt.labs.folderlistmodel 2.1
+import Qt.labs.settings 1.0
 
 import "controls" as Neus
 
@@ -201,17 +202,48 @@ Rectangle {
                 }
             }
 
-            // practice
+            // test
             ColumnLayout {
-                id: practice
+                id: test
 
-                Layout.fillWidth: true
                 enabled: participant != "" && calibrate.calibrated
                 spacing: 10
+                Layout.fillHeight: false
+                Layout.fillWidth: true
 
                 Neus.Heading {
+                    text: qsTr("Test")
                     Layout.fillWidth: true
+                }
+
+                // language
+                RowLayout {
+                    anchors { left: parent.left; right: parent.right }
+                    spacing: parent.spacing
+                    Neus.Label { text: qsTr("Language") }
+                    Neus.ComboBox {
+                        model: [
+                            { "text": "Croatian", "language": "hr" },
+                            { "text": "Slovene", "language": "sl" },
+                        ]
+                        onActivated: settings.language = model[currentIndex]["language"]
+                        Component.onCompleted: {
+                            for (var i = 0; i < model.length; i++) {
+                                if (model[i]["language"] == settings.language) {
+                                    currentIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                        textRole: "text"
+                        Layout.fillWidth: true
+                    }
+                }
+
+                Neus.Label {
                     text: qsTr("Practice")
+                    font { pointSize: 11; capitalization: Font.MixedCase; weight: Font.Bold }
+                    Layout.fillWidth: true
                 }
 
                 ColumnLayout {
@@ -230,18 +262,10 @@ Rectangle {
                         delegate: testButton
                     }
                 }
-            }
 
-            // test
-            ColumnLayout {
-                id: test
-
-                enabled: participant != "" && calibrate.calibrated
-                spacing: 10
-                Layout.fillWidth: true
-
-                Neus.Heading {
-                    text: qsTr("Test")
+                Neus.Label {
+                    text: qsTr("Tests")
+                    font { weight: Font.Bold }
                     Layout.fillWidth: true
                 }
 
@@ -400,5 +424,10 @@ Rectangle {
                 onClicked: parent.buttons[index].click()
             }
         }
+    }
+
+    Settings {
+        id: settings
+        property string language: "sl"
     }
 }
