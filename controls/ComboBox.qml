@@ -1,13 +1,97 @@
-import QtQuick 2.7
+import QtQuick 2.6
+import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
+import QtQuick.Templates 2.0 as T
 
-ComboBox {
+T.ComboBox {
     id: control
-    padding: 0
+
+    implicitWidth: Math.max(background ? background.implicitWidth : 0,
+                            contentItem.implicitWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(background ? background.implicitHeight : 0,
+                             Math.max(contentItem.implicitHeight,
+                                      indicator ? indicator.implicitHeight : 0) + topPadding + bottomPadding)
+    baselineOffset: contentItem.y + contentItem.baselineOffset
+
+    font { family: "Lato"; pointSize: 11 }
+
+    padding: 4
+    leftPadding: padding + 2
+    rightPadding: leftPadding
+
+    hoverEnabled: true
+    opacity: enabled ? 1 : 0.3
+
+    delegate: ItemDelegate {
+        width: control.popup.width
+        padding: 4
+        leftPadding: padding + 2
+        rightPadding: leftPadding
+        text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
+        font {
+            family: control.font.family
+            pointSize: control.font.pointSize
+            weight: control.currentIndex === index ? Font.DemiBold : Font.Normal
+        }
+        highlighted: control.highlightedIndex == index
+
+        hoverEnabled: true
+        background: Rectangle {
+            color: hovered ? "#42ca89" : "#eae9e5"
+        }
+    }
+
+    indicator: Image {
+        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+        source: "image://default/drop-indicator/" + (control.visualFocus ? "#0066ff" : "#353637")
+        sourceSize { width: width; height: height }
+    }
+
+    contentItem: Text {
+        leftPadding: control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0
+        rightPadding: !control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0
+
+        text: control.displayText
+        font: control.font
+        color: control.visualFocus ? "#0066ff" : "#353637"
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+    }
+
     background: Rectangle {
-        color: control.visualFocus ? (control.pressed ? "#cce0ff" : "#f0f6ff") :
-            (control.pressed || popup.visible ? "#d0d0d0" : "#e0e0e0")
-        border.color: control.visualFocus ? "#0066ff" : Qt.darker(color)
-        border.width: control.visualFocus ? 2 : 1
+        color: control.popup.visible || hovered ? Qt.darker("#eae9e5", 1.05) : "#eae9e5"
+        border.color: "#777777"
+        border.width: 1
+    }
+
+    popup: T.Popup {
+        y: control.height - (control.visualFocus ? 0 : 1)
+        width: control.width
+        implicitHeight: contentItem.implicitHeight
+
+        contentItem: ListView {
+            id: listview
+            clip: true
+            implicitHeight: contentHeight
+            model: control.popup.visible ? control.delegateModel : null
+            currentIndex: control.highlightedIndex
+            highlightRangeMode: ListView.ApplyRange
+            highlightMoveDuration: 0
+
+            Rectangle {
+                z: 10
+                parent: listview
+                width: listview.width
+                height: listview.height
+                color: "transparent"
+                border.color: "#777777"
+            }
+
+            T.ScrollIndicator.vertical: ScrollIndicator { }
+        }
+
+        background: Rectangle { }
     }
 }
