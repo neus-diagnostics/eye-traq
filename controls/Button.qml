@@ -52,7 +52,6 @@ T.Button {
         pointSize: 11
     }
 
-    //! [contentItem]
     contentItem: Text {
         text: control.text
         font: control.font
@@ -62,9 +61,7 @@ T.Button {
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
-    //! [contentItem]
 
-    //! [background]
     background: Rectangle {
         opacity: enabled ? 1 : 0.8
         visible: !control.flat || control.down || control.checked || control.highlighted
@@ -77,5 +74,4 @@ T.Button {
         border.width: control.visualFocus ? 2 : 1
         radius: parent.height * 0.05
     }
-    //! [background]
 }

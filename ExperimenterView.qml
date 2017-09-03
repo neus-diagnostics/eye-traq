@@ -23,8 +23,8 @@ Rectangle {
         width: main.width * 0.3
 
         ColumnLayout {
-            anchors { top: parent.top; left: parent.left; right: parent.right; bottom: status.top; margins: spacing*2 }
-            spacing: parent.width * 0.06
+            anchors { top: parent.top; left: parent.left; right: parent.right; bottom: status.top; margins: spacing }
+            spacing: 20
 
             // participant info & calibration
             Column {
