@@ -4,6 +4,8 @@ CONFIG += c++11
 
 #QMAKE_CXXFLAGS += -g -ggdb
 
+DEFINES += GIT_VERSION="\\\"$(shell git -C \""$$_PRO_FILE_PWD_"\" rev-parse --short HEAD)\\\""
+
 SOURCES += \
 	eyetracker.cpp \
 	main.cpp \

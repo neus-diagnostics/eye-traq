@@ -27,7 +27,9 @@ try {
 	QApplication app{argc, argv};
 	app.setOrganizationName("Neus");
 	app.setOrganizationDomain("neus-diagnostics.com");
+
 	const QString path = app.applicationDirPath();
+	const QString version{GIT_VERSION}; // export define for QML
 
 	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||
 	    QFontDatabase::addApplicationFont(":/resources/lato-bold.ttf") == -1)
@@ -54,6 +56,7 @@ try {
 	// set up the window
 	QQuickView view;
 	view.rootContext()->setContextProperty("path", path);
+	view.rootContext()->setContextProperty("version", version);
 	view.rootContext()->setContextProperty("firstScreen", first_screen);
 	view.rootContext()->setContextProperty("secondScreen", second_screen);
 	view.rootContext()->setContextProperty("eyetracker", eyetracker.get());
