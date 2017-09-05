@@ -2,6 +2,8 @@
 #include <memory>
 
 #include <QApplication>
+#include <QDateTime>
+#include <QFile>
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QObject>
@@ -9,6 +11,7 @@
 #include <QQuickView>
 #include <QScreen>
 #include <QTextCodec>
+#include <QTextStream>
 #include <QtDebug>
 
 #include "eyetracker.h"
@@ -19,8 +22,25 @@
 #include "eyetracker-tobii.h"
 #endif
 
+#include <iostream>
+
+// log messages to a file
+static void logger(QtMsgType, const QMessageLogContext&, const QString &msg)
+{
+	static QFile file{"neus.log"};
+	static QTextStream stream{&file};
+
+	if (!file.isOpen() && !file.open(QIODevice::Append | QIODevice::Text))
+		return;
+
+	stream << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss") << " " << msg << "\n";
+}
+
 int main(int argc, char *argv[])
 try {
+	qInstallMessageHandler(logger);
+	qInfo() << "Program start";
+
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 

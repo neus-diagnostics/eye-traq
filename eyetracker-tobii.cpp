@@ -223,6 +223,7 @@ void EyetrackerTobiiHelper::try_connect()
 			const QString name{serial};
 			tobii_research_free_string(serial);
 
+			qInfo() << "Connected to eyetracker" << name;
 			emit connected(tracker, name);
 		}
 	} else {
