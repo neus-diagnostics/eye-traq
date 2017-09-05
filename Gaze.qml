@@ -5,11 +5,13 @@ import QtQuick 2.7
 Item {
     id: screen
 
+    // how long to show each gaze point (in ms)
+    property var duration: 500
+
     function run(p) {
-        // create a point and destroy it after 500 ms
         var x = Number(p.x) * width
         var y = Number(p.y) * height
-        point.createObject(screen, {"x": x, "y": y}).destroy(500)
+        point.createObject(screen, {"x": x, "y": y}).destroy(duration)
     }
 
     anchors.fill: parent
@@ -28,7 +30,7 @@ Item {
 
             NumberAnimation on scale {
                 id: anim
-                duration: 500
+                duration: duration
                 from: 1.0
                 to: 0.0
                 easing.type: Easing.InCubic
