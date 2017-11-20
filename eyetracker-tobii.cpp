@@ -223,12 +223,13 @@ void EyetrackerTobiiHelper::try_connect()
 			const QString name{serial};
 			tobii_research_free_string(serial);
 
-			qInfo() << "Connected to eyetracker" << name;
+			qInfo() << "Connected to eyetracker" << name << "at" << address;
 			emit connected(tracker, name);
 		}
 	} else {
 		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &tracker);
 		if (status != TOBII_RESEARCH_STATUS_OK) {
+			qInfo() << "Disconnected from eyetracker at" << address;
 			address.clear();
 			emit connected(nullptr, "");
 		}
