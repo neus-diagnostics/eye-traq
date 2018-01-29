@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QQmlEngine>
 #include <QObject>
 #include <QQuickItem>
 #include <QQuickView>
@@ -15,7 +16,6 @@
 #include <QtDebug>
 
 #include "eyetracker.h"
-#include "player.h"
 #include "recorder.h"
 
 #ifdef USE_TOBII

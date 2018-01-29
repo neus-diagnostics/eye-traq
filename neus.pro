@@ -9,12 +9,10 @@ DEFINES += GIT_VERSION="\\\"$(shell git -C \""$$_PRO_FILE_PWD_"\" rev-parse --sh
 SOURCES += \
 	eyetracker.cpp \
 	main.cpp \
-	player.cpp \
 	recorder.cpp
 
 HEADERS += \
 	eyetracker.h \
-	player.h \
 	recorder.h
 
 RESOURCES += neus.qrc
