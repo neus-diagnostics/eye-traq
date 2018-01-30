@@ -14,6 +14,14 @@ Rectangle {
 
     signal minimize
 
+    // record info about the hardware and software used in the test
+    function write_test_header() {
+        recorder.write("# program version: " + version)
+        recorder.write("# eyetracker: " + eyetracker.name)
+        recorder.write("# screen size: " + secondScreen.physicalSize.width + " " + secondScreen.physicalSize.height)
+        recorder.write("# screen resolution: " + secondScreen.size.width + " " + secondScreen.size.height)
+    }
+
     Rectangle {
         id: left
         color: "#d6d3cc"
@@ -89,8 +97,7 @@ Rectangle {
                         if (eyetracker.calibrate("compute")) {
                             var samples = eyetracker.get_calibration()
                             recorder.start("calibrate-" + settings.language, participant)
-                            recorder.write("# program version: " + version)
-                            recorder.write("# eyetracker: " + eyetracker.name)
+                            write_test_header()
                             recorder.write("# eye\tvalid\tpoint_x\tpoint_y\tgaze_x\tgaze_y")
                             for (var i = 0; i < samples.length; i++)
                                 recorder.write(
@@ -177,8 +184,7 @@ Rectangle {
                             var testFile = path + "/share/tests/" + testName
                             test.state = "running"
                             recorder.start(testName, participant)
-                            recorder.write("# program version: " + version)
-                            recorder.write("# eyetracker: " + eyetracker.name)
+                            write_test_header()
                             recorder.write(
                                 "# time\tevent\t" +
                                 "eye\tpupil_valid\tpupil_diameter\t" +
