@@ -6,6 +6,7 @@ Item {
 
     // allow overriding methods
     property var run: _run
+    property var set: _set
     property var abort: _abort
     property var pause: _pause
     property var unpause: _unpause
@@ -16,6 +17,9 @@ Item {
         // time can be a string when reading test from a file
         timer.interval = Number(time)
         timer.start()
+    }
+
+    function _set() {
     }
 
     function _abort() {

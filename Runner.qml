@@ -76,7 +76,7 @@ Rectangle {
         }
     }
 
-    // run a task {name: …, args: …, duration: …}
+    // run a task {name: "…", args: […], duration: …}
     function run(task) {
         var index = tasks.index.indexOf(task.name)
         if (index !== -1) {
@@ -87,6 +87,19 @@ Rectangle {
             tasks.children[index].run(task.duration, args[0], args[1], args[2], args[3])
         } else {
             step() // ignore anything we don’t understand
+        }
+    }
+
+    // set runner to a recorded state {name: "…", args: […]}
+    // used for playing recorded tests
+    function set(task) {
+        var index = tasks.index.indexOf(task.name)
+        if (index !== -1) {
+            // call task’s run with maximum number of arguments for any task,
+            // undefined arguments are ignored
+            var args = task.args
+            tasks.currentIndex = index
+            tasks.children[index].set(args[0], args[1], args[2], args[3])
         }
     }
 

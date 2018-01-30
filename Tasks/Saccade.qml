@@ -17,15 +17,9 @@ Task {
         delay = Number(delay)
         offset = Number(offset)
 
-        if (dir == 'x') {
-            var relative_offset = 10*offset/secondScreen.physicalSize.width
-            target.x = (0.5 + relative_offset) * screen.width - target.width / 2
-            target.y = (screen.height - target.height) / 2
-        } else {
-            var relative_offset = 10*offset/secondScreen.physicalSize.height
-            target.x = (screen.width - target.width) / 2
-            target.y = (0.5 + relative_offset) * screen.height - target.height / 2
-        }
+        var relative_offset = 10*offset /
+            (dir == 'x' ? secondScreen.physicalSize.width : secondScreen.physicalSize.height)
+        set(dir, relative_offset, false, false)
 
         this.type = type
         this.delay = delay
@@ -33,6 +27,18 @@ Task {
 
         next = 0
         run_step()
+    }
+
+    function set(dir, relative_offset, fixation_visible, target_visible) {
+        if (dir == 'x') {
+            target.x = (0.5 + relative_offset) * screen.width - target.width / 2
+            target.y = (screen.height - target.height) / 2
+        } else {
+            target.x = (screen.width - target.width) / 2
+            target.y = (0.5 + relative_offset) * screen.height - target.height / 2
+        }
+        fixation.visible = fixation_visible
+        target.visible = target_visible
     }
 
     function run_step() {

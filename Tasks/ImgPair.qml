@@ -16,6 +16,12 @@ Task {
         _run(time)
     }
 
+    function set(leftfile, rightfile) {
+        left.source = "file:///" + path + "/share/images/" + leftfile
+        right.source = "file:///" + path + "/share/images/" + rightfile
+        opacity = 1
+    }
+
     function abort() {
         anim.stop()
         _abort()

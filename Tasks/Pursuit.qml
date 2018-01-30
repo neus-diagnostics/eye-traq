@@ -22,13 +22,16 @@ Task {
             left.to = screen.height * (0.5-relative_offset) - stimulus.height/2
             init.to = right.to = screen.height * (0.5+relative_offset) - stimulus.height/2
         }
-
-        stimulus.x = screen.width/2 - stimulus.width/2
-        stimulus.y = screen.height/2 - stimulus.height/2
-        stimulus.visible = true
+        set(0.5, 0.5)
 
         anim.start()
         _run(time)
+    }
+
+    function set(x, y) {
+        stimulus.x = screen.width*x - stimulus.width/2
+        stimulus.y = screen.height*y - stimulus.height/2
+        stimulus.visible = true
     }
 
     function abort() {

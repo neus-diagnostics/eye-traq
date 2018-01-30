@@ -6,13 +6,17 @@ import "../controls" as Neus
 
 Task {
     function run(time, soundfile, align, text) {
-        message.horizontalAlignment = (align == "left" ? Text.AlignLeft : Text.AlignHCenter)
-        message.text = text || ""
+        set(align, text)
         if (soundfile) {
             audio.source = "file:///" + path + "/share/sounds/" + soundfile
             audio.play()
         }
         _run(time)
+    }
+
+    function set(align, text) {
+        message.horizontalAlignment = (align == "left" ? Text.AlignLeft : Text.AlignHCenter)
+        message.text = text || ""
     }
 
     function abort() {
