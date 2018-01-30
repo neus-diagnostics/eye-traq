@@ -76,36 +76,17 @@ Rectangle {
         }
     }
 
+    // run a task {name: …, args: …, duration: …}
     function run(task) {
-        var args = task.args
-        switch (task.name) {
-            case "blank":
-                tasks.currentIndex = 0
-                blank.run(task.duration)
-                break;
-            case "imgpair":
-                tasks.currentIndex = 1
-                imgpair.run(task.duration, args[0], args[1])
-                break;
-            case "pursuit":
-                tasks.currentIndex = 2
-                pursuit.run(task.duration, args[0], args[1], args[2])
-                break;
-            case "saccade":
-                tasks.currentIndex = 3
-                saccade.run(task.duration, args[0], args[1], args[2], args[3])
-                break;
-            case "message":
-                tasks.currentIndex = 4
-                message.run(task.duration, args[0], args[1], args[2])
-                break;
-            case "calibrator":
-                tasks.currentIndex = 5
-                calibrator.run(task.duration, args[0], args[1], args[2])
-                break;
-            default:
-                step()  // ignore anything we don’t understand
-                break
+        var index = tasks.index.indexOf(task.name)
+        if (index !== -1) {
+            // call task’s run with maximum number of arguments for any task,
+            // undefined arguments are ignored
+            var args = task.args
+            tasks.currentIndex = index
+            tasks.children[index].run(task.duration, args[0], args[1], args[2], args[3])
+        } else {
+            step() // ignore anything we don’t understand
         }
     }
 
@@ -133,33 +114,32 @@ Rectangle {
         StackLayout {
             id: tasks
 
+            // keep in sync with actual children below!
+            property var index: [
+                'blank', 'imgpair', 'pursuit', 'saccade', 'message', 'calibrator',
+            ]
+
             anchors.fill: parent
             focus: true
 
             Blank {
-                id: blank
                 onDone: step()
             }
             ImgPair {
-                id: imgpair
                 onDone: step()
             }
             Pursuit {
-                id: pursuit
                 onDone: step()
                 onInfo: main.info(text)
             }
             Saccade {
-                id: saccade
                 onDone: step()
                 onInfo: main.info(text)
             }
             Message {
-                id: message
                 onDone: step()
             }
             Calibrator {
-                id: calibrator
                 onDone: step()
             }
         }
