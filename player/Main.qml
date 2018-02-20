@@ -349,7 +349,6 @@ ApplicationWindow {
     FileDialog {
         id: fileDialog
         title: "Select a test file"
-        folder: shortcuts.home
         onAccepted: loadTest(fileDialog.fileUrl)
     }
 }
