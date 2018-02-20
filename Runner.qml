@@ -82,7 +82,7 @@ Rectangle {
         if (index !== -1) {
             // call task’s run with maximum number of arguments for any task,
             // undefined arguments are ignored
-            var args = task.args
+            var args = task.args || []
             tasks.currentIndex = index
             tasks.children[index].run(task.duration, args[0], args[1], args[2], args[3])
         } else {
@@ -97,7 +97,7 @@ Rectangle {
         if (index !== -1) {
             // call task’s run with maximum number of arguments for any task,
             // undefined arguments are ignored
-            var args = task.args
+            var args = task.args || []
             tasks.currentIndex = index
             tasks.children[index].set(args[0], args[1], args[2], args[3])
         }
