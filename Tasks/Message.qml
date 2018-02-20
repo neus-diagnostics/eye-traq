@@ -42,7 +42,7 @@ Task {
         width: parent.width * 0.66
         wrapMode: Text.WordWrap
         color: 'white'
-        font.pointSize: 32
+        font.pixelSize: 43 * parent.height / 1080
         lineHeight: 1.2
         textFormat: Text.StyledText
     }
