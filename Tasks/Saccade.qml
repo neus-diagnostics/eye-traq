@@ -70,13 +70,12 @@ Task {
         }
         _run({'duration': time})
 
-        info(eyetracker.time() + '\ttest\tdata\t' +
-             JSON.stringify({
-                 'x': target.normalX,
-                 'y': target.normalY,
-                 'fixation': fixation.visible,
-                 'target': target.visible
-             }))
+        info({
+            'x': target.normalX,
+            'y': target.normalY,
+            'fixation': fixation.visible,
+            'target': target.visible
+        })
         next++
     }
 

@@ -141,7 +141,7 @@ Rectangle {
                         target: item
                         enabled: main.enabled
                         onDone: step()
-                        onInfo: main.info(text)
+                        onInfo: main.info(eyetracker.time() + '\ttest\tdata\t' + JSON.stringify(data))
                     }
                 }
             }

@@ -37,14 +37,6 @@ Task {
         _abort()
     }
 
-    function infoMessage() {
-        info(eyetracker.time() + '\ttest\tdata\t' +
-             JSON.stringify({
-                 'x': stimulus.normalX,
-                 'y': stimulus.normalY
-             }))
-    }
-
     timer.onTriggered: {
         anim.stop()
         done()
@@ -64,8 +56,8 @@ Task {
         radius: width/2
         color: "white"
 
-        onNormalXChanged: infoMessage()
-        onNormalYChanged: infoMessage()
+        onNormalXChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
+        onNormalYChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
 
         SequentialAnimation {
             id: anim
