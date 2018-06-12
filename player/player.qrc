@@ -4,13 +4,6 @@
         <file>Main.qml</file>
         <file>../Runner.qml</file>
         <file>../Gaze.qml</file>
-        <file>../Tasks/Task.qml</file>
-        <file>../Tasks/Blank.qml</file>
-        <file>../Tasks/Calibrator.qml</file>
-        <file>../Tasks/Imgpair.qml</file>
-        <file>../Tasks/Pursuit.qml</file>
-        <file>../Tasks/Saccade.qml</file>
-        <file>../Tasks/Message.qml</file>
         <file>../controls/Label.qml</file>
         <file>../resources/neus.svg</file>
         <file>../resources/neus-gray.svg</file>

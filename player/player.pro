@@ -13,4 +13,4 @@ SOURCES += \
 HEADERS += \
 	fileio.h
 
-RESOURCES += player.qrc
+RESOURCES += player.qrc ../tasks.qrc
