@@ -24,6 +24,7 @@ try {
 	QQmlApplicationEngine engine{"qrc:/Main.qml"};
 	engine.rootContext()->setContextProperty("fileIO", &fileIO);
 	engine.rootContext()->setContextProperty("path", path);
+	engine.rootContext()->setContextProperty("eyetracker", nullptr);
 
 	return app.exec();
 
