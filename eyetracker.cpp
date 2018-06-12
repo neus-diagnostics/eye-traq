@@ -28,7 +28,7 @@ QVariantList Eyetracker::get_calibration()
 
 qint64 Eyetracker::time()
 {
-	return QDateTime::currentMSecsSinceEpoch();
+	return QDateTime::currentMSecsSinceEpoch() * 1000;
 }
 
 bool Eyetracker::connected() const
