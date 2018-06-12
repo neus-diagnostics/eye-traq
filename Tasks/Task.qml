@@ -13,13 +13,12 @@ Item {
     property alias timer: timer
     property alias running: timer.running
 
-    function _run(time) {
-        // time can be a string when reading test from a file
-        timer.interval = Number(time)
+    function _run(task) {
+        timer.interval = task.duration
         timer.start()
     }
 
-    function _set() {
+    function _set(state) {
     }
 
     function _abort() {

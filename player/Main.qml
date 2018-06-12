@@ -20,7 +20,7 @@ ApplicationWindow {
         testFile.text = path
         index = 0
         dataModel.clear()
-        runner.set({name: 'blank'})
+        runner.set({task: 'blank'})
 
         var testargs = undefined
         var data = []
@@ -66,65 +66,47 @@ ApplicationWindow {
                 var args = undefined
                 var info = undefined
                 if (fields[2] == 'step') {
-                    switch (fields[4]) {
-                    case 'blank':
-                        args = ['blank']
-                        break
+                    args = JSON.parse(fields[4])
+                    args['task'] = args['name']
+                    switch (args['task']) {
                     case 'imgpair':
-                        var left = fields[5]
-                        var right = fields[6]
-                        args = ['imgpair', left, right]
-                        info = 'imgpair [' + left + ', ' + right + ']'
+                        info = 'imgpair [' + args['left'] + ', ' + args['right'] + ']'
                         break
                     case "pursuit":
-                        testargs = ['pursuit']
-                        info = 'pursuit [' + (fields[5] == 'x' ? 'horizontal' : 'vertical') + ']'
+                        info = 'pursuit [' + (args['direction'] == 'x' ? 'horizontal' : 'vertical') + ']'
+                        testargs = args
                         break
                     case "saccade":
-                        var dir = fields[6]
-                        var offset = 10*fields[7] / Number((dir == 'x' ? physicalWidth : physicalHeight).text)
-                        // fixup old bad recordings
-                        if (fields.length <= 9)
-                            fields.push('pro')
-                        if (fields[9] == 'false')
-                            fields[9] = 'anti'
-                        if (fields[8] == 'false')
-                            fields[8] = 'step'
-                        testargs = ['saccade', dir, offset]
-                        info = fields[9] + '-saccade [' + (dir == 'x' ? 'horizontal' : 'vertical') + ', ' + fields[8] + ']'
+                        info = args['where'] + '-saccade [' + (args['direction'] == 'x' ? 'horizontal' : 'vertical') + ', ' + args['type'] + ']'
+                        testargs = args
                         break
                     case "message":
-                        var align = fields[6]
-                        var text = fields[7]
-                        args = ['message', align, text]
-                        info = fields.length < 7 ? 'alert' : ('message: ' + text)
+                        info = args['text'] ? ('message: ' + args['text']) : 'alert'
                         break
                     }
                 } else if (fields[2] == 'data') {
-                    switch (testargs[0]) {
-                    case "pursuit":
-                        args = testargs.concat([Number(fields[3]), Number(fields[4])])
-                        break
-                    case "saccade":
-                        args = testargs.concat([fields[3] == 'true', fields[4] == 'true'])
-                        break
-                    }
-                } else {
-                    // test start / done / …
-                    args = ['blank']
+                    var state = JSON.parse(fields[3])
+                    args = {}
+                    for (var k in testargs)
+                        args[k] = testargs[k]
+                    for (var k in state)
+                        args[k] = state[k]
+                } else if (fields[2] == 'started' || fields[2] == 'done') {
+                    args = {'task': 'blank'}
                 }
 
                 // TODO sorted insert (by timestamp)
                 if (args !== undefined)
-                    data.push({time: time, type: 'test', args: JSON.stringify(args),})
+                    data.push({time: time, type: 'test', state: args, id: data.length})
                 if (info !== undefined)
-                    data.push({time: time-1, type: 'info', info: info})
+                    data.push({time: time-1, type: 'info', info: info, id: data.length})
             }
         }
 
-        // update model
+        // stable sort & update timestamps
         data.unshift({time: data[0].time, type: 'info', info: 'test start'})
-        data.sort(function (a, b) { return a.time - b.time })
+        data.sort(function (a, b) { return a.time - b.time || a.id - b.id; })
+
         var start = data[0].time
         for (var i = 0; i < data.length; i++) {
             data[i].time = (data[i].time - start) / 1000000
@@ -146,8 +128,7 @@ ApplicationWindow {
             if (item.type == 'gaze') {
                 gazeOverlay.run(Qt.point(item.x, item.y))
             } else if (item.type == 'test') {
-                var args = JSON.parse(item.args)
-                runner.set({'name': args[0], 'args': args.slice(1)})
+                runner.set(item.state)
             }
             index++
             if (index == dataModel.count)

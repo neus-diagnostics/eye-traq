@@ -1,0 +1,13 @@
+[
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 7560, "audio": "hr/calibrate.oga", "text": "Na zaslonu će se pojaviti bijela točka.<br>Molimo vas da je što preciznije slijedite bez pomicanja glave."},
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 500, "audio": "alert.oga"},
+    {"name": "calibrator", "duration": 2000, "action": "start", "x": 0.5, "y": 0.5},
+    {"name": "calibrator", "duration": 2087, "action": "add", "x": 0.1, "y": 0.1},
+    {"name": "calibrator", "duration": 4343, "action": "add", "x": 0.9, "y": 0.1},
+    {"name": "calibrator", "duration": 3587, "action": "add", "x": 0.5, "y": 0.5},
+    {"name": "calibrator", "duration": 3587, "action": "add", "x": 0.9, "y": 0.9},
+    {"name": "calibrator", "duration": 4343, "action": "add", "x": 0.1, "y": 0.9},
+    {"name": "calibrator", "duration": 1000, "action": "end", "x": 0.1, "y": 0.9}
+]

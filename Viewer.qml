@@ -149,7 +149,9 @@ Item {
                         width: parent.width * 0.15
                     }
                     Neus.Label {
-                        text: modelData.args.join(", ")
+                        text: JSON.stringify(modelData, function (key, value) {
+                            return key === 'name' || key === 'start' ? undefined : value
+                        })
                         width: parent.width * 0.75
                         maximumLineCount: 1
                         elide: Text.ElideRight

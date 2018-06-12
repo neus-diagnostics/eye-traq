@@ -5,18 +5,20 @@ import QtMultimedia 5.6
 import "../controls" as Neus
 
 Task {
-    function run(time, soundfile, align, text) {
-        set(align, text)
-        if (soundfile) {
-            audio.source = "file:///" + path + "/share/sounds/" + soundfile
+    // task arguments: audio (file name), text, align
+    function run(task) {
+        set(task)
+        if (task.audio) {
+            audio.source = "file:///" + path + "/share/sounds/" + task.audio
             audio.play()
         }
-        _run(time)
+        _run(task)
     }
 
-    function set(align, text) {
-        message.horizontalAlignment = (align == "left" ? Text.AlignLeft : Text.AlignHCenter)
-        message.text = text || ""
+    // state data: text, align
+    function set(state) {
+        message.horizontalAlignment = (state.align == "left" ? Text.AlignLeft : Text.AlignHCenter)
+        message.text = state.text || ""
     }
 
     function abort() {

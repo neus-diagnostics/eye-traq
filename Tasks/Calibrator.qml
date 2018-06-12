@@ -5,25 +5,22 @@ Task {
 
     property var point: null
 
-    function run(time, step, x, y) {
-        time = Number(time)
-        x = Number(x)
-        y = Number(y)
-
-        var screen_x = width*x
-        var screen_y = height*y
+    // task arguments: action (start/add/end), x (relative), y (relative)
+    function run(task) {
+        var screen_x = width*task.x
+        var screen_y = height*task.y
         var dist_x = screen_x-stimulus.x
         var dist_y = screen_y-stimulus.y
 
         var target_x = screen_x - stimulus.width/2
         var target_y = screen_y - stimulus.height/2
 
-        if (step == "start") {
+        if (task.action == "start") {
             stimulus.x = target_x
             stimulus.y = target_y
             stimulus.scale = 1.0
             point = null
-        } else if (step == "end") {
+        } else if (task.action == "end") {
             // wait some time for the final calibrate call to finish
             point = null
         } else {
@@ -31,11 +28,11 @@ Task {
             moveY.to = target_y
             pause.duration = (stimulus.scale < 1.0 ? 1000 : 0)
             grow.duration = (stimulus.scale < 1.0 ? 500 : 0)
-            moveX.duration = time - (pause.duration + grow.duration + shrink.duration)
-            point = Qt.point(x, y)
+            moveX.duration = task.duration - (pause.duration + grow.duration + shrink.duration)
+            point = Qt.point(task.x, task.y)
             anim.start()
         }
-        _run(time)
+        _run(task)
     }
 
     function abort() {

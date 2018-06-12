@@ -1,8 +1,11 @@
 #include "recorder.h"
 
 #include <QDateTime>
-#include <QFileInfo>
-#include <QRegularExpression>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QVariantList>
 #include <QVariantMap>
 #include <QtDebug>
 
@@ -23,26 +26,26 @@ QVariantList Recorder::loadTest(const QString &testpath)
 		qWarning() << "could not open test:" << testpath;
 		return {};
 	}
-	QString testdata = QTextStream{&file}.readAll();
+
+	QJsonParseError e;
+	auto testdata = QJsonDocument::fromJson(file.readAll(), &e);
+	if (e.error != QJsonParseError::NoError) {
+		qWarning() << "could not load test:" << e.errorString() << e.offset;
+		return {};
+	}
+
+	// test data is either a list of tasks or an object containing a list of tasks
+	const auto &taskdata = testdata.isArray() ?
+		testdata.array() :
+		testdata.object().value("tasks").toArray();
 
 	QVariantList tasks;
-	int i = 0;
-	int total_time = 0;
-	// remove empty lines and comments
-	for (const auto &line : testdata.split('\n').filter(QRegularExpression("^[^#]"))) {
-		const auto &tokens = line.split('\t');
-		const auto &name = tokens[0];
-		const auto &args = QStringList{tokens.mid(1)};
-		const int time = args.isEmpty() ? 0.0f : args[0].toFloat();
-
-		tasks.push_back(QVariantMap{
-			{"name", name},
-			{"args", QStringList{args.mid(1)}},
-			{"index", i++},
-			{"start", total_time},
-			{"duration", time}
-		});
-		total_time += time;
+	int time = 0;
+	for (int i = 0; i < taskdata.size(); i++) {
+		QVariantMap task = taskdata[i].toObject().toVariantMap();
+		task["start"] = time;
+		time += task["duration"].toInt();
+		tasks.append(task);
 	}
 	return tasks;
 }

@@ -126,7 +126,7 @@ Rectangle {
                         onClicked: {
                             calibrate.state = "running"
                             eyetracker.calibrate("start")
-                            runner.start(path + "/share/tests/calibrate-" + settings.language)
+                            runner.start(path + "/share/tests/calibrate-" + settings.language + '.json')
                         }
                     }
                     states: [
@@ -181,7 +181,7 @@ Rectangle {
 
                         onClicked: {
                             var testName = modelData.test + "-" + settings.language
-                            var testFile = path + "/share/tests/" + testName
+                            var testFile = path + "/share/tests/" + testName + '.json'
                             test.state = "running"
                             recorder.start(testName, participant)
                             write_test_header()

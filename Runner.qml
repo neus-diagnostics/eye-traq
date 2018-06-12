@@ -29,9 +29,11 @@ Rectangle {
 
     function step() {
         if (next < test.length) {
-            info(eyetracker.time() + '\ttest\tstep\t' + next + '\t' +
-                 test[next].name + '\t' + test[next].args.join('\t'))
             var task = test[next]
+            info(eyetracker.time() + '\ttest\tstep\t' + next + '\t' +
+                 JSON.stringify(task, function (key, value) {
+                     return key === 'start' ? undefined : value
+                 }))
             next++
             run(task)
         } else {
@@ -76,30 +78,24 @@ Rectangle {
         }
     }
 
-    // run a task {name: "…", args: […], duration: …}
+    // run a task {name: "…", duration: …, args…}
     function run(task) {
         var index = tasks.index.indexOf(task.name)
         if (index !== -1) {
-            // call task’s run with maximum number of arguments for any task,
-            // undefined arguments are ignored
-            var args = task.args || []
             tasks.currentIndex = index
-            tasks.children[index].run(task.duration, args[0], args[1], args[2], args[3])
+            tasks.children[index].run(task)
         } else {
             step() // ignore anything we don’t understand
         }
     }
 
-    // set runner to a recorded state {name: "…", args: […]}
+    // set runner to a recorded state {task: "…", args: […]}
     // used for playing recorded tests
-    function set(task) {
-        var index = tasks.index.indexOf(task.name)
+    function set(state) {
+        var index = tasks.index.indexOf(state.task)
         if (index !== -1) {
-            // call task’s run with maximum number of arguments for any task,
-            // undefined arguments are ignored
-            var args = task.args || []
             tasks.currentIndex = index
-            tasks.children[index].set(args[0], args[1], args[2], args[3])
+            tasks.children[index].set(state)
         }
     }
 

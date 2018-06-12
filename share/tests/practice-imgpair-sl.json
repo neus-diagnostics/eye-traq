@@ -1,0 +1,7 @@
+[
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 11640, "audio": "sl/imgpair.oga", "align": "center", "text": "Med testiranjem se bodo na zaslonu med posameznimi sklopi prikazovali pari slik.<br>Prosim, opazujte jih povsem naravno brez premikanja glave."},
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 500, "audio": "alert.oga"},
+    {"name": "imgpair", "duration": 5000, "left": "cat.svg", "right": "owl.svg"}
+]

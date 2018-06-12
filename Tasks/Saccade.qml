@@ -8,37 +8,34 @@ Task {
     property var total_time: 0
     property var next: 0
 
+    // task arguments:
     // delay: show the initial fixation for this long [ms]
-    // dir: x/y for horizontal/vertical saccade
+    // direction: x/y for horizontal/vertical saccade
     // offset: target displacement from fixation [cm]
     // type: step/gap/overlap
-    function run(time, delay, dir, offset, type) {
-        time = Number(time)
-        delay = Number(delay)
-        offset = Number(offset)
+    function run(task) {
+        type = task.type
+        delay = task.delay
+        total_time = task.duration
 
-        var relative_offset = 10*offset /
-            (dir == 'x' ? secondScreen.physicalSize.width : secondScreen.physicalSize.height)
-        set(dir, relative_offset, false, false)
+        if (task.direction == 'x')
+            task.x = 0.5 + 10*task.offset / secondScreen.physicalSize.width
+        else
+            task.y = 0.5 + 10*task.offset / secondScreen.physicalSize.height
 
-        this.type = type
-        this.delay = delay
-        this.total_time = time
-
+        set(task)
         next = 0
         run_step()
     }
 
-    function set(dir, relative_offset, fixation_visible, target_visible) {
-        if (dir == 'x') {
-            target.x = (0.5 + relative_offset) * screen.width - target.width / 2
-            target.y = (screen.height - target.height) / 2
-        } else {
-            target.x = (screen.width - target.width) / 2
-            target.y = (0.5 + relative_offset) * screen.height - target.height / 2
-        }
-        fixation.visible = fixation_visible
-        target.visible = target_visible
+    // state data: direction, relative_offset
+    // fixation: show fixation cross?
+    // target: show target disc?
+    function set(state) {
+        target.normalX = state.x || 0.5
+        target.normalY = state.y || 0.5
+        fixation.visible = state.fixation || false
+        target.visible = state.target || false
     }
 
     function run_step() {
@@ -55,7 +52,7 @@ Task {
                     time = 200
                     break
                 } else {
-                    next++  // fall through if no gap
+                    next++  // fall through – skip this step if there is no gap
                 }
             case 2:
                 fixation.visible = type == "overlap"
@@ -71,9 +68,15 @@ Task {
                 done()
                 return
         }
-        _run(time)
+        _run({'duration': time})
 
-        info(eyetracker.time() + '\ttest\tdata\t' + fixation.visible + '\t' + target.visible)
+        info(eyetracker.time() + '\ttest\tdata\t' +
+             JSON.stringify({
+                 'x': target.normalX,
+                 'y': target.normalY,
+                 'fixation': fixation.visible,
+                 'target': target.visible
+             }))
         next++
     }
 
@@ -105,6 +108,13 @@ Task {
 
     Rectangle {
         id: target
+
+        property real normalX: 0.5
+        property real normalY: 0.5
+
+        x: normalX * parent.width - width/2
+        y: normalY * parent.height - height/2
+
         width: 30
         height: 30
         radius: width / 2

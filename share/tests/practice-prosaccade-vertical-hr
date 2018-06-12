@@ -1,5 +1,0 @@
-blank	1000
-message	12680	hr/pst-y.oga	center	Molimo gledajte u križ na sredini zaslona.<br>Kada se negdje gore ili dolje na zaslonu pojavi bijela točka, pogledajte je što je brže moguće.<br>Kada točka nestane, usmjerite pogled natrag u sredinu zaslona.
-blank	1000
-message	500	alert.oga
-saccade	8000	3000	y	6.8	step	pro

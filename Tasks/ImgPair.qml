@@ -5,20 +5,21 @@ Task {
 
     property var fade: 150
 
-    function run(time, leftfile, rightfile) {
-        left.source = "file:///" + path + "/share/images/" + leftfile
-        right.source = "file:///" + path + "/share/images/" + rightfile
+    // task arguments: left (image name), right (image name)
+    function run(task) {
+        left.source = "file:///" + path + "/share/images/" + task.left
+        right.source = "file:///" + path + "/share/images/" + task.right
 
-        time = Number(time)
-        pause.duration = time - 2*fade
+        pause.duration = task.duration - 2*fade
         opacity = 0
         anim.restart()
-        _run(time)
+        _run(task)
     }
 
-    function set(leftfile, rightfile) {
-        left.source = "file:///" + path + "/share/images/" + leftfile
-        right.source = "file:///" + path + "/share/images/" + rightfile
+    // state data: left, right
+    function set(state) {
+        left.source = "file:///" + path + "/share/images/" + state.left
+        right.source = "file:///" + path + "/share/images/" + state.right
         opacity = 1
     }
 

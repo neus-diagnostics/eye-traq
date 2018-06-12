@@ -1,0 +1,7 @@
+[
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 16880, "audio": "sl/pst-x.oga", "align": "center", "text": "Prosim, glejte v križec na sredini zaslona.<br>Ko opazite, da se je nekje na zaslonu prikazala bela točka,<br>jo čim hitreje poglejte.<br>Ko točka izgine, pogled usmerite nazaj v sredino zaslona."},
+    {"name": "blank", "duration": 1000},
+    {"name": "message", "duration": 500, "audio": "alert.oga"},
+    {"name": "saccade", "duration": 8000, "delay": 3000, "direction": "x", "offset": 13.8, "type": "step", "where": "pro"}
+]
