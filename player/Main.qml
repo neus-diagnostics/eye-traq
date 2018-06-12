@@ -22,7 +22,7 @@ ApplicationWindow {
         dataModel.clear()
         runner.set({task: 'blank'})
 
-        var testargs = undefined
+        var task = undefined
         var data = []
 
         var lines = fileIO.read(path).replace(/\r/g, '').split('\n')
@@ -62,42 +62,44 @@ ApplicationWindow {
                     x: Number(fields[6]),
                     y: Number(fields[7]),
                 })
+
             } else if (fields[1] == 'test') {
-                var args = undefined
+                var state = undefined
                 var info = undefined
+
                 if (fields[2] == 'step') {
-                    args = JSON.parse(fields[4])
-                    args['task'] = args['name']
-                    switch (args['task']) {
+                    state = JSON.parse(fields[4])
+                    state['task'] = state['name']
+                    switch (state['task']) {
                     case 'imgpair':
-                        info = 'imgpair [' + args['left'] + ', ' + args['right'] + ']'
+                        info = 'imgpair [' + state['left'] + ', ' + state['right'] + ']'
                         break
                     case "pursuit":
-                        info = 'pursuit [' + (args['direction'] == 'x' ? 'horizontal' : 'vertical') + ']'
-                        testargs = args
+                        info = 'pursuit [' + (state['direction'] == 'x' ? 'horizontal' : 'vertical') + ']'
                         break
                     case "saccade":
-                        info = args['where'] + '-saccade [' + (args['direction'] == 'x' ? 'horizontal' : 'vertical') + ', ' + args['type'] + ']'
-                        testargs = args
+                        info = state['where'] + '-saccade [' + (state['direction'] == 'x' ? 'horizontal' : 'vertical') + ', ' + state['type'] + ']'
                         break
                     case "message":
-                        info = args['text'] ? ('message: ' + args['text']) : 'alert'
+                        info = state['text'] ? ('message: ' + state['text']) : 'alert'
                         break
                     }
+                    task = state
+
                 } else if (fields[2] == 'data') {
-                    var state = JSON.parse(fields[3])
-                    args = {}
-                    for (var k in testargs)
-                        args[k] = testargs[k]
-                    for (var k in state)
-                        args[k] = state[k]
+                    var taskData = JSON.parse(fields[3])
+                    state = {}
+                    for (var k in task)
+                        state[k] = task[k]
+                    for (var k in taskData)
+                        state[k] = taskData[k]
                 } else if (fields[2] == 'started' || fields[2] == 'done') {
-                    args = {'task': 'blank'}
+                    state = {task: 'blank'}
                 }
 
                 // TODO sorted insert (by timestamp)
-                if (args !== undefined)
-                    data.push({time: time, type: 'test', state: args, id: data.length})
+                if (state !== undefined)
+                    data.push({time: time, type: 'test', state: state, id: data.length})
                 if (info !== undefined)
                     data.push({time: time-1, type: 'info', info: info, id: data.length})
             }
