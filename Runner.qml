@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.9
 import QtQuick.Layouts 1.3
 
 import "Tasks"
@@ -45,7 +45,7 @@ Rectangle {
 
     function back() {
         if (running && next > 0) {
-            tasks.children[tasks.currentIndex].abort()
+            tasks.selected.abort()
             var nsteps = 0
             while (next > 0 && (nsteps++ < 3 || test[next].name != "message"))
                 next--
@@ -57,7 +57,7 @@ Rectangle {
 
     function forward() {
         if (running && next < test.length) {
-            tasks.children[tasks.currentIndex].abort()
+            tasks.selected.abort()
             while (next < test.length && test[next].name != "message")
                 next++
             info(eyetracker.time() + '\ttest\tforward')
@@ -68,8 +68,7 @@ Rectangle {
 
     function stop() {
         if (running) {
-            tasks.children[tasks.currentIndex].abort()
-            tasks.currentIndex = 0
+            tasks.selected.abort()
             running = false
             paused = false
             test = []
@@ -80,31 +79,25 @@ Rectangle {
 
     // run a task {name: "…", duration: …, args…}
     function run(task) {
-        var index = tasks.index.indexOf(task.name)
-        if (index !== -1) {
-            tasks.currentIndex = index
-            tasks.children[index].run(task)
-        } else {
+        if (tasks.select(task.name))
+            tasks.selected.run(task)
+        else
             step() // ignore anything we don’t understand
-        }
     }
 
-    // set runner to a recorded state {task: "…", args: […]}
+    // set runner to a recorded state {task: "…", args…}
     // used for playing recorded tests
     function set(state) {
-        var index = tasks.index.indexOf(state.task)
-        if (index !== -1) {
-            tasks.currentIndex = index
-            tasks.children[index].set(state)
-        }
+        if (tasks.select(state.task))
+            tasks.selected.set(state)
     }
 
     color: "black"
 
     onPausedChanged: {
         if (!running)
-            return;
-        var task = tasks.children[tasks.currentIndex]
+            return
+        var task = tasks.children[tasks.currentIndex].item
         if (paused) {
             info(eyetracker.time() + '\ttest\tpaused')
             if (task.running)
@@ -123,33 +116,33 @@ Rectangle {
         StackLayout {
             id: tasks
 
-            // keep in sync with actual children below!
-            property var index: [
-                'blank', 'imgpair', 'pursuit', 'saccade', 'message', 'calibrator',
-            ]
+            property var selected: children[currentIndex].item
+
+            function select(name) {
+                var index = items.model.indexOf(name)
+                if (index !== -1) {
+                    currentIndex = index
+                    return selected
+                } else {
+                    console.log('unknown task:', name)
+                    return null
+                }
+            }
 
             anchors.fill: parent
             focus: true
 
-            Blank {
-                onDone: step()
-            }
-            ImgPair {
-                onDone: step()
-            }
-            Pursuit {
-                onDone: step()
-                onInfo: main.info(text)
-            }
-            Saccade {
-                onDone: step()
-                onInfo: main.info(text)
-            }
-            Message {
-                onDone: step()
-            }
-            Calibrator {
-                onDone: step()
+            Repeater {
+                id: items
+                model: ['blank', 'imgpair', 'message', 'pursuit', 'saccade', 'calibrator']
+                delegate: Loader {
+                    source: 'Tasks/' + modelData[0].toUpperCase() + modelData.substring(1) + '.qml'
+                    Connections {
+                        target: item
+                        onDone: step()
+                        onInfo: main.info(text)
+                    }
+                }
             }
         }
 

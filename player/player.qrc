@@ -7,7 +7,7 @@
         <file>../Tasks/Task.qml</file>
         <file>../Tasks/Blank.qml</file>
         <file>../Tasks/Calibrator.qml</file>
-        <file>../Tasks/ImgPair.qml</file>
+        <file>../Tasks/Imgpair.qml</file>
         <file>../Tasks/Pursuit.qml</file>
         <file>../Tasks/Saccade.qml</file>
         <file>../Tasks/Message.qml</file>
