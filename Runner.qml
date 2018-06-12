@@ -139,6 +139,7 @@ Rectangle {
                     source: 'Tasks/' + modelData[0].toUpperCase() + modelData.substring(1) + '.qml'
                     Connections {
                         target: item
+                        enabled: main.enabled
                         onDone: step()
                         onInfo: main.info(text)
                     }

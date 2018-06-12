@@ -229,6 +229,7 @@ ApplicationWindow {
             Layout.preferredHeight: width * 9/16
             clip: true
             running: true
+            enabled: false
 
             Gaze { id: gazeOverlay }
 
