@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
         <file>Main.qml</file>
+        <file>../Dot.qml</file>
         <file>../Runner.qml</file>
         <file>../Gaze.qml</file>
         <file>../controls/Label.qml</file>

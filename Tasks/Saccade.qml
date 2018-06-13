@@ -1,8 +1,8 @@
 import QtQuick 2.7
 
-Task {
-    id: screen
+import '..'
 
+Task {
     property var type: "step"
     property var delay: 0
     property var total_time: 0
@@ -105,18 +105,7 @@ Task {
         }
     }
 
-    Rectangle {
+    Dot {
         id: target
-
-        property real normalX: 0.5
-        property real normalY: 0.5
-
-        x: normalX * parent.width - width/2
-        y: normalY * parent.height - height/2
-
-        width: 30
-        height: 30
-        radius: width / 2
-        color: "white"
     }
 }

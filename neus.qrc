@@ -3,6 +3,7 @@
         <file>Main.qml</file>
         <file>ExperimenterView.qml</file>
         <file>About.qml</file>
+        <file>Dot.qml</file>
         <file>Runner.qml</file>
         <file>Gaze.qml</file>
         <file>Viewer.qml</file>

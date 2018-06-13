@@ -1,8 +1,8 @@
 import QtQuick 2.7
 
-Task {
-    id: screen
+import '..'
 
+Task {
     // task arguments
     // direction: x/y for horizontal/vertical saccade
     // offset: target displacement from fixation [cm]
@@ -42,19 +42,8 @@ Task {
         done()
     }
 
-    Rectangle {
+    Dot {
         id: stimulus
-
-        property real normalX: 0.5
-        property real normalY: 0.5
-
-        x: normalX * parent.width - width/2
-        y: normalY * parent.height - height/2
-
-        width: 30
-        height: 30
-        radius: width/2
-        color: "white"
 
         onNormalXChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
         onNormalYChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
