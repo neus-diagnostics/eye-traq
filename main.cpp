@@ -51,8 +51,8 @@ try {
 	const QString path = app.applicationDirPath();
 	const QString version{GIT_VERSION}; // export define for QML
 
-	if (QFontDatabase::addApplicationFont(":/resources/lato-regular.ttf") == -1 ||
-	    QFontDatabase::addApplicationFont(":/resources/lato-bold.ttf") == -1)
+	if (QFontDatabase::addApplicationFont(":/media/lato-regular.ttf") == -1 ||
+	    QFontDatabase::addApplicationFont(":/media/lato-bold.ttf") == -1)
 		qWarning() << "Could not load fonts.";
 
 	// find primary and secondary screen

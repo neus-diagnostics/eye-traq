@@ -6,7 +6,5 @@
         <file>../Runner.qml</file>
         <file>../Gaze.qml</file>
         <file>../controls/Label.qml</file>
-        <file>../resources/neus.svg</file>
-        <file>../resources/neus-gray.svg</file>
     </qresource>
 </RCC>

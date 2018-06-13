@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>media/lato-bold.ttf</file>
+        <file>media/lato-regular.ttf</file>
+    </qresource>
+</RCC>

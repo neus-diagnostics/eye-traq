@@ -15,7 +15,5 @@
         <file>controls/ProgressBar.qml</file>
         <file>controls/TextArea.qml</file>
         <file>controls/TextField.qml</file>
-        <file>resources/lato-bold.ttf</file>
-        <file>resources/lato-regular.ttf</file>
     </qresource>
 </RCC>
