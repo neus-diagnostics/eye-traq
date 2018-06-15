@@ -47,11 +47,6 @@ T.Button {
     topPadding: 4
     bottomPadding: topPadding + 2
 
-    font {
-        family: "Lato"
-        pointSize: 11
-    }
-
     contentItem: Text {
         text: control.text
         font: control.font

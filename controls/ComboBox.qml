@@ -13,8 +13,6 @@ T.ComboBox {
                                       indicator ? indicator.implicitHeight : 0) + topPadding + bottomPadding)
     baselineOffset: contentItem.y + contentItem.baselineOffset
 
-    font { family: "Lato"; pointSize: 11 }
-
     padding: 4
     leftPadding: padding + 2
     rightPadding: leftPadding

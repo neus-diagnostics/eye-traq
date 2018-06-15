@@ -2,8 +2,6 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 
 TextField {
-    font.pointSize: 12
-    font.family: "Lato"
     padding: 4
     leftPadding: padding + 4
     rightPadding: leftPadding

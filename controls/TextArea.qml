@@ -9,7 +9,7 @@ Flickable {
         id: area
 
         padding: 4
-        font.pointSize: 10
+        font.pixelSize: 15
         selectByMouse: true
         wrapMode: TextArea.Wrap
 

@@ -48,12 +48,17 @@ try {
 	app.setOrganizationName("Neus");
 	app.setOrganizationDomain("neus-diagnostics.com");
 
+	if (QFontDatabase::addApplicationFont(":/media/lato-regular.ttf") != -1 &&
+	    QFontDatabase::addApplicationFont(":/media/lato-bold.ttf") != -1) {
+		QFont font{"Lato"};
+		font.setPixelSize(16);
+		QApplication::setFont(font);
+	} else {
+		qWarning() << "Could not load fonts.";
+	}
+
 	const QString path = app.applicationDirPath();
 	const QString version{GIT_VERSION}; // export define for QML
-
-	if (QFontDatabase::addApplicationFont(":/media/lato-regular.ttf") == -1 ||
-	    QFontDatabase::addApplicationFont(":/media/lato-bold.ttf") == -1)
-		qWarning() << "Could not load fonts.";
 
 	// find primary and secondary screen
 	QScreen* first_screen = app.primaryScreen();

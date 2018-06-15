@@ -3,8 +3,7 @@ import QtQuick.Controls 2.0
 
 Label {
     font {
-        family: "Lato"
-        pointSize: 13
+        pixelSize: 18
         capitalization: Font.AllUppercase
         weight: Font.Bold
     }
