@@ -139,11 +139,12 @@ void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 	}
 }
 
-void EyetrackerTobii::handle_connected(void *tracker, const QString &name)
+void EyetrackerTobii::handle_connected(void *tracker, const QString &name, const float frequency)
 {
 	if (tracker != this->tracker) {
 		this->tracker = static_cast<TobiiResearchEyeTracker*>(tracker);
 		this->name = name;
+		this->frequency = frequency;
 		calibrating = false;
 		tracking = false;
 		emit statusChanged();
@@ -223,15 +224,18 @@ void EyetrackerTobiiHelper::try_connect()
 			const QString name{serial};
 			tobii_research_free_string(serial);
 
+			float frequency{};
+			tobii_research_get_gaze_output_frequency(tracker, &frequency);
+
 			qInfo() << "Connected to eyetracker" << name << "at" << address;
-			emit connected(tracker, name);
+			emit connected(tracker, name, frequency);
 		}
 	} else {
 		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &tracker);
 		if (status != TOBII_RESEARCH_STATUS_OK) {
 			qInfo() << "Disconnected from eyetracker at" << address;
 			address.clear();
-			emit connected(nullptr, "");
+			emit connected(nullptr, "", 0.0f);
 		}
 	}
 }

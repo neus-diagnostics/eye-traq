@@ -2,8 +2,8 @@
 
 #include <QDateTime>
 
-Eyetracker::Eyetracker()
-	: QObject{}, name{}, tracking{false}
+Eyetracker::Eyetracker(const float frequency)
+	: QObject{}, name{}, frequency{frequency}, tracking{false}, point{}, window_size{5}
 {
 }
 

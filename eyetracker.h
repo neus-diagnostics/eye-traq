@@ -10,10 +10,11 @@ class Eyetracker : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(bool connected READ connected NOTIFY statusChanged STORED false)
 	Q_PROPERTY(QString name MEMBER name NOTIFY statusChanged)
+	Q_PROPERTY(float frequency MEMBER frequency NOTIFY statusChanged)
 	Q_PROPERTY(bool tracking MEMBER tracking WRITE track STORED false)
 
 public:
-	Eyetracker();
+	Eyetracker(const float frequency = 60.0f);
 	virtual ~Eyetracker();
 
 public slots:
@@ -28,6 +29,7 @@ signals:
 
 protected:
 	QString name;
+	float frequency;
 	bool tracking;
 
 	virtual bool connected() const;
