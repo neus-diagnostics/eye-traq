@@ -4,8 +4,8 @@
         <file>Tasks/Blank.qml</file>
         <file>Tasks/Calibrator.qml</file>
         <file>Tasks/Imgpair.qml</file>
+        <file>Tasks/Message.qml</file>
         <file>Tasks/Pursuit.qml</file>
         <file>Tasks/Saccade.qml</file>
-        <file>Tasks/Message.qml</file>
     </qresource>
 </RCC>

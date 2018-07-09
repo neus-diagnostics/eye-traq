@@ -14,7 +14,8 @@ Item {
     property alias running: timer.running
 
     function _run(task) {
-        timer.interval = task.duration
+        if (task && task.duration !== undefined)
+            timer.interval = task.duration
         timer.start()
     }
 
