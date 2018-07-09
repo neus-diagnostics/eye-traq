@@ -6,10 +6,11 @@ Item {
     // how long to show each gaze point (in ms)
     property int duration: 500
 
-    function run(p) {
-        var x = Number(p.x) * width
-        var y = Number(p.y) * height
-        point.createObject(this, {"x": x, "y": y}).destroy(duration)
+    function run(p, color) {
+        var x = p.x
+        var y = p.y
+        var color = color || '#2bb673'
+        point.createObject(this, {'normalX': x, 'normalY': y, 'color': color}).destroy(duration)
     }
 
     anchors.fill: parent
@@ -18,24 +19,15 @@ Item {
     Component {
         id: point
 
-        Rectangle {
+        Dot {
             radius: 10
-            width: radius*2
-            height: radius*2
-            color: "#662bb673"
-
+            opacity: 0.2
             NumberAnimation on scale {
                 duration: control.duration
                 from: 1.0
                 to: 0.0
                 easing.type: Easing.InCubic
                 running: true
-            }
-
-            Component.onCompleted: {
-                // center at coordinates specified when created
-                x -= radius
-                y -= radius
             }
         }
     }
