@@ -6,8 +6,11 @@ import "controls" as Neus
 Item {
     anchors.fill: parent
 
-    function gaze(point) {
-        gaze_overlay.run(point)
+    function gaze(left, right) {
+        if (left)
+            gaze_overlay.run(left, '#f44336')
+        if (right)
+            gaze_overlay.run(right, '#2196f3')
     }
 
     function plot(lines) {

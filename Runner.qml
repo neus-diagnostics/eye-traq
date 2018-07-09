@@ -13,9 +13,13 @@ Rectangle {
     property var test: []
     property var next: 0
 
-    signal info(string text)
+    signal info(var time, var message)
     signal done
     signal stopped
+
+    function sendInfo(message) {
+        info(eyetracker.time(), message)
+    }
 
     function start(testfile) {
         stop()
@@ -23,21 +27,18 @@ Rectangle {
         test = recorder.loadTest(testfile)
         next = 0
         running = true
-        info(eyetracker.time() + '\ttest\tstarted')
+        sendInfo({'type': 'started'})
         step()
     }
 
     function step() {
         if (next < test.length) {
             var task = test[next]
-            info(eyetracker.time() + '\ttest\tstep\t' + next + '\t' +
-                 JSON.stringify(task, function (key, value) {
-                     return key === 'start' ? undefined : value
-                 }))
+            sendInfo({'type': 'step', 'step': next, 'task': task})
             next++
             run(task)
         } else {
-            info(eyetracker.time() + '\ttest\tdone')
+            sendInfo({'type': 'done'})
             done()
             stop()
         }
@@ -49,7 +50,7 @@ Rectangle {
             var nsteps = 0
             while (next > 0 && (nsteps++ < 3 || test[next].name != "message"))
                 next--
-            info(eyetracker.time() + '\ttest\tback')
+            sendInfo({'type': 'back'})
             step()
             paused = false
         }
@@ -60,7 +61,7 @@ Rectangle {
             tasks.selected.abort()
             while (next < test.length && test[next].name != "message")
                 next++
-            info(eyetracker.time() + '\ttest\tforward')
+            sendInfo({'type': 'forward'})
             step()
             paused = false
         }
@@ -99,11 +100,11 @@ Rectangle {
             return
         var task = tasks.children[tasks.currentIndex].item
         if (paused) {
-            info(eyetracker.time() + '\ttest\tpaused')
+            sendInfo({'type': 'paused'})
             if (task.running)
                 task.pause()
         } else {
-            info(eyetracker.time() + '\ttest\tresumed')
+            sendInfo({'type': 'resumed'})
             if (!task.running)
                 task.unpause()
         }
@@ -141,7 +142,7 @@ Rectangle {
                         target: item
                         enabled: main.enabled
                         onDone: step()
-                        onInfo: main.info(eyetracker.time() + '\ttest\tdata\t' + JSON.stringify(data))
+                        onInfo: sendInfo({'type': 'data', 'data': data})
                     }
                 }
             }

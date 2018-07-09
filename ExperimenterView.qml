@@ -20,6 +20,7 @@ Rectangle {
         recorder.write("# eyetracker: " + eyetracker.name)
         recorder.write("# screen size: " + secondScreen.physicalSize.width + " " + secondScreen.physicalSize.height)
         recorder.write("# screen resolution: " + secondScreen.size.width + " " + secondScreen.size.height)
+        recorder.write("# time: " + eyetracker.time())
     }
 
     Rectangle {
@@ -98,12 +99,8 @@ Rectangle {
                             var samples = eyetracker.get_calibration()
                             recorder.start("calibrate-" + settings.language, participant)
                             write_test_header()
-                            recorder.write("# eye\tvalid\tpoint_x\tpoint_y\tgaze_x\tgaze_y")
                             for (var i = 0; i < samples.length; i++)
-                                recorder.write(
-                                    samples[i].eye + '\t' + samples[i].valid + '\t' +
-                                    samples[i].from.x + '\t' + samples[i].from.y + '\t' +
-                                    samples[i].to.x + '\t' + samples[i].to.y)
+                                recorder.write(JSON.stringify(samples[i])) // TODO check this with eyetracker
                             recorder.stop()
                             calibrate.calibrated = true
                             calibrate.time = new Date()
@@ -185,16 +182,6 @@ Rectangle {
                             test.state = "running"
                             recorder.start(testName, participant)
                             write_test_header()
-                            recorder.write(
-                                "# time\tevent\t" +
-                                "eye\tpupil_valid\tpupil_diameter\t" +
-                                "gaze_valid\t" +
-                                "gaze_screen_x\tgaze_screen_y\t" +
-                                "gaze_ucs_x\tgaze_ucs_y\tgaze_ucs_z\t" +
-                                "eye_valid\t" +
-                                "eye_ucs_x\teye_ucs_y\teye_ucs_z\t" +
-                                "eye_trackbox_x\teye_trackbox_y\teye_trackbox_z\t" +
-                                "eyetracker_time")
                             runner.start(testFile)
                             checked = true
                             notes.append("Started " + testName + ".")
@@ -295,7 +282,7 @@ Rectangle {
                     name: "running"
                     PropertyChanges {
                         target: runner
-                        onInfo: recorder.write(text)
+                        onInfo: recorder.write(time + '\t' + JSON.stringify({'time': time, 'type': 'test', 'test': message}))
                         onStopped: {
                             recorder.stop()
                             test.state = ""
@@ -304,18 +291,11 @@ Rectangle {
                     PropertyChanges {
                         target: eyetracker
                         onGaze: {
-                            if (data.gaze_valid)
-                                viewer.gaze(data.gaze_screen)
-                            recorder.write(
-                                data.time + '\tgaze\t' + data.eye + '\t' +
-                                data.pupil_valid + '\t' + data.pupil_diameter + '\t' +
-                                data.gaze_valid + '\t' +
-                                data.gaze_screen.x + '\t' + data.gaze_screen.y + '\t' +
-                                data.gaze_ucs.x + '\t' + data.gaze_ucs.y + '\t' + data.gaze_ucs.z + '\t' +
-                                data.eye_valid + '\t' +
-                                data.eye_ucs.x + '\t' + data.eye_ucs.y + '\t' + data.eye_ucs.z + '\t' +
-                                data.eye_trackbox.x + '\t' + data.eye_trackbox.y + '\t' + data.eye_trackbox.z + '\t' +
-                                data.eyetracker_time)
+                            viewer.gaze(
+                                data.left.gaze_valid ? data.left.gaze_screen : null,
+                                data.right.gaze_valid ? data.right.gaze_screen : null
+                            )
+                            recorder.write(data.time + '\t' + JSON.stringify({'time': data.time, 'type': 'gaze', 'gaze': data}))
                         }
                         tracking: true
                     }

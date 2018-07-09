@@ -119,14 +119,15 @@ bool EyetrackerTobii::connected() const
 
 void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 {
+	QVariantMap info{
+		{"time", QVariant::fromValue(gaze_data->system_time_stamp)},
+		{"eyetracker_time", QVariant::fromValue(gaze_data->device_time_stamp)}
+	};
 	for (const auto &eye_data : {
 			std::make_pair("left", gaze_data->left_eye),
 			std::make_pair("right", gaze_data->right_eye)}) {
 		const auto &data = eye_data.second;
-		static_cast<EyetrackerTobii*>(self)->emit gaze(QVariantMap{
-			{"time", QVariant::fromValue(gaze_data->system_time_stamp)},
-			{"eyetracker_time", QVariant::fromValue(gaze_data->device_time_stamp)},
-			{"eye", eye_data.first},
+		info[eye_data.first] = QVariantMap{
 			{"pupil_valid", data.pupil_data.validity == TOBII_RESEARCH_VALIDITY_VALID},
 			{"gaze_valid", data.gaze_point.validity == TOBII_RESEARCH_VALIDITY_VALID},
 			{"eye_valid", data.gaze_origin.validity == TOBII_RESEARCH_VALIDITY_VALID},
@@ -135,8 +136,9 @@ void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 			{"gaze_ucs", point3_to_qvec(data.gaze_point.position_in_user_coordinates)},
 			{"eye_ucs", point3_to_qvec(data.gaze_origin.position_in_user_coordinates)},
 			{"eye_trackbox", point3_to_qvec(data.gaze_origin.position_in_track_box_coordinates)}
-		});
+		};
 	}
+	static_cast<EyetrackerTobii*>(self)->emit gaze(info);
 }
 
 void EyetrackerTobii::handle_connected(void *tracker, const QString &name, const float frequency)
