@@ -13,7 +13,7 @@ Task {
     // direction: x/y for horizontal/vertical saccade
     // offset: target displacement from fixation [cm]
     // type: step/gap/overlap
-    function run(task) {
+    run: function (task) {
         type = task.type
         delay = task.delay
         total_time = task.duration
@@ -31,7 +31,7 @@ Task {
     // state data: direction, relative_offset
     // fixation: show fixation cross?
     // target: show target disc?
-    function set(state) {
+    set: function (state) {
         target.normalX = state.x || 0.5
         target.normalY = state.y || 0.5
         fixation.visible = state.fixation || false

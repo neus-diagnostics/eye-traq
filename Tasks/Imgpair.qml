@@ -6,7 +6,7 @@ Task {
     property var fade: 150
 
     // task arguments: left (image name), right (image name)
-    function run(task) {
+    run: function (task) {
         left.source = "file:///" + path + "/share/images/" + task.left
         right.source = "file:///" + path + "/share/images/" + task.right
 
@@ -17,25 +17,25 @@ Task {
     }
 
     // state data: left, right
-    function set(state) {
+    set: function (state) {
         left.source = "file:///" + path + "/share/images/" + state.left
         right.source = "file:///" + path + "/share/images/" + state.right
         opacity = 1
     }
 
-    function abort() {
-        anim.stop()
-        _abort()
-    }
-
-    function pause() {
+    pause: function () {
         anim.pause()
         _pause()
     }
 
-    function unpause() {
+    unpause: function () {
         anim.resume()
         _unpause()
+    }
+
+    abort: function () {
+        anim.stop()
+        _abort()
     }
 
     timer.onTriggered: done()

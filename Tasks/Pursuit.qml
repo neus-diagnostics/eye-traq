@@ -7,7 +7,7 @@ Task {
     // direction: x/y for horizontal/vertical saccade
     // offset: target displacement from fixation [cm]
     // period: travel time from left to right and back
-    function run(task) {
+    run: function (task) {
         var relative_offset = 0.0;
         if (task.direction === 'x') {
             init.property = 'normalX'
@@ -27,12 +27,12 @@ Task {
     }
 
     // state data: x (relative), y (relative)
-    function set(state) {
+    set: function (state) {
         stimulus.normalX = state.x || 0.5
         stimulus.normalY = state.y || 0.5
     }
 
-    function abort() {
+    abort: function () {
         anim.stop()
         _abort()
     }

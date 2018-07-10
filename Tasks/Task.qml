@@ -7,9 +7,10 @@ Item {
     // allow overriding methods
     property var run: _run
     property var set: _set
-    property var abort: _abort
     property var pause: _pause
     property var unpause: _unpause
+    property var abort: _abort
+
     property alias timer: timer
     property alias running: timer.running
 
@@ -22,16 +23,16 @@ Item {
     function _set(state) {
     }
 
-    function _abort() {
-        timer.stop()
-    }
-
     function _pause() {
         timer.stop()
     }
 
     function _unpause() {
         timer.start()
+    }
+
+    function _abort() {
+        timer.stop()
     }
 
     Timer {

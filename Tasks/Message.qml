@@ -6,7 +6,7 @@ import "../controls" as Neus
 
 Task {
     // task arguments: audio (file name), text, align
-    function run(task) {
+    run: function (task) {
         set(task)
         if (task.audio) {
             audio.source = "file:///" + path + "/share/sounds/" + task.audio
@@ -16,22 +16,22 @@ Task {
     }
 
     // state data: text, align
-    function set(state) {
+    set: function (state) {
         message.horizontalAlignment = (state.align == "left" ? Text.AlignLeft : Text.AlignHCenter)
         message.text = state.text || ""
     }
 
-    function abort() {
+    abort: function () {
         audio.stop()
         _abort()
     }
 
-    function pause() {
+    pause: function () {
         audio.pause()
         _pause()
     }
 
-    function unpause() {
+    unpause: function () {
         audio.play()
         _unpause()
     }

@@ -6,7 +6,7 @@ Task {
     property var point: null
 
     // task arguments: action (start/add/end), x (relative), y (relative)
-    function run(task) {
+    run: function (task) {
         if (task.action == "start") {
             stimulus.normalX = task.x
             stimulus.normalY = task.y
@@ -27,7 +27,7 @@ Task {
         _run(task)
     }
 
-    function abort() {
+    abort: function () {
         anim.stop()
         _abort()
     }
