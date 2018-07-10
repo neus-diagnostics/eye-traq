@@ -9,6 +9,8 @@ Item {
     property var set: _set
     property var pause: _pause
     property var unpause: _unpause
+    property var forward: _forward
+    property var back: _back
     property var abort: _abort
 
     property alias timer: timer
@@ -29,6 +31,14 @@ Item {
 
     function _unpause() {
         timer.start()
+    }
+
+    function _forward() {
+        return false
+    }
+
+    function _back() {
+        return false
     }
 
     function _abort() {

@@ -45,7 +45,11 @@ Rectangle {
     }
 
     function back() {
-        if (running && next > 0) {
+        if (!running)
+            return
+        if (tasks.selected.back())
+            return
+        if (next > 0) {
             tasks.selected.abort()
             var nsteps = 0
             while (next > 0 && (nsteps++ < 3 || test[next].name != "message"))
@@ -57,7 +61,11 @@ Rectangle {
     }
 
     function forward() {
-        if (running && next < test.length) {
+        if (!running)
+            return
+        if (tasks.selected.forward())
+            return
+        if (next < test.length) {
             tasks.selected.abort()
             while (next < test.length && test[next].name != "message")
                 next++
