@@ -39,13 +39,6 @@ T.ComboBox {
         }
     }
 
-    indicator: Image {
-        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
-        y: control.topPadding + (control.availableHeight - height) / 2
-        source: "image://default/drop-indicator/" + (control.visualFocus ? "#0066ff" : "#353637")
-        sourceSize { width: width; height: height }
-    }
-
     contentItem: Text {
         leftPadding: control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0
         rightPadding: !control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0

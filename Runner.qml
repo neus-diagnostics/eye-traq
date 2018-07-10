@@ -138,7 +138,6 @@ Rectangle {
                 }
             }
 
-            anchors.fill: parent
             focus: true
 
             Repeater {
@@ -158,7 +157,6 @@ Rectangle {
 
         Rectangle {
             color: "black"
-            anchors.fill: parent
             Image {
                 // set the stand-by image
                 // source: ""

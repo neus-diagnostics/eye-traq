@@ -48,7 +48,7 @@ Rectangle {
                     Neus.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
                     Neus.AutoComplete {
                         id: txtParticipant
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
                         Layout.fillWidth: true
                         completions: FolderListModel {
                             folder: Qt.resolvedUrl("file:data")
@@ -214,7 +214,6 @@ Rectangle {
 
                 // language
                 RowLayout {
-                    anchors { left: parent.left; right: parent.right }
                     spacing: parent.spacing
                     enabled: !runner.running
 
@@ -245,7 +244,6 @@ Rectangle {
                 }
 
                 ColumnLayout {
-                    anchors.horizontalCenter: parent.horizontalCenter
                     Layout.fillWidth: true
 
                     Repeater {
@@ -268,7 +266,6 @@ Rectangle {
                 }
 
                 ColumnLayout {
-                    anchors.horizontalCenter: parent.horizontalCenter
                     Layout.fillWidth: true
 
                     Repeater {
