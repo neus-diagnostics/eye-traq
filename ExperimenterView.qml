@@ -202,7 +202,7 @@ Rectangle {
             ColumnLayout {
                 id: test
 
-                enabled: participant != "" && calibrate.calibrated
+                enabled: participant != ""
                 spacing: 10
                 Layout.fillHeight: false
                 Layout.fillWidth: true
