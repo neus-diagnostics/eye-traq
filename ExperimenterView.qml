@@ -100,7 +100,7 @@ Rectangle {
                             recorder.start("calibrate-" + settings.language, participant)
                             write_test_header()
                             for (var i = 0; i < samples.length; i++)
-                                recorder.write(JSON.stringify(samples[i])) // TODO check this with eyetracker
+                                recorder.write(JSON.stringify(samples[i]))
                             recorder.stop()
                             calibrate.calibrated = true
                             calibrate.time = new Date()
@@ -149,6 +149,10 @@ Rectangle {
                                     eyetracker.calibrate("stop")
                                     calibrate.state = ""
                                 }
+                            }
+                            PropertyChanges {
+                                target: eyetracker
+                                tracking: true
                             }
                             PropertyChanges {
                                 target: txtCalibrated
@@ -287,13 +291,7 @@ Rectangle {
                     }
                     PropertyChanges {
                         target: eyetracker
-                        onGaze: {
-                            viewer.gaze(
-                                data.left.gaze_valid ? data.left.gaze_screen : null,
-                                data.right.gaze_valid ? data.right.gaze_screen : null
-                            )
-                            recorder.write(data.time + '\t' + JSON.stringify({'time': data.time, 'type': 'gaze', 'gaze': data}))
-                        }
+                        onGaze: recorder.write(data.time + '\t' + JSON.stringify({'time': data.time, 'type': 'gaze', 'gaze': data}))
                         tracking: true
                     }
                 }
@@ -380,6 +378,12 @@ Rectangle {
         Viewer {
             id: viewer
             anchors { fill: parent; margins: main.width * 0.03 * 1.5 }
+            Connections {
+                target: eyetracker
+                onGaze: viewer.gaze(
+                    data.left.gaze_valid ? data.left.gaze_screen : null,
+                    data.right.gaze_valid ? data.right.gaze_screen : null)
+            }
         }
     }
 
