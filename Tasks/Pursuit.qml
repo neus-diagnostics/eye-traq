@@ -45,8 +45,8 @@ Task {
     Dot {
         id: stimulus
 
-        onNormalXChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
-        onNormalYChanged: info({'x': stimulus.normalX, 'y': stimulus.normalY})
+        onNormalXChanged: info(eyetracker.time(), {'x': stimulus.normalX, 'y': stimulus.normalY})
+        onNormalYChanged: info(eyetracker.time(), {'x': stimulus.normalX, 'y': stimulus.normalY})
 
         SequentialAnimation {
             id: anim

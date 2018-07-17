@@ -70,7 +70,7 @@ Task {
         }
         _run({'duration': time})
 
-        info({
+        info(eyetracker.time(), {
             'x': target.normalX,
             'y': target.normalY,
             'fixation': fixation.visible,

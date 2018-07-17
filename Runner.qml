@@ -17,7 +17,8 @@ Rectangle {
     signal done
     signal stopped
 
-    function sendInfo(message) {
+    // emit info signal with current time
+    function emitInfo(message) {
         info(eyetracker.time(), message)
     }
 
@@ -27,18 +28,18 @@ Rectangle {
         test = recorder.loadTest(testfile)
         next = 0
         running = true
-        sendInfo({'type': 'started'})
+        emitInfo({'type': 'started'})
         step()
     }
 
     function step() {
         if (next < test.length) {
             var task = test[next]
-            sendInfo({'type': 'step', 'step': next, 'task': task})
+            emitInfo({'type': 'step', 'step': next, 'task': task})
             next++
             run(task)
         } else {
-            sendInfo({'type': 'done'})
+            emitInfo({'type': 'done'})
             done()
             stop()
         }
@@ -54,7 +55,7 @@ Rectangle {
             var nsteps = 0
             while (next > 0 && (nsteps++ < 3 || test[next].name != "message"))
                 next--
-            sendInfo({'type': 'back'})
+            emitInfo({'type': 'back'})
             step()
             paused = false
         }
@@ -69,7 +70,7 @@ Rectangle {
             tasks.selected.abort()
             while (next < test.length && test[next].name != "message")
                 next++
-            sendInfo({'type': 'forward'})
+            emitInfo({'type': 'forward'})
             step()
             paused = false
         }
@@ -108,11 +109,11 @@ Rectangle {
             return
         var task = tasks.children[tasks.currentIndex].item
         if (paused) {
-            sendInfo({'type': 'paused'})
+            emitInfo({'type': 'paused'})
             if (task.running)
                 task.pause()
         } else {
-            sendInfo({'type': 'resumed'})
+            emitInfo({'type': 'resumed'})
             if (!task.running)
                 task.unpause()
         }
@@ -149,7 +150,7 @@ Rectangle {
                         target: item
                         enabled: main.enabled
                         onDone: step()
-                        onInfo: sendInfo({'type': 'data', 'data': data})
+                        onInfo: info(time, {'type': 'data', 'data': data})
                     }
                 }
             }

@@ -2,7 +2,7 @@ import QtQuick 2.7
 
 Item {
     signal done
-    signal info(var data)
+    signal info(var time, var data)
 
     // allow overriding methods
     property var run: _run
