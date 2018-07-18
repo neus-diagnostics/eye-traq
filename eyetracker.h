@@ -14,7 +14,7 @@ class Eyetracker : public QObject {
 	Q_PROPERTY(float frequency MEMBER frequency NOTIFY statusChanged)
 	Q_PROPERTY(bool tracking MEMBER tracking WRITE track STORED false)
 	Q_PROPERTY(QPointF point MEMBER point NOTIFY pointChanged)
-	Q_PROPERTY(QPointF velocity MEMBER velocity NOTIFY pointChanged)
+	Q_PROPERTY(float velocity MEMBER velocity NOTIFY pointChanged)
 
 public:
 	Eyetracker(const float frequency = 60.0f);
@@ -36,7 +36,7 @@ protected:
 	float frequency;
 	bool tracking;
 	QPointF point;
-	QPointF velocity;
+	float velocity;
 
 	QQueue<QPointF> points;
 	int window_size;

@@ -1,5 +1,7 @@
 #include "eyetracker.h"
 
+#include <cmath>
+
 #include <QDateTime>
 
 Eyetracker::Eyetracker(const float frequency)
@@ -41,7 +43,7 @@ void Eyetracker::track(bool)
 {
 }
 
-// update calculated gaze point and velocity
+// update calculated gaze point and velocity, in relative screen coordinates
 // assumes the gaze signal is emitted with fixed frequency
 void Eyetracker::process_gaze(const QVariantMap &data)
 {
@@ -68,18 +70,21 @@ void Eyetracker::process_gaze(const QVariantMap &data)
 	}
 
 	// point is average of recent points
-	// velocity is average pairwise difference between recent points
+	// d is average pairwise difference between recent points
 	point = {};
-	velocity = {};
+	QPointF d{};
 	if (!points.empty()) {
 		point = points.first();
 		for (int i = 1; i < points.size(); i++) {
 			point += points[i];
-			velocity += points[i] - points[i-1];
+			d += points[i] - points[i-1];
 		}
 		point /= points.size();
-		velocity /= points.size();
+		d /= points.size();
 	}
+
+	// velocity is  distance per second
+	velocity = std::hypot(d.x(), d.y()) * frequency;
 
 	emit pointChanged(point);
 }
