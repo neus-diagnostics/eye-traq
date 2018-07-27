@@ -4,26 +4,27 @@ import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.2
 
-ApplicationWindow {
+Item {
     id: main
 
-    title: qsTr("Neus player")
     width: 800
     height: 800
     visible: true
 
-    property var framerate: 30
-    property var index: 0
+    property real framerate: 30.0
+    property int index: 0
+
+    property var log: []
+    property var secondScreen: null // for compatibility with main program
+    property real physicalHeight: 324
+    property real physicalWidth: 518
 
     function loadTest(path) {
         play.checked = false
+        runner.set({task: 'blank'})
         testFile.text = path
         index = 0
-        dataModel.clear()
-        runner.set({task: 'blank'})
-
-        var task = undefined
-        var data = []
+        log = []
 
         var lines = fileIO.read(path).replace(/\r/g, '').split('\n')
         for (var i = 0; i < lines.length; i++) {
@@ -31,8 +32,8 @@ ApplicationWindow {
             if (!lines[i])
                 continue
 
-            // process header
             if (lines[i].startsWith('#')) {
+                // process header
                 var info = lines[i].slice(1).trim().split(': ')
                 switch (info[0]) {
                 case 'eyetracker':
@@ -43,101 +44,71 @@ ApplicationWindow {
                     break
                 case 'screen size':
                     var size = info[1].split(' ')
-                    physicalWidth.text = size[0]
-                    physicalHeight.text = size[1]
+                    physicalWidth = Number(size[0])
+                    physicalHeight = Number(size[1])
+                    secondScreen = {
+                        size: {width: runner.width, height: runner.height},
+                        physicalSize: {width: physicalWidth, height: physicalHeight},
+                    }
                     break
                 }
-                continue
-            }
-
-            // process test / gaze data
-            var fields = lines[i].trim().split('\t')
-            var time = Number(fields[0])
-
-            if (fields[1] == 'gaze' && fields[5] == 'true') {
-                data.push({
-                    time: time,
-                    type: 'gaze',
-                    eye: fields[2],
-                    x: Number(fields[6]),
-                    y: Number(fields[7]),
-                })
-
-            } else if (fields[1] == 'test') {
-                var state = undefined
-                var info = undefined
-
-                if (fields[2] == 'step') {
-                    state = JSON.parse(fields[4])
-                    state['task'] = state['name']
-                    switch (state['task']) {
-                    case 'imgpair':
-                        info = 'imgpair [' + state['left'] + ', ' + state['right'] + ']'
-                        break
-                    case "pursuit":
-                        info = 'pursuit [' + (state['direction'] == 'x' ? 'horizontal' : 'vertical') + ']'
-                        break
-                    case "saccade":
-                        info = state['where'] + '-saccade [' + (state['direction'] == 'x' ? 'horizontal' : 'vertical') + ', ' + state['type'] + ']'
-                        break
-                    case "message":
-                        info = state['text'] ? ('message: ' + state['text']) : 'alert'
-                        break
-                    }
-                    task = state
-
-                } else if (fields[2] == 'data') {
-                    var taskData = JSON.parse(fields[3])
-                    state = {}
-                    for (var k in task)
-                        state[k] = task[k]
-                    for (var k in taskData)
-                        state[k] = taskData[k]
-                } else if (fields[2] == 'started' || fields[2] == 'done') {
-                    state = {task: 'blank'}
-                }
-
-                // TODO sorted insert (by timestamp)
-                if (state !== undefined)
-                    data.push({time: time, type: 'test', state: state, id: data.length})
-                if (info !== undefined)
-                    data.push({time: time-1, type: 'info', info: info, id: data.length})
+            } else {
+                // log entries
+                var fields = lines[i].trim().split('\t')
+                var data = JSON.parse(fields[1])
+                data.id = log.length
+                log.push(data)
             }
         }
 
         // stable sort & update timestamps
-        data.unshift({time: data[0].time, type: 'info', info: 'test start'})
-        data.sort(function (a, b) { return a.time - b.time || a.id - b.id; })
+        log.sort(function (a, b) { return a.time - b.time || a.id - b.id })
 
-        var start = data[0].time
-        for (var i = 0; i < data.length; i++) {
-            data[i].time = (data[i].time - start) / 1000000
-            dataModel.append(data[i])
-            if (data[i]['type'] == 'info')
-                visualModel.items.addGroups(i, 1, ['info'])
+        keyframes.clear()
+        var start = log[0].time
+        for (var i = 0; i < log.length; i++) {
+            log[i].time = (log[i].time - start) / 1000000.0
+            if (log[i].type === 'test')
+                keyframes.append({logIndex: i, time: log[i].time, info: JSON.stringify(log[i].test)})
         }
 
-        slider.from = data[0].time
-        slider.to = data[data.length-1].time
+        slider.from = log[0].time
+        slider.to = log[log.length-1].time
         slider.value = slider.from
     }
 
-    function update() {
-        while (index < dataModel.count) {
-            var item = dataModel.get(index)
-            if (item.time > slider.value)
-                break
-            if (item.type == 'gaze') {
-                gazeOverlay.run(Qt.point(item.x, item.y))
-            } else if (item.type == 'test') {
-                runner.set(item.state)
+    function timeToIndex(time, low, high) {
+        low = low === undefined ? 0 : low
+        high = high === undefined ? log.length : high
+        if (high - low <= 1)
+            return low
+        var mid = Math.floor(high/2 + low/2)
+        return log[mid].time < time ? timeToIndex(time, mid, high) : timeToIndex(time, low, mid)
+    }
+
+    function show(data, stepsOnly) {
+        if (data.type === 'gaze') {
+            if (!stepsOnly) {
+                var gaze = data.gaze
+                if (gaze.left.gaze_valid)
+                    gazeOverlay.run(Qt.point(gaze.left.gaze_screen.x, gaze.left.gaze_screen.y), 'red')
+                if (gaze.right.gaze_valid)
+                    gazeOverlay.run(Qt.point(gaze.right.gaze_screen.x, gaze.right.gaze_screen.y), 'blue')
             }
-            index++
-            if (index == dataModel.count)
-                play.checked = false
+        } else if (data.type === 'test') {
+            var test = data.test
+            if (test.type === 'step') {
+                test.task.task = test.task.name
+                runner.set(test.task)
+            } else if (test.type === 'started' || test.type === 'done') {
+                runner.set({task: 'blank'})
+            } else if (test.type === 'data') {
+                if (!stepsOnly) {
+                    test.data.task = test.data.name
+                    runner.set(test.data)
+                }
+            }
         }
-        while (list.currentIndex < list.count-1 && infoGroup.get(list.currentIndex+1).model.time < slider.value)
-            list.currentIndex++
     }
 
     ColumnLayout {
@@ -167,7 +138,6 @@ ApplicationWindow {
 
             // test info
             Column {
-                anchors.top: parent.top
                 Layout.preferredWidth: 180
                 Label { text: "Program version"; font.pixelSize: 12 }
                 TextField {
@@ -185,20 +155,14 @@ ApplicationWindow {
                 RowLayout {
                     width: parent.width * 3/4
                     TextField {
-                        id: physicalWidth
-                        text: "518"
+                        text: physicalWidth
                         Layout.fillWidth: true
-                        maximumLength: 4
-                        validator: IntValidator { bottom: 0; top: 9999 }
                         horizontalAlignment: Text.AlignRight
                     }
                     Label { text: "×"; font.pixelSize: 15; bottomPadding: 8 }
                     TextField {
-                        id: physicalHeight
-                        text: "324"
+                        text: physicalHeight
                         Layout.fillWidth: true
-                        maximumLength: 4
-                        validator: IntValidator { bottom: 0; top: 9999 }
                         horizontalAlignment: Text.AlignLeft
                     }
                     Label { text: "mm²"; font.pixelSize: 15; bottomPadding: 6 }
@@ -213,13 +177,45 @@ ApplicationWindow {
                 border.width: 1
                 ListView {
                     id: list
+                    model: ListModel { id: keyframes }
                     anchors { fill: parent; margins: 1 }
                     clip: true
 
-                    model: visualModel
                     highlight: Rectangle { color: "lightsteelblue" }
                     highlightMoveVelocity: 100000
 
+                    delegate: Item {
+                        height: childrenRect.height
+                        width: parent.width
+
+                        function pad(n) { return (n < 10 ? '0' : '') + n }
+
+                        RowLayout {
+                            width: parent.width
+                            Text {
+                                text: (time / 60).toFixed() + ':' + pad((time % 60).toFixed(3))
+                                Layout.preferredWidth: 50
+                                Layout.margins: 2
+                            }
+                            Text {
+                                text: info.replace(/<br>/g, ' ')
+                                textFormat: Text.PlainText
+                                Layout.fillWidth: true
+                                Layout.margins: 2
+                                maximumLineCount: 1
+                                elide: Text.ElideRight
+                            }
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                list.currentIndex = index
+                                main.index = logIndex
+                                slider.value = time
+                                slider.onMoved()
+                            }
+                        }
+                    }
                     ScrollBar.vertical: ScrollBar { }
                 }
             }
@@ -228,17 +224,12 @@ ApplicationWindow {
         Runner {
             id: runner
             Layout.fillWidth: true
-            Layout.preferredHeight: width * 9/16
+            Layout.preferredHeight: width * physicalHeight/physicalWidth
             clip: true
             running: true
             enabled: false
 
             Gaze { id: gazeOverlay }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.ArrowCursor
-            }
         }
 
         RowLayout {
@@ -246,12 +237,13 @@ ApplicationWindow {
             Layout.fillWidth: true
             Button {
                 id: play
-                text: qsTr(checked ? "⏸" : "►")
+                text: qsTr(checked ? "pause" : "play")
                 checkable: true
                 onCheckedChanged: {
                     if (checked && slider.value == slider.to) {
                         index = 0
                         slider.value = slider.from
+                        slider.onMoved()
                     }
                 }
             }
@@ -259,14 +251,25 @@ ApplicationWindow {
                 id: slider
                 Layout.fillWidth: true
                 onMoved: {
-                    for (list.currentIndex = 0;
-                            list.currentIndex < list.count-1 && infoGroup.get(list.currentIndex+1).model.time < value;
-                            list.currentIndex++)
-                        ;
-                    var item = infoGroup.get(list.currentIndex)
-                    index = item.itemsIndex
-                    value = item.model.time
-                    update()
+                    // rewind to last test step before current time
+                    for (index = timeToIndex(slider.value); index > 0; index--)
+                        if (log[index].type === 'test' && log[index].test.type === 'step')
+                            break
+
+                    // replay test step and data items before current time
+                    while (index < log.length) {
+                        if (log[index].time > slider.value)
+                            break
+                        show(log[index], true)
+                        index++
+                    }
+                    if (index === log.length)
+                        play.checked = false
+
+                    var newIndex = 0
+                    while (newIndex < list.count-1 && list.model.get(newIndex+1).time <= slider.value)
+                        newIndex++
+                    list.currentIndex = newIndex
                 }
             }
             Label {
@@ -277,48 +280,6 @@ ApplicationWindow {
         }
     }
 
-    ListModel { id: dataModel }
-    DelegateModel {
-        id: visualModel
-        model: dataModel
-
-        delegate: Item {
-            height: childrenRect.height
-            width: parent.width
-
-            function pad(n) { return (n < 10 ? '0' : '') + n }
-
-            RowLayout {
-                width: parent.width
-                Text {
-                    text: (time / 60).toFixed() + ':' + pad((time % 60).toFixed(3))
-                    Layout.preferredWidth: 50
-                    Layout.margins: 2
-                }
-                Text {
-                    text: info.replace(/<br>/g, ' ')
-                    textFormat: Text.PlainText
-                    Layout.fillWidth: true
-                    Layout.margins: 2
-                    maximumLineCount: 1
-                    elide: Text.ElideRight
-                }
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    list.currentIndex = visualModel.items.get(index).infoIndex
-                    main.index = index
-                    slider.value = dataModel.get(index).time
-                }
-            }
-        }
-        groups: [
-            DelegateModelGroup { id: infoGroup; name: "info"; includeByDefault: false }
-        ]
-        filterOnGroup: "info"
-    }
-
     Timer {
         id: clock
         interval: 1000/framerate
@@ -326,7 +287,12 @@ ApplicationWindow {
         running: play.checked && !slider.pressed
         onTriggered: {
             slider.value += interval/1000
-            update()
+            while (index < log.length && slider.value >= log[index].time) {
+                show(log[index])
+                index++
+            }
+            while (list.currentIndex < list.count-1 && list.model.get(list.currentIndex+1).time <= slider.value)
+                list.currentIndex++
         }
     }
     

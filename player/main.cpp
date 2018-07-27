@@ -1,8 +1,10 @@
 #include <exception>
 
 #include <QApplication>
-#include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickStyle>
+#include <QQuickView>
 #include <QTextCodec>
 #include <QtDebug>
 
@@ -11,21 +13,34 @@
 int main(int argc, char *argv[])
 try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QQuickStyle::setStyle("Fusion");
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 
 	QApplication app{argc, argv};
-	app.setOrganizationName("Neus player");
+	app.setOrganizationName("Neus");
 	app.setOrganizationDomain("neus-diagnostics.com");
 
-	FileIO fileIO;
 	const QString path = app.applicationDirPath();
+	const QString version{GIT_VERSION}; // export define for QML
+
+	FileIO fileIO;
 
 	// set up the window
-	QQmlApplicationEngine engine{"qrc:/Main.qml"};
-	engine.rootContext()->setContextProperty("fileIO", &fileIO);
-	engine.rootContext()->setContextProperty("path", path);
-	engine.rootContext()->setContextProperty("eyetracker", nullptr);
+	QQuickView view;
+	view.rootContext()->setContextProperty("path", path);
+	view.rootContext()->setContextProperty("version", version);
+	view.rootContext()->setContextProperty("fileIO", &fileIO);
+	view.rootContext()->setContextProperty("eyetracker", nullptr);
 
+	view.setTitle("Neus player");
+	view.setSource(QUrl{"qrc:/Main.qml"});
+	if (view.status() != QQuickView::Ready) {
+		for (const auto &e : view.errors())
+			qWarning() << e;
+		return 1;
+	}
+	view.create();
+	view.show();
 	return app.exec();
 
 } catch (std::exception &e) {

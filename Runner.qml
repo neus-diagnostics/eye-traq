@@ -98,8 +98,10 @@ Rectangle {
     // set runner to a recorded state {task: "…", args…}
     // used for playing recorded tests
     function set(state) {
-        if (tasks.select(state.task))
-            tasks.selected.set(state)
+        if (state.task !== undefined)
+            if (!tasks.select(state.task))
+                return
+        tasks.selected.set(state)
     }
 
     color: "black"
