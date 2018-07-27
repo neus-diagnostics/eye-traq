@@ -17,7 +17,7 @@ class Eyetracker : public QObject {
 	Q_PROPERTY(float velocity MEMBER velocity NOTIFY pointChanged)
 
 public:
-	Eyetracker(const float frequency = 60.0f);
+	Eyetracker(const QString name = "", const float frequency = 60.0f);
 	virtual ~Eyetracker();
 
 public slots:

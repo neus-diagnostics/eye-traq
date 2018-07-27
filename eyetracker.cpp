@@ -4,8 +4,8 @@
 
 #include <QDateTime>
 
-Eyetracker::Eyetracker(const float frequency)
-	: QObject{}, name{}, frequency{frequency}, tracking{false}, point{}, window_size{3}
+Eyetracker::Eyetracker(const QString name, const float frequency)
+	: QObject{}, name{name}, frequency{frequency}, tracking{false}, point{}, window_size{3}
 {
 	connect(this, &Eyetracker::gaze, this, &Eyetracker::process_gaze);
 }

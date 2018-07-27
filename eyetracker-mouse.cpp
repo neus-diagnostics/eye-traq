@@ -4,7 +4,7 @@
 #include <QPointF>
 
 EyetrackerMouse::EyetrackerMouse(const QScreen *screen)
-	: Eyetracker{}, screen{screen}
+	: Eyetracker{"mouse"}, screen{screen}
 {
 	connect(&timer, &QTimer::timeout, this, &EyetrackerMouse::do_gaze);
 	timer.setTimerType(Qt::PreciseTimer);
