@@ -7,7 +7,7 @@ Item {
     property real selectTime: 1.0
 
     property real time: 0.0 // relative time of the current gaze (0 = no gaze, 1 = selected)
-    property bool gazed: time > 0.0
+    property bool gazed: time > 0.02
 
     signal selected
 
@@ -42,9 +42,9 @@ Item {
                 secondScreen.geometry.x + eyetracker.point.x * secondScreen.geometry.width,
                 secondScreen.geometry.y + eyetracker.point.y * secondScreen.geometry.height)
 
-            if (gazed) {
+            if (time > 0.0) {
                 // stop gaze timer when a saccade is detected outside control
-                if (!valid || (saccade && !contains(gaze))) {
+                if (!valid || !contains(gaze)) {
                     timer.stop()
                     time = 0.0
                 }
