@@ -80,7 +80,8 @@ Task {
                             text: modelData
                             anchors.centerIn: parent
                             color: 'white'
-                            font.pixelSize: 60
+                            font.pixelSize: 40
+                            horizontalAlignment: Text.AlignHCenter
                         }
                     }
                 }
