@@ -7,5 +7,7 @@
         <file>Tasks/Message.qml</file>
         <file>Tasks/Pursuit.qml</file>
         <file>Tasks/Saccade.qml</file>
+        <file>Tasks/GazeArea.qml</file>
+        <file>Tasks/GazeButton.qml</file>
     </qresource>
 </RCC>

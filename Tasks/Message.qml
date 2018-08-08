@@ -12,6 +12,8 @@ Task {
             audio.source = "file:///" + path + "/share/sounds/" + task.audio
             audio.play()
         }
+        // hide OK button if the message is only shown for specified duration
+        ok.visible = !task.duration
         _run(task)
     }
 
@@ -47,6 +49,23 @@ Task {
         font.pixelSize: 43 * parent.height / 1080
         lineHeight: 1.2
         textFormat: Text.StyledText
+    }
+
+    // confirm button in bottom-right corner
+    GazeButton {
+        id: ok
+        text: qsTr('✔')
+        color: '#2bb673'
+
+        enabled: visible
+        anchors { bottom: parent.bottom; right: parent.right }
+        size: Math.min(parent.width, parent.height) / 4
+
+        onSelected: {
+            info(eyetracker.time(), {'action': 'confirm'})
+            abort()
+            done()
+        }
     }
 
     Audio { id: audio }

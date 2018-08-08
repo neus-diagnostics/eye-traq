@@ -17,9 +17,10 @@ Item {
     property alias running: timer.running
 
     function _run(task) {
-        if (task && task.duration !== undefined)
+        if (task && task.duration !== undefined) {
             timer.interval = task.duration
-        timer.start()
+            timer.start()
+        }
     }
 
     function _set(state) {
