@@ -1,6 +1,6 @@
 [
     {"name": "blank", "duration": 1000},
-    {"name": "message", "duration": 13320, "audio": "hr/pst-x.oga", "align": "center", "text": "Molimo gledajte u križ na sredini zaslona.<br>Kada se nedgje lijevo ili desno na zaslonu pojavi bijela točka, pogledajte je što je brže moguće.<br>Kada točka nestane, usmjerite pogled natrag u sredinu zaslona."},
+    {"name": "message", "duration": 13290, "audio": "hr/pst-x.oga", "align": "center", "text": "Molimo gledajte u križ na sredini zaslona.<br>Kada se nedgje lijevo ili desno na zaslonu pojavi bijela točka, pogledajte je što je brže moguće.<br>Kada točka nestane, usmjerite pogled natrag u sredinu zaslona."},
     {"name": "blank", "duration": 1000},
     {"name": "message", "duration": 500, "audio": "alert.oga"},
     {"name": "saccade", "duration": 8000, "delay": 3000, "direction": "x", "offset": 13.8, "type": "step", "where": "pro"}
