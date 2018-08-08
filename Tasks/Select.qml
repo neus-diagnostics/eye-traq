@@ -23,7 +23,8 @@ Task {
     // sequence: correct sequence of choices
     set: function (state) {
         if (state.choices !== undefined) {
-            choices.model = [] // reset highlighted choices
+            if (answer.length > 0)
+                choices.model = [] // reset highlighted choices
             choices.model = state.choices
         }
         if (state.sequence !== undefined)
