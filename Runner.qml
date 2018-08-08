@@ -145,7 +145,7 @@ Rectangle {
 
             Repeater {
                 id: items
-                model: ['blank', 'imgpair', 'message', 'pursuit', 'saccade', 'calibrator']
+                model: ['blank', 'imgpair', 'message', 'pursuit', 'saccade', 'select', 'calibrator']
                 delegate: Loader {
                     source: 'Tasks/' + modelData[0].toUpperCase() + modelData.substring(1) + '.qml'
                     Connections {
