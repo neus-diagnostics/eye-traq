@@ -44,7 +44,7 @@ Task {
             id: choices
 
             delegate: GazeArea {
-                selectTime: 1.5
+                selectTime: 1.8
                 width: control.width / 4
                 height: control.height / 4
                 enabled: control.enabled
