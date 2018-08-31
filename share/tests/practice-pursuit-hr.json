@@ -1,6 +1,6 @@
 [
     {"name": "blank", "duration": 1000},
-    {"name": "message", "duration": 4680, "audio": "hr/pursuit.oga", "align": "center", "text": "Molimo vas da s očima što preciznije slijedite bijelu točku na zaslonu."},
+    {"name": "message", "duration": 5690, "audio": "hr/pursuit.oga", "align": "center", "text": "Molimo vas da s očima što preciznije slijedite bijelu točku na zaslonu."},
     {"name": "blank", "duration": 1000},
     {"name": "message", "duration": 500, "audio": "alert.oga"},
     {"name": "pursuit", "duration": 6000, "direction": "x", "offset": 13.8, "period": 2400}

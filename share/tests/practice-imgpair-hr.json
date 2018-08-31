@@ -1,6 +1,6 @@
 [
     {"name": "blank", "duration": 1000},
-    {"name": "message", "duration": 8440, "audio": "hr/imgpair.oga", "align": "center", "text": "Tijekom testiranja, između pojedinačnih sklopova,<br>na zaslonu će biti prikazani parovi slika.<br>Molimo gledajte ih sasvim prirodno."},
+    {"name": "message", "duration": 9840, "audio": "hr/imgpair.oga", "align": "center", "text": "Tijekom testiranja, između pojedinačnih sklopova,<br>na zaslonu će biti prikazani parovi slika.<br>Molimo gledajte ih sasvim prirodno."},
     {"name": "blank", "duration": 1000},
     {"name": "message", "duration": 500, "audio": "alert.oga"},
     {"name": "imgpair", "duration": 5000, "left": "cat.svg", "right": "owl.svg"}
