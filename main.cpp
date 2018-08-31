@@ -73,7 +73,7 @@ try {
 	}
 
 #ifdef USE_TOBII
-	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{path + "/share/tobii_license.key"}};
+	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerTobii{path}};
 #else
 	std::unique_ptr<Eyetracker> eyetracker{new EyetrackerMouse{second_screen}};
 #endif

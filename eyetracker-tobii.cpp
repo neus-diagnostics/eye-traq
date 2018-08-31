@@ -14,10 +14,14 @@ extern "C" {
 #include <tobii_research_calibration.h>
 }
 
-EyetrackerTobii::EyetrackerTobii(const QString &license_path)
-	: Eyetracker{}, tracker{nullptr}, calibrating{false}, helper{license_path}
+EyetrackerTobii::EyetrackerTobii(const QString &path)
+	: Eyetracker{}, tracker{nullptr}, calibrating{false}, helper{path}
 {
 	connect(&helper, &EyetrackerTobiiHelper::connected, this, &EyetrackerTobii::handle_connected);
+	connect(&connection_timer, &QTimer::timeout, &helper, &EyetrackerTobiiHelper::try_connect);
+	connection_timer.setInterval(3000);
+	connection_timer.setSingleShot(false);
+	connection_timer.start();
 }
 
 EyetrackerTobii::~EyetrackerTobii()
@@ -141,16 +145,29 @@ void EyetrackerTobii::gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self)
 	static_cast<EyetrackerTobii*>(self)->emit gaze(info);
 }
 
-void EyetrackerTobii::handle_connected(void *tracker, const QString &name, const float frequency)
+void EyetrackerTobii::notification_cb(TobiiResearchNotification* notification, void* self)
 {
-	if (tracker != this->tracker) {
-		this->tracker = static_cast<TobiiResearchEyeTracker*>(tracker);
-		this->name = name;
-		this->frequency = frequency;
-		calibrating = false;
-		tracking = false;
-		emit statusChanged();
+	if (notification->notification_type == TOBII_RESEARCH_NOTIFICATION_CONNECTION_LOST)
+		static_cast<EyetrackerTobii*>(self)->helper.emit connected(nullptr, "", 0.0f);
+}
+
+void EyetrackerTobii::handle_connected(void *trackerp, const QString &name, const float frequency)
+{
+	TobiiResearchEyeTracker *tracker = static_cast<TobiiResearchEyeTracker*>(trackerp);
+	if (tracker) {
+		connection_timer.stop();
+		tobii_research_subscribe_to_notifications(tracker, &notification_cb, this);
+	} else {
+		tobii_research_unsubscribe_from_notifications(this->tracker, &notification_cb);
+		connection_timer.start();
 	}
+	this->tracker = tracker;
+	this->name = name;
+	this->frequency = frequency;
+	calibrating = false;
+	tracking = false;
+	qInfo() << (tracker ? "Connected to" : "Disconnected from") << "eyetracker" << this->name;
+	emit statusChanged();
 }
 
 void EyetrackerTobii::track(bool enable)
@@ -164,23 +181,11 @@ void EyetrackerTobii::track(bool enable)
 	}
 }
 
-EyetrackerTobiiHelper::EyetrackerTobiiHelper(const QString &license_path)
+EyetrackerTobiiHelper::EyetrackerTobiiHelper(const QString &path)
+	: path{path}
 {
-	// load license data from file
-	if (!license_path.isEmpty()) {
-		QFile license_file{license_path};
-		if (!license_file.open(QIODevice::ReadOnly))
-			throw std::runtime_error{"could not open license file: " + license_path.toStdString()};
-		license = license_file.readAll();
-	}
-
-	moveToThread(&thread);
 	thread.start();
-
-	connect(&connection_timer, &QTimer::timeout, this, &EyetrackerTobiiHelper::try_connect);
-	connection_timer.setInterval(1000);
-	connection_timer.setSingleShot(false);
-	connection_timer.start();
+	moveToThread(&thread);
 }
 
 EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
@@ -192,53 +197,48 @@ EyetrackerTobiiHelper::~EyetrackerTobiiHelper()
 void EyetrackerTobiiHelper::try_connect()
 {
 	TobiiResearchEyeTracker* tracker{nullptr};
-	if (address.isEmpty()) {
-		TobiiResearchEyeTrackers* eyetrackers{nullptr};
-		auto status = tobii_research_find_all_eyetrackers(&eyetrackers);
-		if (status == TOBII_RESEARCH_STATUS_OK && eyetrackers->count > 0) {
-			// just take the first eye tracker
-			tracker = eyetrackers->eyetrackers[0];
-			tobii_research_free_eyetrackers(eyetrackers);
+	QString name;
 
-			// load license if present
-			if (!license.isEmpty()) {
-				const void* key = license.data();
-				size_t size = license.size();
-				TobiiResearchLicenseValidationResult result;
-				TobiiResearchStatus status = tobii_research_apply_licenses(tracker, &key, &size, &result, 1);
+	TobiiResearchEyeTrackers* eyetrackers{nullptr};
+	auto status = tobii_research_find_all_eyetrackers(&eyetrackers);
+	if (status != TOBII_RESEARCH_STATUS_OK)
+		return;
 
-				if (status != TOBII_RESEARCH_STATUS_OK ||
-				    result != TOBII_RESEARCH_LICENSE_VALIDATION_RESULT_OK) {
-					qWarning() << "Failure applying license:" << result;
-					tracker = nullptr;
-				}
-			}
+	if (eyetrackers->count > 0) {
+		// just take the first eye tracker
+		tracker = eyetrackers->eyetrackers[0];
+		tobii_research_free_eyetrackers(eyetrackers);
+
+		// get serial number
+		char *serial;
+		tobii_research_get_serial_number(tracker, &serial);
+		name = serial;
+		tobii_research_free_string(serial);
+
+		// load license data from file
+		QFile license{path + "/share/keys/" + name + ".key"};
+		if (!license.open(QIODevice::ReadOnly)) {
+			qWarning() << "Could not open license" << license.fileName();
+			return;
 		}
 
-		if (tracker) {
-			char *address;
-			tobii_research_get_address(tracker, &address);
-			this->address = address;
-			tobii_research_free_string(address);
+		const QByteArray data{license.readAll()};
+		const void* key = data.data();
+		size_t size = data.size();
 
-			char *serial;
-			tobii_research_get_serial_number(tracker, &serial);
-			const QString name{serial};
-			tobii_research_free_string(serial);
-
-			float frequency{};
-			tobii_research_get_gaze_output_frequency(tracker, &frequency);
-
-			qInfo() << "Connected to eyetracker" << name << "at" << address;
-			emit connected(tracker, name, frequency);
+		qInfo() << "Applying license" << license.fileName();
+		TobiiResearchLicenseValidationResult result{TOBII_RESEARCH_LICENSE_VALIDATION_RESULT_OK};
+		status = tobii_research_apply_licenses(tracker, &key, &size, &result, 1);
+		if (status != TOBII_RESEARCH_STATUS_OK ||
+		    result != TOBII_RESEARCH_LICENSE_VALIDATION_RESULT_OK) {
+			qWarning() << "Failure applying license:" << status << result;
+			return;
 		}
-	} else {
-		auto status = tobii_research_get_eyetracker(address.toStdString().c_str(), &tracker);
-		if (status != TOBII_RESEARCH_STATUS_OK) {
-			qInfo() << "Disconnected from eyetracker at" << address;
-			address.clear();
-			emit connected(nullptr, "", 0.0f);
-		}
+
+		float frequency{};
+		tobii_research_get_gaze_output_frequency(tracker, &frequency);
+
+		emit connected(tracker, name, frequency);
 	}
 }
 

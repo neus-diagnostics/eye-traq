@@ -24,6 +24,5 @@ exists("$$PWD/3rdparty/lib/*tobii_research*") {
 	SOURCES += eyetracker-tobii.cpp
 	HEADERS += eyetracker-tobii.h
 	INCLUDEPATH += $$PWD/3rdparty/include
-	LIBS += -Wl,-rpath,$$PWD/3rdparty/lib -L$$PWD/3rdparty/lib
-	LIBS += -ltobii_research -ltobii_pro -ltobii_stream_engine
+	LIBS += -L$$PWD/3rdparty/lib -ltobii_research
 }

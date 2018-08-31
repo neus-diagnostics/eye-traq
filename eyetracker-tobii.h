@@ -17,24 +17,22 @@ extern "C" {
 class EyetrackerTobiiHelper : public QObject {
 	Q_OBJECT
 signals:
-	void connected(void *tracker, const QString &address, const float frequency);
+	void connected(void *tracker, const QString &name, const float frequency);
 public:
-	EyetrackerTobiiHelper(const QString &license_path);
+	EyetrackerTobiiHelper(const QString &path);
 	~EyetrackerTobiiHelper();
 public slots:
 	void try_connect();
 	void calibrate(void *tracker, const QPointF &point);
 private:
 	QThread thread;
-	QTimer connection_timer;
-	QString address;
-	QByteArray license;
+	QString path;
 };
 
 class EyetrackerTobii : public Eyetracker {
 	Q_OBJECT
 public:
-	EyetrackerTobii(const QString &license_path = "");
+	EyetrackerTobii(const QString &path = "");
 	virtual ~EyetrackerTobii();
 
 public slots:
@@ -45,6 +43,7 @@ public slots:
 
 private:
 	TobiiResearchEyeTracker *tracker;
+	QTimer connection_timer;
 
 	bool calibrating;
 	QVariantList calibration;
@@ -52,6 +51,7 @@ private:
 	bool connected() const;
 	void track(bool enable);
 	static void gaze_data_cb(TobiiResearchGazeData *gaze_data, void *self);
+	static void notification_cb(TobiiResearchNotification *notification, void *self);
 
 	EyetrackerTobiiHelper helper;
 	void handle_connected(void *tracker, const QString &name, const float frequency);
