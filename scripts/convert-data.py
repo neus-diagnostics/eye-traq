@@ -4,10 +4,8 @@
 # versions of the program into the newest format.
 
 # versions with existing recorded data:
-# 2017-09-04 e766e6d just one file? skip for now
-# 2017-09-05 f86dda7 original CSV format
-# 2017-11-20 8663824 no files? skip for now
-# 2018-08-31 1bb5bec current JSON format
+# 2017-09-05 b939ded original CSV format (f86dda7 before rebase)
+# 2018-08-31 118da10 current JSON format (1bb5bec before rebase)
 
 import os
 import json
@@ -19,8 +17,8 @@ filename = os.path.basename(path)
 old = open(path)
 old_version = old.readline().strip().split()[3]
 
-if old_version == 'f86dda7':
-    new_version = '1bb5bec'
+if old_version in ('f86dda7', 'b939ded'): # before and after the great rebase
+    new_version = '118da10'
     new_path = os.path.join(os.path.dirname(path), new_version)
     os.makedirs(new_path, exist_ok=True)
     new = open(os.path.join(new_path, filename), 'w')
