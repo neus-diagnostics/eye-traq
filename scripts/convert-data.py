@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2019 Neus Diagnostics, d.o.o.
+
 # This scripts converts experimental datalogs created by older
 # versions of the program into the newest format.
 

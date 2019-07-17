@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright © 2016 The Qt Company Ltd.
+// Copyright © 2017 Neus Diagnostics, d.o.o.
+
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0

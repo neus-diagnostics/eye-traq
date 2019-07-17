@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2018 Neus Diagnostics, d.o.o.
+
 # install Tor and configure a hidden service for SSH
 set -e
 

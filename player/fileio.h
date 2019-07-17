@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright © 2018 Neus Diagnostics, d.o.o.
+
 #ifndef FILEIO_H
 #define FILEIO_H
 

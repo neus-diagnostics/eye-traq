@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2018 Neus Diagnostics, d.o.o.
+
 # install and configure sshd as a Windows service
 # source: https://gist.github.com/samhocevar/00eec26d9e9988d080ac
 

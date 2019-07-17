@@ -40,3 +40,9 @@ A basic checklist of basic Windows optimizations for running experiments:
     - Firefox: install https everywhere, ublock origin
 
 The `scripts/` directory contains scripts (what else?) for setting up a SSH daemon and a Tor hidden service that can be used to bypass NAT. The scripts require [msys2](http://repo.msys2.org/distrib/msys2-x86_64-latest.exe).
+
+# License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See `COPYING` for details.
+
+The Lato fonts are distributed under the terms of the SIL Open Font License 1.1. See `media/OFL.txt` for details.

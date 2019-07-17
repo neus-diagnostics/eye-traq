@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright © 2017, 2018 Neus Diagnostics, d.o.o.
+
 #ifndef EYETRACKER_TOBII_H
 #define EYETRACKER_TOBII_H
 
