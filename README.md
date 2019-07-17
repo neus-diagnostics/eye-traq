@@ -1,30 +1,42 @@
-# Deploying on Windows
+Run eye-tracking experiments: display tasks and record participants’ eye movements.
 
-## System configuration
+# Compiling
 
-* Theme
-  * set sound theme to No Sounds
-* Choose how updates are delivered
-* Occasionally show suggestions in Start → off
-* Notifications & actions → everything off
-* Power & sleep
-  * never turn off screen
-  * never go to sleep when plugged in
-* Share across devices → off
-* Privacy → maximum paranoia
-* disable onedrive (system tray icon)
-* disable services (http://www.blackviper.com/service-configurations/black-vipers-windows-10-service-configurations/)
-* Virus & threat protection
-* taskbar
-  * remove shit
+This program is written in Qt5. An eyetracker is needed to record gaze data; currently only Tobii eyetrackers are supported. To enable support for Tobii eyetrackers, download the Tobii Pro SDK and place headers and libraries into `3rdparty/{include,lib}` before building.
 
-## Software
+Build and run with:
 
-* install Tobii eyetracker core software: https://tobiigaming.com/getstarted/?bundle=tobii-core&manualdownload=true
-* install msys2: http://repo.msys2.org/distrib/msys2-x86_64-latest.exe
-* install directshow codecs for ogg & friends (https://xiph.org/dshow)
-* run scripts/msys2-setup-{ssh,tor}.sh
+    qmake
+    make
+    ./eye-track
 
-- ninite.com (firefox, libreoffice, putty, sumatrapdf, vlc, winscp)
-- firefox
-  - https everywhere, ublock origin
+If you move the binary, make sure to also move (or link) the `share/` directory.
+
+# Deploying
+
+Two monitors are required in the *extended* configuration. The primary monitor shows the control view. The secondary monitor displays tests while the attached eyetracker records data.
+
+The program assumes exactly one eyetracker is present. If using the Tobii 4C tracker, place the license key into `share/keys/<serial number>.key`.
+
+## Windows
+
+Due to missing drivers the Tobii Pro SDK only works with Windows. To set up a machine:
+
+* install and configure the [Tobii eyetracker core software](https://tobiigaming.com/getstarted/?bundle=tobii-core&manualdownload=true) and
+* install [directshow codecs](https://xiph.org/dshow) for playing sound clips.
+
+A basic checklist of basic Windows optimizations for running experiments:
+
+* Settings
+    - Power & sleep: never turn off screen or go to sleep
+    - Sound theme: No Sounds
+    - Notifications & actions: off
+    - Share across devices: off
+    - Virus & threat protection: off
+    - OneDrive: off
+    - Privacy: maximum paranoia
+* Software
+    - Download [Ninite](ninite.com) and install firefox, libreoffice, sumatrapdf, vlc, winscp
+    - Firefox: install https everywhere, ublock origin
+
+The `scripts/` directory contains scripts (what else?) for setting up a SSH daemon and a Tor hidden service that can be used to bypass NAT. The scripts require [msys2](http://repo.msys2.org/distrib/msys2-x86_64-latest.exe).
