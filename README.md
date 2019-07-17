@@ -28,9 +28,3 @@
 - ninite.com (firefox, libreoffice, putty, sumatrapdf, vlc, winscp)
 - firefox
   - https everywhere, ublock origin
-
-## Notes
-
-Not sure if this helps with anything:
-
-    cmd.exe /c start neus /RealTime c:\Users\neus\Desktop\release\neus.exe

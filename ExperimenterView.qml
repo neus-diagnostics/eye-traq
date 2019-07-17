@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 import Qt.labs.folderlistmodel 2.1
 import Qt.labs.settings 1.0
 
-import "controls" as Neus
+import "controls" as My
 
 Rectangle {
     id: main
@@ -45,8 +45,8 @@ Rectangle {
                     z: 1  // ensure participant autocomplete dropdown is on top
                     anchors { left: parent.left; right: parent.right }
                     spacing: parent.spacing
-                    Neus.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
-                    Neus.AutoComplete {
+                    My.Label { text: qsTr("ID"); font.pointSize: 13; font.weight: Font.Bold }
+                    My.AutoComplete {
                         id: txtParticipant
                         Layout.alignment: Qt.AlignVCenter
                         Layout.fillWidth: true
@@ -62,7 +62,7 @@ Rectangle {
                             viewer.plot()
                         }
 
-                        Neus.Button {
+                        My.Button {
                             text: qsTr("New")
                             anchors { right: parent.right; verticalCenter: parent.verticalCenter; rightMargin: 4 }
                             font.pointSize: 8
@@ -111,13 +111,13 @@ Rectangle {
                         }
                     }
 
-                    Neus.Label {
+                    My.Label {
                         id: txtCalibrated
                         text: qsTr("Not calibrated.")
                         Layout.fillWidth: true
                     }
 
-                    Neus.Button {
+                    My.Button {
                         text: qsTr("Calibrate")
                         enabled: !runner.running
                         onClicked: {
@@ -173,7 +173,7 @@ Rectangle {
                     enabled: !runner.running
                     spacing: 10
 
-                    Neus.Button {
+                    My.Button {
                         id: button
                         text: checked & !hovered ? "✔" : "▸"
                         font.weight: Font.Bold
@@ -191,7 +191,7 @@ Rectangle {
                             notes.append("Started " + testName + ".")
                         }
                     }
-                    Neus.Label {
+                    My.Label {
                         text: modelData.text
                         Layout.fillWidth: true
                     }
@@ -211,7 +211,7 @@ Rectangle {
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
-                Neus.Heading {
+                My.Heading {
                     text: qsTr("Test")
                     Layout.fillWidth: true
                 }
@@ -221,8 +221,8 @@ Rectangle {
                     spacing: parent.spacing
                     enabled: !runner.running
 
-                    Neus.Label { text: qsTr("Language") }
-                    Neus.ComboBox {
+                    My.Label { text: qsTr("Language") }
+                    My.ComboBox {
                         model: [
                             { "text": "Croatian", "language": "hr" },
                             { "text": "Slovene", "language": "sl" },
@@ -241,7 +241,7 @@ Rectangle {
                     }
                 }
 
-                Neus.Label {
+                My.Label {
                     text: qsTr("Practice")
                     font { pointSize: 11; capitalization: Font.MixedCase; weight: Font.Bold }
                     Layout.fillWidth: true
@@ -263,7 +263,7 @@ Rectangle {
                     }
                 }
 
-                Neus.Label {
+                My.Label {
                     text: qsTr("Tests")
                     font { weight: Font.Bold }
                     Layout.fillWidth: true
@@ -303,7 +303,7 @@ Rectangle {
                 enabled: participant != ""
                 spacing: 10
 
-                Neus.Heading {
+                My.Heading {
                     Layout.fillWidth: true
                     text: qsTr("Notes")
                 }
@@ -312,7 +312,7 @@ Rectangle {
                     Layout.fillWidth: true
                     spacing: 5
 
-                    Neus.TextArea {
+                    My.TextArea {
                         id: notes
 
                         property var modified: false
@@ -341,7 +341,7 @@ Rectangle {
                         Layout.fillHeight: true
                     }
 
-                    Neus.Button {
+                    My.Button {
                         text: "Save"
                         enabled: notes.modified
                         onClicked: notes.save()
@@ -352,7 +352,7 @@ Rectangle {
         }
 
         // eyetracker status
-        Neus.Label {
+        My.Label {
             id: status
             text: eyetracker.connected ? qsTr("Eyetracker connected.") : qsTr("Eyetracker disconnected.")
             anchors.bottom: parent.bottom

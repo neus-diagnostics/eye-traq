@@ -29,7 +29,7 @@
 // log messages to a file
 static void logger(QtMsgType, const QMessageLogContext&, const QString &msg)
 {
-	static QFile file{"neus.log"};
+	static QFile file{"eye-track.log"};
 	static QTextStream stream{&file};
 
 	if (!file.isOpen() && !file.open(QIODevice::Append | QIODevice::Text))
@@ -45,10 +45,7 @@ try {
 
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
-
 	QApplication app{argc, argv};
-	app.setOrganizationName("Neus");
-	app.setOrganizationDomain("neus-diagnostics.com");
 
 	if (QFontDatabase::addApplicationFont(":/media/lato-regular.ttf") != -1 &&
 	    QFontDatabase::addApplicationFont(":/media/lato-bold.ttf") != -1) {

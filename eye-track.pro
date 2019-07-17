@@ -17,7 +17,7 @@ HEADERS += \
 	eyetracker-mouse.h \
 	recorder.h
 
-RESOURCES += neus.qrc media.qrc tasks.qrc
+RESOURCES += main.qrc media.qrc tasks.qrc
 
 exists("$$PWD/3rdparty/lib/*tobii_research*") {
 	DEFINES += USE_TOBII

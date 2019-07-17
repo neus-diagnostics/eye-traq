@@ -2,7 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtMultimedia 5.6
 
-import "../controls" as Neus
+import "../controls" as My
 
 Task {
     // task arguments: audio (file name), text, align
@@ -40,7 +40,7 @@ Task {
 
     timer.onTriggered: done()
 
-    Neus.Label {
+    My.Label {
         id: message
         anchors.centerIn: parent
         width: parent.width * 0.66

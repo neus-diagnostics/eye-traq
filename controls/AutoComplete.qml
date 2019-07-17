@@ -2,7 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 
-import "." as Neus
+import "." as My
 
 Item {
     property alias text: input.text
@@ -22,7 +22,7 @@ Item {
 
     height: input.height
 
-    Neus.TextField {
+    My.TextField {
         id: input
         width: parent.width
         onTextChanged: {

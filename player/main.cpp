@@ -15,10 +15,7 @@ try {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QQuickStyle::setStyle("Fusion");
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
-
 	QApplication app{argc, argv};
-	app.setOrganizationName("Neus");
-	app.setOrganizationDomain("neus-diagnostics.com");
 
 	const QString path = app.applicationDirPath();
 	const QString version{GIT_VERSION}; // export define for QML
@@ -32,7 +29,7 @@ try {
 	view.rootContext()->setContextProperty("fileIO", &fileIO);
 	view.rootContext()->setContextProperty("eyetracker", nullptr);
 
-	view.setTitle("Neus player");
+	view.setTitle("Eye-track player");
 	view.setSource(QUrl{"qrc:/Main.qml"});
 	if (view.status() != QQuickView::Ready) {
 		for (const auto &e : view.errors())

@@ -1,7 +1,8 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import "controls" as Neus
+
+import "controls" as My
 
 Item {
     anchors.fill: parent
@@ -87,7 +88,7 @@ Item {
                     }
                 }
 
-                Neus.Label {
+                My.Label {
                     id: txtMessage
                     anchors.horizontalCenter: parent.horizontalCenter
                     y: parent.height * 3/4
@@ -109,7 +110,7 @@ Item {
         Row {
             opacity: runner.running ? 1.0 : 0.0
             spacing: 10
-            Neus.Label { text: qsTr("Running: ") + runner.name }
+            My.Label { text: qsTr("Running: ") + runner.name }
         }
 
         Rectangle {
@@ -136,7 +137,7 @@ Item {
                     leftPadding: 8
                     rightPadding: 8
 
-                    Neus.Label {
+                    My.Label {
                         function format(time) {
                             var minutes = Math.floor(time/60000)
                             var seconds = (time / 1000) % 60
@@ -147,11 +148,11 @@ Item {
                         text: format(modelData.start)
                         width: parent.width * 0.1
                     }
-                    Neus.Label {
+                    My.Label {
                         text: modelData.name
                         width: parent.width * 0.15
                     }
-                    Neus.Label {
+                    My.Label {
                         text: JSON.stringify(modelData, function (key, value) {
                             return key === 'name' || key === 'start' ? undefined : value
                         })
@@ -171,30 +172,30 @@ Item {
             Layout.fillWidth: true
             enabled: runner.running
 
-            Neus.Button {
+            My.Button {
                 text: qsTr("Prev")  // TODO: replace with "⏪ "
                 enabled: runner.next > 1
                 onClicked: runner.back()
             }
 
-            Neus.Button {
+            My.Button {
                 text: qsTr("Pause")  // TODO: replace with "⏯"
                 checked: runner.paused
                 onClicked: runner.paused = !runner.paused
             }
 
-            Neus.Button {
+            My.Button {
                 text: qsTr("Next")  // TODO: replace with "⏩ "
                 enabled: runner.next < runner.test.length
                 onClicked: runner.forward()
             }
 
-            Neus.ProgressBar {
+            My.ProgressBar {
                 Layout.fillWidth: true
                 value: runner.running ? runner.next / runner.test.length : 0
             }
 
-            Neus.Button {
+            My.Button {
                 text: qsTr("Stop")  // TODO: replace with unicode char
                 onClicked: runner.stop()
             }
