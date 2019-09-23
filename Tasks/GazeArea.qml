@@ -31,13 +31,13 @@ Item {
 
     // reset time when control is disabled
     Binding on time {
-        when: !enabled
+        when: !visible || !enabled
         value: 0.0
     }
 
     Connections {
         target: eyetracker
-        enabled: control.enabled
+        enabled: visible && control.enabled
         onPointChanged: {
             var valid = point.x != 0.0 || point.y != 0.0
             var saccade = eyetracker.velocity > 0.5
